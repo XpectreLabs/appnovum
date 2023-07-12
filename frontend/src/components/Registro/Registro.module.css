@@ -1,0 +1,15 @@
+.RegistroForm {
+  margin-top: 12px;
+}
+
+.RegistroForm input {
+  height: 26px;
+  margin-bottom: 12px;
+}
+
+.RegistroInputCol {
+  width: 202px;
+  margin-right: 10px;
+}
+
+

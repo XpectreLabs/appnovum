@@ -1,0 +1,55 @@
+.HomeHeader {
+  padding-top: 5px;
+}
+
+.HomeLogo {
+  font-size: 34px;
+  padding-top: 6px;
+}
+
+.HomeUser {
+  width: 36px !important;
+  height: 36px !important;
+  font-size: 14px !important;
+  font-weight: 700;
+  background: url(../bgUser.png) no-repeat;
+  background-size: cover;
+  margin-top: 4px;
+  margin-right: 22px
+}
+
+.HomeUser span {
+  line-height: 34px !important;
+}
+
+.HomeBienvenida {
+  width: 355px;
+  color: #8C8C8C;
+  font-size: 18.3px;
+  line-height: 22px;
+  font-weight: 400;
+  margin-top: 174px;
+}
+
+.HomeTitle {
+  color: #000000;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 30px;
+  margin-bottom: 10px;
+}
+
+.HomeIcoBienvenida {
+  display: inline-block;
+  margin-bottom: 16px;
+  vertical-align: top;
+}
+
+.HomeIcoBienvenida:before {
+  color: #8C8C8C;
+  font-size: 55.798px;
+}
+
+.RegistarBanco {
+  
+}
