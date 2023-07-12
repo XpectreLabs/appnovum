@@ -8,7 +8,7 @@ import { Avatar, Space } from 'antd';
 import { Layout, Button, Menu, theme } from 'antd';
 import style from '../pages/Home.module.css';
 import { Resumen } from './Resumen.tsx';
-import { RegistrarCajaOBanco } from './RegistrarCajaOBanco.tsx';
+import { RegistrarCajaOBanco } from './RegisterBank/RegistrarCajaOBanco.tsx';
 import { RegistrarIngresosFuturos } from './RegistrarIngresosFuturos.tsx';
 import { RegistrarEgresosFuturos } from './RegistrarEgresosFuturos.tsx';
 
