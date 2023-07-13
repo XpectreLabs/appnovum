@@ -26,7 +26,7 @@ export const RegistrarCajaOBanco = () => {
       <Box className={Styles.nav}>
         <Box className={Styles.counter}>
           <p>Cuentas</p>
-          <div className={Styles.chip}>01</div>
+          <div className={Styles.chip}>02</div>
         </Box>
 
         <Box>
