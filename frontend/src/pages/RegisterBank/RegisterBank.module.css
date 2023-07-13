@@ -1,13 +1,14 @@
 .nav{
   display: flex;
   justify-content: space-between;
-  margin: 0px 15px 0px 15px;
+  margin: 0px 15px 20px 15px;
   align-items: baseline;
 }
 
 .btnCreateAccount{
   background: #00C62F !important;
-  border-radius: 5px;
+  border-radius: 10px !important;
+  text-transform: full-size-kana !important;
 }
 
 .counter{
@@ -35,13 +36,18 @@
 .information{
   background: #D9FFE2;
   width: 80%;
-  margin-top: 50px;
+  margin-top: 20px;
   padding: 20px;
 }
 
 .headInfo{
   display: flex;
   justify-content: space-between;
+}
+
+.headInfo span{
+  font-weight: bold;
+  font-size: 20px;
 }
 
 .headInfo div{

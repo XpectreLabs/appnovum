@@ -13,6 +13,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PaymentsIcon from "@mui/icons-material/Payments";
 
 // import { LayoutAdmin } from '../hocs/Layout.tsx';
 //import { Default } from '../components/RegistrarCajaOBanco/Default.tsx';
@@ -82,6 +83,30 @@ export const RegistrarCajaOBanco = () => {
           <Box className={Styles.bankInfo}>
             <p>Banco</p>
             <p>$6,000,000.00</p>
+          </Box>
+        </Box>
+      </Box>
+
+      <Box className={Styles.container}>
+        <Box className={Styles.information}>
+          <Box className={Styles.headInfo}>
+            <div>
+              <PaymentsIcon />
+              <span>Caja</span>
+            </div>
+
+            <div>
+              <IconButton type="button" aria-label="Edit">
+                <EditOutlinedIcon />
+              </IconButton>
+              <IconButton type="button" aria-label="Edit">
+                <MoreVertIcon />
+              </IconButton>
+            </div>
+          </Box>
+          <Box className={Styles.bankInfo}>
+            <p>Efectivo</p>
+            <p>$803,500.00</p>
           </Box>
         </Box>
       </Box>
