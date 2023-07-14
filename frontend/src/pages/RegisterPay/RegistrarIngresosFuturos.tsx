@@ -44,7 +44,7 @@ interface Column {
 
 const columns: readonly Column[] = [
   { id: "date_created", label: "Fecha de creación", minWidth: 100 },
-  { id: "payment_method", label: "Método de pago", minWidth: 170 },
+  { id: "payment_method", label: "Método de pago", minWidth: 100 },
   { id: "category", label: "Categoria", minWidth: 100 },
   { id: "name", label: "Nombre de la persona o empresa", minWidth: 100 },
   { id: "concept", label: "Concepto", minWidth: 100 },
@@ -60,7 +60,7 @@ interface Data {
   category: string;
   name: string;
   concept: string;
-  amount: number;
+  amount: any;
   date_to_pay: string
   state: any;
   date_cashed: any;
@@ -72,7 +72,7 @@ function createData(
   category: string,
   name: string,
   concept: string,
-  amount: number,
+  amount: any,
   date_to_pay: string,
   state: any,
   date_cashed: any,
@@ -90,6 +90,12 @@ function createData(
   };
 }
 
+const formatNumber = (number) =>
+  new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(number);
+
 const rows = [
   createData(
     "16/06/2023",
@@ -100,7 +106,7 @@ const rows = [
     "Cliente",
     "Franco Espinilla",
     "Renta de local",
-    1000990,
+    "$" + formatNumber(1000990),
     "26/10/2023",
     <Chip
       icon={<PriceCheckIcon />}
@@ -119,7 +125,7 @@ const rows = [
     "Otro",
     "Stallone Silvester",
     "Servicios de toldos",
-    645000,
+    "$" + formatNumber(645000),
     "26/10/2023",
     <Chip
       icon={<PriceCheckIcon />}
@@ -138,7 +144,7 @@ const rows = [
     "Cliente",
     "Mauricio de Montero",
     "Prestamo",
-    70559,
+    "$" + formatNumber(70559),
     "26/10/2023",
     <Chip
       icon={<MoneyOffIcon />}
@@ -157,7 +163,7 @@ const rows = [
     "Cliente",
     "Jessica Smit",
     "Otro",
-    1131,
+    "$" + formatNumber(1131),
     "26/10/2023",
     <Chip
       icon={<MoneyOffIcon />}

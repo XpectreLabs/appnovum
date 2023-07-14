@@ -12,9 +12,7 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 
 import Chip from "@mui/material/Chip";
-import MoneyOffIcon from "@mui/icons-material/MoneyOff";
 import PriceCheckIcon from "@mui/icons-material/PriceCheck";
-import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
 
 // import { LayoutAdmin } from '../hocs/Layout.tsx';
@@ -44,7 +42,7 @@ interface Column {
 
 const columns: readonly Column[] = [
   { id: "date_created", label: "Fecha de creación", minWidth: 100 },
-  { id: "payment_method", label: "Método de pago", minWidth: 170 },
+  { id: "payment_method", label: "Método de pago", minWidth: 100 },
   { id: "category", label: "Categoria", minWidth: 100 },
   { id: "name", label: "Nombre de la persona o empresa", minWidth: 100 },
   { id: "concept", label: "Concepto", minWidth: 100 },
@@ -60,7 +58,7 @@ interface Data {
   category: string;
   name: string;
   concept: string;
-  amount: number;
+  amount: any;
   date_to_pay: string;
   state: any;
   date_cashed: any;
@@ -72,7 +70,7 @@ function createData(
   category: string,
   name: string,
   concept: string,
-  amount: number,
+  amount: any,
   date_to_pay: string,
   state: any,
   date_cashed: any
@@ -90,6 +88,12 @@ function createData(
   };
 }
 
+const formatNumber = (number) =>
+  new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(number);
+
 const rows = [
   createData(
     "16/06/2023",
@@ -97,15 +101,15 @@ const rows = [
       <RequestQuoteOutlinedIcon />
       <span>Efectivo</span>
     </div>,
-    "Cliente",
-    "Franco Espinilla",
-    "Renta de local",
-    1000990,
+    "Deuda",
+    "Santiago Espinilla",
+    "Renta de local en venta",
+    "$" + formatNumber(1000990),
     "26/10/2023",
     <Chip
       icon={<PriceCheckIcon />}
       size="small"
-      label="Cobrado"
+      label="Pagado"
       className={Styles.chipTable}
     />,
     <p className={Styles.txtNoCobrado}>26/10/2023</p>

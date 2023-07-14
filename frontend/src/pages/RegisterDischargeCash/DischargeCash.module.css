@@ -34,35 +34,18 @@
 }
 
 .chipTable{
-  background: #00C62F !important;
-  color: white !important;
+  background: #c6f4f7 !important;
+  color: #00C62F !important;
   font-weight: bold !important;
 }
 
 .chipTable svg{
-  color: white !important;
-}
-
-.chipTableNo{
-  background: #f52121 !important;
-  color: white !important;
-  font-weight: bold !important;
-}
-
-.chipTableNo svg{
-  color: white !important;
-}
-
-.txtCobrado{
-  color: #00C62F;
+  color: #00C62F !important;
 }
 
 .txtNoCobrado{
   color: #f52121;
-}
-
-.txtPendiente{
-  color: #7d7373;
+  font-weight: bold;
 }
 
 .typeAmount1{
@@ -73,18 +56,6 @@
 
 .typeAmount1 svg{
   color: #00C62F;
-  background: #c6f4f7;
-  border-radius: 6px;
-}
-
-.typeAmount2{
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.typeAmount2 svg{
-  color: rgb(13, 172, 172);
   background: #c6f4f7;
   border-radius: 6px;
 }
