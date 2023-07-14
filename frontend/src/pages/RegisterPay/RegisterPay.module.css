@@ -1,0 +1,99 @@
+.nav{
+  display: flex;
+  justify-content: space-between;
+  margin: 0px 15px 20px 15px;
+  align-items: baseline;
+}
+
+.btnCreateAccount{
+  background: #00C62F !important;
+  border-radius: 10px !important;
+  text-transform: full-size-kana !important;
+}
+
+.counter{
+  display: flex;
+  gap: 10px;
+}
+
+.counter p{
+  font-weight: bold;
+}
+
+.chip{
+  display: flex;
+  background: #00C62F;
+  color: white;
+  font-weight: bold;
+  border-radius: 25px;
+  height: 30px;
+  width: 30px;
+  align-items: center;
+  justify-content: center;
+  margin-top: -6px;
+}
+
+.chipTable{
+  background: #00C62F !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+.chipTable svg{
+  color: white !important;
+}
+
+.chipTableNo{
+  background: #f52121 !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+.chipTableNo svg{
+  color: white !important;
+}
+
+.txtCobrado{
+  color: #00C62F;
+}
+
+.txtNoCobrado{
+  color: #f52121;
+}
+
+.txtPendiente{
+  color: #7d7373;
+}
+
+.typeAmount1{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.typeAmount1 svg{
+  color: #00C62F;
+  background: #c6f4f7;
+  border-radius: 6px;
+}
+
+.typeAmount2{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.typeAmount2 svg{
+  color: rgb(13, 172, 172);
+  background: #c6f4f7;
+  border-radius: 6px;
+}
+
+.table th{
+  font-weight: bold !important;
+  border: 0; border-bottom:1px solid #fff
+}
+
+.table td{
+  border: 0; border-bottom:1px solid #fff
+}

@@ -1,9 +1,9 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Inicio } from './pages/Inicio.tsx';
-import { RegistrarCajaOBanco } from './pages/RegistrarCajaOBanco.tsx';
-import { RegistrarIngresosFuturos } from './pages/RegistrarIngresosFuturos.tsx';
-import { RegistrarEgresosFuturos } from './pages/RegistrarEgresosFuturos.tsx';
+import { RegistrarCajaOBanco } from './pages/RegisterBank/RegistrarCajaOBanco.tsx';
+import { RegistrarIngresosFuturos } from './pages/RegisterPay/RegistrarIngresosFuturos.tsx';
+import { RegistrarEgresosFuturos } from './pages/RegisterDischargeCash/RegistrarEgresosFuturos.tsx';
 import { Home } from './pages/Home.tsx';
 
 function App() {
