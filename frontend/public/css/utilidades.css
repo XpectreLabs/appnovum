@@ -261,3 +261,40 @@
 {
 	position: absolute;
 }
+
+
+.ant-modal-close {
+  display: none !important;
+}
+
+.ant-modal-wrap .ant-btn-primary {
+	color: #fff;
+	font-size: 12px;
+	font-weight: 600;
+	padding: 2px 12px;
+	background-color: #00C62F;
+	margin-left: 10px !important;
+	top: 0px !important;
+}
+
+.ant-modal-wrap .ant-btn-primary:hover {
+	background: #00df35;
+}
+
+
+.ant-modal-wrap .ant-btn-default {
+	color: #00C62F;
+	font-weight: 600;
+	font-size: 12px;
+	padding: 2px 12px;
+	border: 0px;
+}
+
+.ant-modal-wrap .ant-btn-default:hover {
+	color: #fff;
+	background: #00df35;
+}
+
+:where(.css-dev-only-do-not-override-k7429z).ant-picker .ant-picker-suffix {
+	color: #000 !important;
+}

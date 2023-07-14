@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import style from '../../pages/Home.module.css';
-import { Button, Modal, Select, Input } from 'antd';
+import { Button, Modal, Select, Input, message } from 'antd';
 import {
   PlusOutlined,
 } from '@ant-design/icons';
@@ -9,27 +9,43 @@ import { Formik, Form } from "formik";
 export const Default = () => {
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
 
     const showModal = () => {
       setOpen(true);
     };
 
     const handleOk = () => {
-      setConfirmLoading(true);
-      setTimeout(() => {
-        setOpen(false);
-        setConfirmLoading(false);
-      }, 2000);
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbzge-BlKlBbf8oq7-L2CcD-CEfiodErmJvzoLyj1BoKyp8I01g4CFZyYJrPTDryE57m/exec'
+      const form = document.forms['form-contacto'];
+
+        setConfirmLoading(true);
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+          .then(response => {
+            messageApi.open({
+              type: 'success',
+              content: 'Los datos fueron guardados con éxito',
+            });
+            setTimeout(() => {
+              setOpen(false);
+              setConfirmLoading(false); 
+            }, 3000);
+          })
+          .catch(error => {
+            alert(error.message);
+            console.error('Error!', error.message);
+          });
+      /*
+      */
     };
 
     const handleCancel = () => {
-      console.log('Clicked cancel button');
       setOpen(false);
     };
 
-    const handleChange = (value: string) => {
-      console.log(`selected ${value}`);
-    };
+    // const handleChange = (value: string) => {
+    //   console.log(`selected ${value}`);
+    // };
 
     return (
       <>
@@ -67,30 +83,30 @@ export const Default = () => {
                 return (
                   <>
                       {
-                        <Form className={`${style.RegistroForm}`} name="contact" method="post" onSubmit={handleSubmit}>
+                        <Form className={`${style.ModalForm}`} name="form-contacto" id="form-contacto" method="post" onSubmit={handleSubmit}>
+                          {contextHolder}
+
                           <Input
                             placeholder="Nombre de la cuenta"
                             type="text"
-                            name="nombreCuenta"
+                            id="txtNombre"
+                            name="Nombre de la cuenta"
                             onChange={handleChange}
                             onBlur={handleBlur}
                             autoCapitalize="off"
                           />
 
-                          <Select
-                            defaultValue="Efectivo"
-                            style={{ width: 120 }}
-                            onChange={handleChange}
-                            options={[
-                              { value: 'Efectivo', label: 'Efectivo' },
-                              { value: 'Banco', label: 'Banco' },
-                            ]}
-                          />
+                          <select name="Efectivo o banco" className={`${style.ModalSelect}`} id="">
+                            <option value="">Efectivo o banco</option>
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Banco">Banco</option>
+                          </select>
 
                           <Input
+                            className={`${style.ModalCantidad}`}
                             placeholder="Cantidad actual"
                             type="text"
-                            name="cantidadActual"
+                            name="Cantidad actual"
                             onChange={handleChange}
                             onBlur={handleBlur}
                           />
@@ -102,12 +118,6 @@ export const Default = () => {
               }}
             </Formik>
 
-
-
-
-
-
-            
           </Modal>
         </>
     )
