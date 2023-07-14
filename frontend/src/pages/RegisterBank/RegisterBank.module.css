@@ -1,0 +1,74 @@
+.nav{
+  display: flex;
+  justify-content: space-between;
+  margin: 0px 15px 20px 15px;
+  align-items: baseline;
+}
+
+.btnCreateAccount{
+  background: #00C62F !important;
+  border-radius: 10px !important;
+  text-transform: full-size-kana !important;
+}
+
+.counter{
+  display: flex;
+  gap: 10px;
+}
+
+.counter p{
+  font-weight: bold;
+}
+
+.chip{
+  display: flex;
+  background: #00C62F;
+  color: white;
+  font-weight: bold;
+  border-radius: 25px;
+  height: 30px;
+  width: 30px;
+  align-items: center;
+  justify-content: center;
+  margin-top: -6px;
+}
+
+.information{
+  background: #D9FFE2;
+  width: 80%;
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.headInfo{
+  display: flex;
+  justify-content: space-between;
+}
+
+.headInfo span{
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.headInfo div{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.container{
+  display: flex;
+  justify-content: center;
+}
+
+.bankInfo{
+  display: flex;
+  background: white;
+  width: 100%;
+  height: 32px;
+  align-items: center;
+  gap: 20px;
+  font-size: 22px;
+  padding:25px 10px 25px 10px;
+  border-radius: 10px;
+}
