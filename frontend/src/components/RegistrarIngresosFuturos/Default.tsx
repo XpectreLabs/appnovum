@@ -12,12 +12,11 @@ const onChange: DatePickerProps['onChange'] = (date, dateString) => {
 };
 
 
-export const Default = () => {
-  const [open, setOpen] = useState(false);
+export const Default = ({cambioTable}) => {
+    const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
-
 
     const showModal = () => {
       setOpen(true);
@@ -36,7 +35,8 @@ export const Default = () => {
             });
             setTimeout(() => {
               setOpen(false);
-              setConfirmLoading(false); 
+              setConfirmLoading(false);
+              cambioTable();
             }, 3000);
           })
           .catch(error => {
@@ -130,7 +130,7 @@ export const Default = () => {
                             onBlur={handleBlur}
                           />
 
-                          <DatePicker  
+                          <DatePicker
                             format={dateFormatList}
                             className={`${style.ModalCantidad}`} 
                             name='Fecha tentativa de cobro' 

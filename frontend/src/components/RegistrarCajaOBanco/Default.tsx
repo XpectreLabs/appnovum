@@ -6,7 +6,7 @@ import {
 } from '@ant-design/icons';
 import { Formik, Form } from "formik";
 
-export const Default = () => {
+export const Default = ({cambioTable}) => {
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
@@ -29,6 +29,8 @@ export const Default = () => {
             setTimeout(() => {
               setOpen(false);
               setConfirmLoading(false); 
+
+              cambioTable();
             }, 3000);
           })
           .catch(error => {
