@@ -20,7 +20,7 @@ export const Login = () => {
           .required("La contraseña es requerida"),
         })}
         onSubmit={(values, actions) => {
-          window.location.href ='/Home2';
+          window.location.href ='/Home';
         }}
       >
         {({
