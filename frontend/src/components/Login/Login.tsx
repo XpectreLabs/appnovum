@@ -3,6 +3,7 @@ import style from './Login.module.css';
 import { Input } from 'antd';
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import { Link } from "react-router-dom";
 
 export const Login = () => {
     return (
@@ -31,9 +32,14 @@ export const Login = () => {
           handleSubmit,
         }) => {
           return (
-            <> 
-              <Form className={`${style.LoginForm}`} name="contact" method="post" onSubmit={handleSubmit}>
-                <Input 
+            <>
+              <Form
+                className={`${style.LoginForm}`}
+                name="contact"
+                method="post"
+                onSubmit={handleSubmit}
+              >
+                <Input
                   placeholder="Email"
                   type="email"
                   name="email"
@@ -51,13 +57,24 @@ export const Login = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-                {errors.email}<br />
+                {errors.email}
+                <br />
                 {errors.password}
 
-                <div className='u-textLeft'>
-                  <a href="#" className={`${style.LoginTextOlvido} u-inline-block`}>¿Olvido su contraseña?</a>
+                <div className="u-textLeft">
+                  <Link
+                    to="/Recovery-pass"
+                    className={`${style.LoginTextOlvido} u-inline-block`}
+                  >
+                    ¿Olvido su contraseña?
+                  </Link>
+                  
 
-                  <input className={`${style.LoginBtnIniciarSesion} u-floatRight u-redondeado u-efecto`} type="submit" value="Iniciar sesión" />
+                  <input
+                    className={`${style.LoginBtnIniciarSesion} u-floatRight u-redondeado u-efecto`}
+                    type="submit"
+                    value="Iniciar sesión"
+                  />
                 </div>
               </Form>
             </>

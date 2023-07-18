@@ -107,3 +107,23 @@
   height: 10px !important;
   padding-top: 6px !important;
 }
+
+.mobile{
+  background: white !important;
+  box-shadow: none !important;
+}
+
+.mobile  div{
+  display: flex;
+  justify-content: space-between;
+}
+
+.ant-menu-light .ant-menu-item-selected:active{
+  background: black !important;
+  color: rebeccapurple;
+}
+
+.prueba li .ant-menu-item-selected{
+  background: red !important;
+}
+

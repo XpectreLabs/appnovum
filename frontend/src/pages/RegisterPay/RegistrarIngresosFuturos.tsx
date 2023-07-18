@@ -11,9 +11,9 @@ export const RegistrarIngresosFuturos = ({cambioRegistroBan}) => {
 
   const Cambio = (props) => {
     if (props.ban)
-      return <TableRegistrarIngresosFuturos />;
+      return  <Default cambioRegistroBan={cambioRegistroBan} cambioTable={cambioTable}  />;
     else if (props.ban === false)
-      return <Default cambioRegistroBan={cambioRegistroBan} cambioTable={cambioTable}  />;
+      return <TableRegistrarIngresosFuturos />;
   }
 
   return (
