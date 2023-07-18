@@ -271,3 +271,7 @@
   font-size: 14px !important;
   vertical-align: inherit;
 }
+
+#BtnSiguiente, #BtnTerminar {
+  display: none;
+}

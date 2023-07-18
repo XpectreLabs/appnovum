@@ -31,9 +31,9 @@ export const Login = () => {
           handleSubmit,
         }) => {
           return (
-            <> 
+            <>
               <Form className={`${style.LoginForm}`} name="contact" method="post" onSubmit={handleSubmit}>
-                <Input 
+                <Input
                   placeholder="Email"
                   type="email"
                   name="email"

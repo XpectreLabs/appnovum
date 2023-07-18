@@ -13,3 +13,16 @@
 }
 
 
+.RegistroBtnSiguiente {
+  height: 32px !important;
+  color: #fff;
+  font-size: 13px;
+  line-height: 13px;
+  font-weight: 500;
+  background: #00C62F;
+  border: 0px;
+  margin-bottom: 0px !important;
+  padding: 0px 11px;
+  margin-top: -8px;
+}
+

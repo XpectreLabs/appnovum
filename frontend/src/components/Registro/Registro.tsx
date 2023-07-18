@@ -78,12 +78,12 @@ export const Registro = () => {
               <div >{steps[current].content}</div>
               <div className='u-floatRight'>
                 {current < steps.length - 1 && (
-                  <Button type="primary" onClick={() => next()}>
+                  <Button id="BtnSiguiente" type="primary" onClick={() => next()}>
                     Siguiente
                   </Button>
                 )}
                 {current === steps.length - 1 && (
-                  <Button type="primary" onClick={() => message.success('Processing complete!')}>
+                  <Button id="BtnTerminar" type="primary" onClick={() => message.success('Processing complete!')}>
                     Terminar registro
                   </Button>
                 )}

@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+strong {
+	font-weight: bold;
+}
+
 .u-size100-p
 {
  	width: 100% !important;
