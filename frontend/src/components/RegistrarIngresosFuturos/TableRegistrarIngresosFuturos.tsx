@@ -1,198 +1,196 @@
 import * as React from "react";
 import Styles from '../../pages/RegisterPay/RegisterPay.module.css';
+import data from '../../data/ingreso.json';
+
+import { DataIngreso } from './DataIngreso.tsx';
+import { IngresoResponsive } from './IngresoResponsive.tsx';
+
 import Box from "@mui/material/Box";
-
 import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-
-import Chip from "@mui/material/Chip";
-import MoneyOffIcon from "@mui/icons-material/MoneyOff";
-import PriceCheckIcon from "@mui/icons-material/PriceCheck";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
-import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
-
-// import { LayoutAdmin } from '../hocs/Layout.tsx';
 import InputBase from "@mui/material/InputBase";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
-
-interface Column {
-  id:
-    | "date_created"
-    | "payment_method"
-    | "category"
-    | "name"
-    | "concept"
-    | "amount"
-    | "date_to_pay"
-    | "state"
-    | "date_cashed";
-  label: string;
-  minWidth?: number;
-  align?: "right";
-  format?: (value: number) => string;
-}
-
-const columns: readonly Column[] = [
-  { id: "date_created", label: "Fecha de creación", minWidth: 100 },
-  { id: "payment_method", label: "Método de pago", minWidth: 100 },
-  { id: "category", label: "Categoria", minWidth: 100 },
-  { id: "name", label: "Nombre de la persona o empresa", minWidth: 100 },
-  { id: "concept", label: "Concepto", minWidth: 100 },
-  { id: "amount", label: "Monto", minWidth: 100 },
-  { id: "date_to_pay", label: "Fecha de pago tentativa", minWidth: 100 },
-  { id: "state", label: "Estado", minWidth: 100 },
-  { id: "date_cashed", label: "Fecha en la que se cobró", minWidth: 100 },
-];
+import { Formik, Form } from "formik";
+import { Modal, message, Input, DatePicker } from "antd";
+import type { DatePickerProps } from "antd";
+import { useState } from "react";
 
 interface Data {
+  id: number;
   date_created: string;
-  payment_method: any;
+  payment_method: string;
   category: string;
   name: string;
   concept: string;
-  amount: any;
-  date_to_pay: string
-  state: any;
-  date_cashed: any;
+  amount: number;
+  date_to_pay: string;
+  state: string;
+  date_cashed: string;
 }
 
-function createData(
-  date_created: string,
-  payment_method: any,
-  category: string,
-  name: string,
-  concept: string,
-  amount: any,
-  date_to_pay: string,
-  state: any,
-  date_cashed: any,
-): Data {
-  return {
-    date_created,
-    payment_method,
-    category,
-    name,
-    concept,
-    amount,
-    date_to_pay,
-    state,
-    date_cashed,
-  };
-}
-
-const formatNumber = (number) =>
-  new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(number);
-
-const rows = [
-  createData(
-    "16/06/2023",
-    <div className={Styles.typeAmount1}>
-      <RequestQuoteOutlinedIcon />
-      <span>Efectivo</span>
-    </div>,
-    "Cliente",
-    "Franco Espinilla",
-    "Renta de local",
-    "$" + formatNumber(1000990),
-    "26/10/2023",
-    <Chip
-      icon={<PriceCheckIcon />}
-      size="small"
-      label="Cobrado"
-      className={Styles.chipTable}
-    />,
-    <p className={Styles.txtNoCobrado}>26/10/2023</p>
-  ),
-  createData(
-    "17/06/2023",
-    <div className={Styles.typeAmount2}>
-      <PaymentOutlinedIcon />
-      <span>Transferencia</span>
-    </div>,
-    "Otro",
-    "Stallone Silvester",
-    "Servicios de toldos",
-    "$" + formatNumber(645000),
-    "26/10/2023",
-    <Chip
-      icon={<PriceCheckIcon />}
-      label="Cobrado"
-      size="small"
-      className={Styles.chipTable}
-    />,
-    <p className={Styles.txtCobrado}>26/10/2023</p>
-  ),
-  createData(
-    "07/07/2023",
-    <div className={Styles.typeAmount1}>
-      <RequestQuoteOutlinedIcon />
-      <span>Efectivo</span>
-    </div>,
-    "Cliente",
-    "Mauricio de Montero",
-    "Prestamo",
-    "$" + formatNumber(70559),
-    "26/10/2023",
-    <Chip
-      icon={<MoneyOffIcon />}
-      label="No cobrado"
-      size="small"
-      className={Styles.chipTableNo}
-    />,
-    <p className={Styles.txtPendiente}>Pendiente</p>
-  ),
-  createData(
-    "15/07/2023",
-    <div className={Styles.typeAmount2}>
-      <PaymentOutlinedIcon />
-      <span>Transferencia</span>
-    </div>,
-    "Cliente",
-    "Jessica Smit",
-    "Otro",
-    "$" + formatNumber(1131),
-    "26/10/2023",
-    <Chip
-      icon={<MoneyOffIcon />}
-      label="No cobrado"
-      size="small"
-      className={Styles.chipTableNo}
-    />,
-    <p className={Styles.txtPendiente}>Pendiente</p>
-  ),
-];
+const onChange: DatePickerProps["onChange"] = (date, dateString) => {
+  console.log(date, dateString);
+};
 
 export const TableRegistrarIngresosFuturos = () => {
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 
-const [page, setPage] = React.useState(0);
-const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [tabla, setTabla] = useState<Data[]>([]);
+  const [nameValue, setNameValue] = useState("");
+  const [conceptValue, setConceptValue] = useState("");
+  const [typeValue, setTypeValue] = useState("");
+  const [categoryValue, setCategoryValue] = useState("");
+  const [amountValue, setAmountValue] = useState("");
+  const [fechValue, setFechValue] = useState("");
 
-const handleChangePage = (event: unknown, newPage: number) => {
-  setPage(newPage);
-};
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNameValue(event.target.value);
+  };
 
-const handleChangeRowsPerPage = (
-  event: React.ChangeEvent<HTMLInputElement>
-) => {
-  setRowsPerPage(+event.target.value);
-  setPage(0);
-};
+  const handleConceptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setConceptValue(event.target.value);
+  };
+
+  const handleSelectChange1 = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setTypeValue(value);
+  };
+
+  const handleSelectChange2 = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    setCategoryValue(value);
+  };
+
+  const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAmountValue(event.target.value);
+  };
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  const addDataTable = () => {
+    const newTable: Data = {
+      name: nameValue,
+      concept: conceptValue,
+      payment_method: typeValue,
+      category: categoryValue,
+      amount: +amountValue,
+      date_to_pay: "21/07/2023",
+      state: "Cobrado",
+      date_cashed: "21/07/2023",
+      date_created: "21/07/2023",
+      id: data.length,
+    };
+    setTabla([...tabla, newTable]);
+    setNameValue("");
+    setConceptValue("");
+    setTypeValue("");
+    setCategoryValue("");
+    setAmountValue("");
+    setOpen(false);
+  };
 
   return (
     <Box>
+      <Modal
+        title=""
+        open={open}
+        onOk={addDataTable}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+        okText="Guardar"
+        cancelText="Cancelar"
+      >
+        <Formik initialValues={{}} onSubmit={(values, actions) => {}}>
+          {({ values, errors, handleChange, handleBlur, handleSubmit }) => {
+            return (
+              <Form
+                className={Styles.ModalForm}
+                name="form-contacto"
+                id="form-contacto"
+                method="post"
+                onSubmit={handleSubmit}
+              >
+                {contextHolder}
+
+                <Input
+                  placeholder="Nombre de la persona o empresa"
+                  type="text"
+                  id="txtNombre"
+                  name="Nombre de la persona o empresa"
+                  value={nameValue}
+                  onChange={handleNameChange}
+                  onBlur={handleBlur}
+                  autoCapitalize="off"
+                />
+
+                <Input
+                  placeholder="Concepto"
+                  type="text"
+                  id="txtNombre"
+                  name="Concepto"
+                  value={conceptValue}
+                  onChange={handleConceptChange}
+                  onBlur={handleBlur}
+                  autoCapitalize="off"
+                />
+
+                <select
+                  name="Efectivo o banco"
+                  className={Styles.ModalSelect}
+                  id=""
+                  value={typeValue}
+                  onChange={handleSelectChange1}
+                >
+                  <option value="">Efectivo o banco</option>
+                  <option value="Efectivo">Efectivo</option>
+                  <option value="Banco">Banco</option>
+                </select>
+
+                <select
+                  name="Categoría"
+                  className={`${Styles.ModalSelect} u-sinMargen`}
+                  id=""
+                  value={categoryValue}
+                  onChange={handleSelectChange2}
+                >
+                  <option value="">Categoria</option>
+                  <option value="Otros">Otros</option>
+                </select>
+
+                <Input
+                  className={`${Styles.ModalCantidad} ${Styles.ModalCantidadMr}`}
+                  placeholder="Monto"
+                  type="text"
+                  name="Monto"
+                  value={amountValue}
+                  onChange={handleAmountChange}
+                  onBlur={handleBlur}
+                />
+
+                <DatePicker
+                  format={dateFormatList}
+                  className={Styles.ModalCantidad}
+                  name="Fecha tentativa de cobro"
+                  placeholder="Fecha tentativa de cobro"
+                  onChange={onChange}
+                />
+              </Form>
+            );
+          }}
+        </Formik>
+      </Modal>
+
       <Box className={Styles.nav}>
         <Box className={Styles.counter}>
           <p>Cuentas</p>
@@ -226,111 +224,48 @@ const handleChangeRowsPerPage = (
             classes={{
               root: Styles.btnCreateAccount,
             }}
+            onClick={showModal}
           >
             Ingreso futuro
           </Button>
         </Box>
       </Box>
 
-      <Paper
-        sx={{ width: "100%", overflow: "hidden", boxShadow: "none" }}
-        className={Styles.divTable}
-      >
-        <TableContainer sx={{ maxHeight: 440 }} className={Styles.table}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.name}
-                    >
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === "number"
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
+      <DataIngreso arrays={data} arrays2={tabla} />
 
-      <Box className={Styles.results}>
-        <Box className={Styles.conten}>
-          <Box className={Styles.resultResponsive}>
-            <div className={Styles.btnEdit}>
-              <IconButton aria-label="delete" size="small">
-                <MoreVertIcon fontSize="small" />
-              </IconButton>
-            </div>
-            <Box className={Styles.columnas}>
-              <li>Fecha de creación:</li>
-              <li>Persona o empresa:</li>
-              <li>Concepto:</li>
-              <li>Monto:</li>
-              <li>Fecha tentativa de pago:</li>
-              <li>Estatus:</li>
-              <li>
-                <p>23/06/2023</p>
-              </li>
-              <li>
-                <p>Santiago Elan Dido</p>
-              </li>
-              <li>
-                <p>Renta de local en venta</p>
-              </li>
-              <li>
-                <p>$ {formatNumber(8000000)}</p>
-              </li>
-              <li>
-                <p>Pendiente</p>
-              </li>
-              <li>
-                <Chip
-                  icon={<MoneyOffIcon />}
-                  label="No cobrado"
-                  size="small"
-                  className={Styles.chipTableNo}
-                />
-              </li>
-            </Box>
-          </Box>
-        </Box>
+      <Box>
+        {data.map((data) => (
+          <IngresoResponsive
+            key={data.id}
+            date_created={data.date_created}
+            payment_method={data.payment_method}
+            category={data.category}
+            name={data.name}
+            concept={data.concept}
+            amount={data.amount}
+            date_to_pay={data.date_to_pay}
+            state={data.state}
+            date_cashed={data.date_cashed}
+          />
+        ))}
       </Box>
+
+      <div>
+        {tabla.map((data) => (
+          <IngresoResponsive
+            key={data.id}
+            date_created={data.date_created}
+            payment_method={data.payment_method}
+            category={data.category}
+            name={data.name}
+            concept={data.concept}
+            amount={data.amount}
+            date_to_pay={data.date_to_pay}
+            state={data.state}
+            date_cashed={data.date_cashed}
+          />
+        ))}
+      </div>
     </Box>
   );
 }
