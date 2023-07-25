@@ -11,32 +11,48 @@ export const Default = ({cambioTable}) => {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
 
+    const obtenerValor = (input) => {
+      let valorInput: HTMLInputElement = document.querySelector(input);
+      return valorInput?.value;
+    };
+
     const showModal = () => {
       setOpen(true);
     };
 
     const handleOk = () => {
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbzge-BlKlBbf8oq7-L2CcD-CEfiodErmJvzoLyj1BoKyp8I01g4CFZyYJrPTDryE57m/exec'
-      const form = document.forms['form-contacto'];
+      const scriptURL = 'http://localhost:3001/altaCajaBanco';
+      const txtNombre = obtenerValor('#txtNombre');
+      const stTipo = obtenerValor('#stTipo');
+      const txtCantidadActual = obtenerValor('#txtCantidadActual');
+      const user_id = localStorage.getItem('user_id');
 
-        setConfirmLoading(true);
-        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-          .then(response => {
-            messageApi.open({
-              type: 'success',
-              content: 'Los datos fueron guardados con éxito',
-            });
-            setTimeout(() => {
-              setOpen(false);
-              setConfirmLoading(false); 
+      const data = {txtNombre, stTipo, txtCantidadActual, user_id};
+      setConfirmLoading(true);
 
-              cambioTable();
-            }, 3000);
-          })
-          .catch(error => {
-            alert(error.message);
-            console.error('Error!', error.message);
-          });
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers:{
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => {
+        messageApi.open({
+          type: 'success',
+          content: 'La nueva cuenta fue guardada con éxito',
+        });
+        setTimeout(() => {
+          setOpen(false);
+          setConfirmLoading(false);
+
+          cambioTable();
+        }, 3000);
+      })
+      .catch(error => {
+        alert(error.message);
+        console.error('Error!', error.message);
+      });
       /*
       */
     };
@@ -92,23 +108,24 @@ export const Default = ({cambioTable}) => {
                             placeholder="Nombre de la cuenta"
                             type="text"
                             id="txtNombre"
-                            name="Nombre de la cuenta"
+                            name="txtNombre"
                             onChange={handleChange}
                             onBlur={handleBlur}
                             autoCapitalize="off"
                           />
 
-                          <select name="Efectivo o banco" className={`${style.ModalSelect}`} id="">
+                          <select name="stTipo" id="stTipo" className={`${style.ModalSelect}`}>
                             <option value="">Efectivo o banco</option>
-                            <option value="Efectivo">Efectivo</option>
-                            <option value="Banco">Banco</option>
+                            <option value="1">Efectivo</option>
+                            <option value="2">Banco</option>
                           </select>
 
                           <Input
                             className={`${style.ModalCantidad}`}
                             placeholder="Cantidad actual"
                             type="text"
-                            name="Cantidad actual"
+                            id="txtCantidadActual"
+                            name="txtCantidadActual"
                             onChange={handleChange}
                             onBlur={handleBlur}
                           />

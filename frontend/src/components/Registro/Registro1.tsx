@@ -32,6 +32,11 @@ export const Registro1 = () => {
         })}
         onSubmit={(values, actions) => {
           //$("#BtnSiguiente").click();
+          document.getElementById('hdNombre').value=document.getElementById('txtNombre').value;
+          document.getElementById('hdApellido').value=document.getElementById('txtApellido').value;
+          document.getElementById('hdPuesto').value=document.getElementById('txtPuesto').value;
+          document.getElementById('hdEmail').value=document.getElementById('txtEmail').value;
+          document.getElementById('hdCelular').value=document.querySelector('.selected-dial-code').innerHTML+" "+document.getElementById('txtCelular').value;
           document.querySelector("#BtnSiguiente").click();
         }}
       >
@@ -50,6 +55,7 @@ export const Registro1 = () => {
                       className={`${style.RegistroInputCol}`}
                       placeholder="Nombre"
                       type="text"
+                      id="txtNombre"
                       name="Nombre"
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -61,6 +67,7 @@ export const Registro1 = () => {
                       placeholder="Apellido"
                       type="text"
                       name="Apellido"
+                      id="txtApellido"
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
@@ -69,6 +76,7 @@ export const Registro1 = () => {
                       placeholder="Puesto"
                       type="text"
                       name="Puesto"
+                      id="txtPuesto"
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
@@ -77,6 +85,7 @@ export const Registro1 = () => {
                       placeholder="Email"
                       type="email"
                       name="Email"
+                      id="txtEmail"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       autoCapitalize="off"
@@ -85,7 +94,8 @@ export const Registro1 = () => {
                     />
 
                     <IntlTelInput
-                      fieldName="Celular2"
+                      fieldId='txtCelular'
+                      fieldName="Celular"
                       containerClassName="intl-tel-input"
                       placeholder='Celular'
                       defaultCountry={'mx'}

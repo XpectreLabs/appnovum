@@ -1,10 +1,17 @@
 import React from 'react';
 import style from './Login.module.css';
-import { Input } from 'antd';
+import { Input, message } from 'antd';
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import { Link } from "react-router-dom";
 
 export const Login = () => {
+    const obtenerValor = (input) => {
+      let valorInput: HTMLInputElement = document.querySelector(input);
+      return valorInput?.value;
+    };
+    const [cargandoVisible, setCargandoVisible] = React.useState(false);
+
     return (
       <Formik
         initialValues={{
@@ -20,7 +27,35 @@ export const Login = () => {
           .required("La contraseña es requerida"),
         })}
         onSubmit={(values, actions) => {
-          window.location.href ='/Home';
+          const scriptURL = 'http://localhost:3001/loguear'
+          const email = obtenerValor('#email');
+          const password = obtenerValor('#password');
+          const data = {email, password};
+          setCargandoVisible(true);
+
+          fetch(scriptURL, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers:{
+              'Content-Type': 'application/json'
+            }
+          })
+          .then((resp) => resp.json())
+          .then(function(data) {
+            setCargandoVisible(false);
+
+            if(data.usuario_id === 1){
+              message.success('Logueado!');
+              localStorage.setItem('user_id', JSON.stringify(data.usuario_id));
+              window.location.href ='/Home';
+            }
+            else
+              message.error('Los datos de acceso son incorrectos');
+          })
+          .catch(error => {
+            alert(error.message);
+            console.error('Error!', error.message);
+          });
         }}
       >
         {({
@@ -36,6 +71,7 @@ export const Login = () => {
                 <Input
                   placeholder="Email"
                   type="email"
+                  id='email'
                   name="email"
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -47,17 +83,29 @@ export const Login = () => {
                 <Input
                   placeholder="Contraseña"
                   type="password"
+                  id="password"
                   name="password"
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-                {errors.email}<br />
+                {errors.email}
+                <br />
                 {errors.password}
 
-                <div className='u-textLeft'>
-                  <a href="#" className={`${style.LoginTextOlvido} u-inline-block`}>¿Olvido su contraseña?</a>
+                <div className="u-textLeft">
+                  <Link
+                    to="/Recovery-pass"
+                    className={`${style.LoginTextOlvido} u-inline-block`}
+                  >
+                    ¿Olvido su contraseña?
+                  </Link>
 
-                  <input className={`${style.LoginBtnIniciarSesion} u-floatRight u-redondeado u-efecto`} type="submit" value="Iniciar sesión" />
+                  <img className={cargandoVisible? "Cargando Mt mostrar" : "Cargando Mt"}  src="img/loading.gif" alt="" />
+                  <input
+                    className={`${style.LoginBtnIniciarSesion} u-floatRight u-redondeado u-efecto`}
+                    type="submit"
+                    value="Iniciar sesión"
+                  />
                 </div>
               </Form>
             </>

@@ -74,6 +74,18 @@ export const Registro = () => {
                 ]}
               />
 
+              <form className="Modal-Form" name="form-registro" id="form-registro" method="post" action="">
+                <input type="hidden" name="hdNombre" id="hdNombre" />
+                <input type="hidden" name="hdApellido" id="hdApellido" />
+                <input type="hidden" name="hdPuesto" id="hdPuesto" />
+                <input type="hidden" name="hdEmail" id="hdEmail" />
+                <input type="hidden" name="hdCelular" id="hdCelular" />
+                <input type="hidden" name="hdEmpresa" id="hdEmpresa" />
+                <input type="hidden" name="hdDedica" id="hdDedica" />
+                <input type="hidden" name="hdNumEmpleados" id="hdNumEmpleados" />
+                <input type="hidden" name="hdContrasenia" id="hdContrasenia" />
+              </form>
+
               <Steps current={current} items={items} />
               <div >{steps[current].content}</div>
               <div className='u-floatRight'>
@@ -83,7 +95,7 @@ export const Registro = () => {
                   </Button>
                 )}
                 {current === steps.length - 1 && (
-                  <Button id="BtnTerminar" type="primary" onClick={() => message.success('Processing complete!')}>
+                  <Button id="BtnTerminar" type="primary" onClick={() => {message.success('Su registro se ha realizado con éxito!'); setTimeout(() => { window.location.href ='/Home';}, 2000); }}>
                     Terminar registro
                   </Button>
                 )}

@@ -18,20 +18,39 @@ export const Default = ({cambioTable}) => {
     const [messageApi, contextHolder] = message.useMessage();
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
 
+    const obtenerValor = (input) => {
+      let valorInput: HTMLInputElement = document.querySelector(input);
+      return valorInput?.value;
+    };
+
     const showModal = () => {
       setOpen(true);
     };
 
     const handleOk = () => {
-      const scriptURL = 'https://script.google.com/macros/s/AKfycby8sgR1QckyBUMfZDCNH9G_OQ2ZxIGa-eqKDhlBCYf5IVXZirgHIkA1CeiUJzz74r12Fg/exec'
-      const form = document.forms['form-contacto'];
+      const scriptURL = 'http://localhost:3001/altaIngresoFuturo';
+      const txtNombre = obtenerValor('#txtNombre');
+      const txtConcepto = obtenerValor('#txtConcepto');
+      const stTipo = obtenerValor('#stTipo');
+      const stCategoria = obtenerValor('#stCategoria');
+      const txtMonto = obtenerValor('#txtMonto');
+      const user_id = localStorage.getItem('user_id');
+      const txtFechaTentativaCobro = obtenerValor('#txtFechaTentativaCobro');
+
+      const data = {txtNombre, txtConcepto,stTipo,stCategoria,txtMonto,user_id,txtFechaTentativaCobro};
 
         setConfirmLoading(true);
-        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+        fetch(scriptURL, {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers:{
+            'Content-Type': 'application/json'
+          }
+        })
           .then(response => {
             messageApi.open({
               type: 'success',
-              content: 'Los datos fueron guardados con éxito',
+              content: 'Los datos del ingreso fue guardada con éxito',
             });
             setTimeout(() => {
               setOpen(false);
@@ -43,8 +62,6 @@ export const Default = ({cambioTable}) => {
             alert(error.message);
             console.error('Error!', error.message);
           });
-      /*
-      */
     };
 
     const handleCancel = () => {
@@ -94,7 +111,7 @@ export const Default = ({cambioTable}) => {
                             placeholder="Nombre de la persona o empresa"
                             type="text"
                             id="txtNombre"
-                            name="Nombre de la persona o empresa"
+                            name="txtNombre"
                             onChange={handleChange}
                             onBlur={handleBlur}
                             autoCapitalize="off"
@@ -103,39 +120,41 @@ export const Default = ({cambioTable}) => {
                           <Input
                             placeholder="Concepto"
                             type="text"
-                            id="txtNombre"
-                            name="Concepto"
+                            id="txtConcepto"
+                            name="txtConcepto"
                             onChange={handleChange}
                             onBlur={handleBlur}
                             autoCapitalize="off"
                           />
 
-                          <select name="Efectivo o banco" className={`${style.ModalSelect}`} id="">
+                          <select name="stTipo" className={`${style.ModalSelect}`} id="stTipo">
                             <option value="">Efectivo o banco</option>
-                            <option value="Efectivo">Efectivo</option>
-                            <option value="Banco">Banco</option>
+                            <option value="1">Efectivo</option>
+                            <option value="2">Banco</option>
                           </select>
 
-                          <select name="Categoría" className={`${style.ModalSelect} u-sinMargen`} id="">
+                          <select name="stCategoria" className={`${style.ModalSelect} u-sinMargen`} id="stCategoria">
                             <option value="">Categoria</option>
-                            <option value="Otros">Otros</option>
+                            <option value="1">Otros</option>
                           </select>
 
                           <Input
                             className={`${style.ModalCantidad} ${style.ModalCantidadMr}`}
                             placeholder="Monto"
                             type="text"
-                            name="Monto"
+                            id="txtMonto"
+                            name="txtMonto"
                             onChange={handleChange}
                             onBlur={handleBlur}
                           />
 
                           <DatePicker
-                            format={dateFormatList}
-                            className={`${style.ModalCantidad}`} 
-                            name='Fecha tentativa de cobro' 
-                            placeholder='Fecha tentativa de cobro' 
-                            onChange={onChange} 
+                            // format={dateFormatList}
+                            className={`${style.ModalCantidad}`}
+                            id='txtFechaTentativaCobro'
+                            name='txtFechaTentativaCobro'
+                            placeholder='Fecha tentativa de cobro'
+                            onChange={onChange}
                           />
 
                         </Form>

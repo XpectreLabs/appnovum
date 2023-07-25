@@ -13,6 +13,8 @@ import TableRow from "@mui/material/TableRow";
 
 import Chip from "@mui/material/Chip";
 import PriceCheckIcon from "@mui/icons-material/PriceCheck";
+import MoneyOffIcon from "@mui/icons-material/MoneyOff";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
 
 // import { LayoutAdmin } from '../hocs/Layout.tsx';
@@ -139,13 +141,12 @@ const handleChangeRowsPerPage = (
           <div className={Styles.chip}>01</div>
         </Box>
 
-        <Box>
+        <Box className={Styles.itemSearch}>
           <Paper
             component="form"
             sx={{
               display: "flex",
               alignItems: "center",
-              width: 400,
             }}
           >
             <InputBase
@@ -159,7 +160,7 @@ const handleChangeRowsPerPage = (
           </Paper>
         </Box>
 
-        <Box>
+        <Box className={Styles.itemButton}>
           <Button
             variant="contained"
             color="success"
@@ -173,7 +174,10 @@ const handleChangeRowsPerPage = (
         </Box>
       </Box>
 
-      <Paper sx={{ width: "100%", overflow: "hidden", boxShadow: "none" }}>
+      <Paper
+        sx={{ width: "100%", overflow: "hidden", boxShadow: "none" }}
+        className={Styles.divTable}
+      >
         <TableContainer sx={{ maxHeight: 440 }} className={Styles.table}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
@@ -194,7 +198,12 @@ const handleChangeRowsPerPage = (
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.name}
+                    >
                       {columns.map((column) => {
                         const value = row[column.id];
                         return (
@@ -221,6 +230,49 @@ const handleChangeRowsPerPage = (
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+
+      <Box className={Styles.results}>
+        <Box className={Styles.conten}>
+          <Box className={Styles.resultResponsive}>
+            <div className={Styles.btnEdit}>
+              <IconButton aria-label="delete" size="small">
+                <MoreVertIcon fontSize="small" />
+              </IconButton>
+            </div>
+            <Box className={Styles.columnas}>
+              <li>Fecha de creación:</li>
+              <li>Persona o empresa:</li>
+              <li>Concepto:</li>
+              <li>Monto:</li>
+              <li>Fecha tentativa de pago:</li>
+              <li>Estatus:</li>
+              <li>
+                <p>23/06/2023</p>
+              </li>
+              <li>
+                <p>Santiago Elan Dido</p>
+              </li>
+              <li>
+                <p>Renta de local en venta</p>
+              </li>
+              <li>
+                <p>$ {formatNumber(8000000)}</p>
+              </li>
+              <li>
+                <p>Pendiente</p>
+              </li>
+              <li>
+                <Chip
+                  icon={<MoneyOffIcon />}
+                  label="No cobrado"
+                  size="small"
+                  className={Styles.chipTableNo}
+                />
+              </li>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
     </Box>
   );
 };

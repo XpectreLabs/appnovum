@@ -7,6 +7,12 @@ import * as Yup from "yup";
 
 export const Registro3 = () => {
     const [passwordVisible, setPasswordVisible] = React.useState(false);
+    const [cargandoVisible, setCargandoVisible] = React.useState(false);
+
+    const obtenerValor = (input) => {
+      let valorInput: HTMLInputElement = document.querySelector(input);
+      return valorInput?.value;
+    };
 
     return (
       <Formik
@@ -24,7 +30,81 @@ export const Registro3 = () => {
           .required("* Confirma contraseña"),
         })}
         onSubmit={(values, actions) => {
-          document.querySelector("#BtnTerminar").click();
+          let hdContrasenia = obtenerValor('#hdContrasenia');
+          let txtPassword = obtenerValor('#txtPassword');
+          hdContrasenia = txtPassword;
+          //document.getElementById('hdContrasenia').value=document.getElementById('txtPassword').value;
+
+          let btnTerminarRegistro: HTMLInputElement = document.querySelector('#btnTerminarRegistro');
+          btnTerminarRegistro.disabled = true;
+
+          //document.querySelector('#btnTerminarRegistro').disabled = true;
+          setCargandoVisible(true);
+
+          const scriptURL = 'http://localhost:3001/crearUsuario';
+          const scriptURLC = 'http://localhost:3001/crearCliente'
+          //const form = document.forms['form-registro'];
+          const hdEmail = obtenerValor('#hdEmail');
+          //hdContrasenia = document.getElementById('hdContrasenia').value;
+
+          const hdNombre = obtenerValor('#hdNombre');
+          const hdApellido = obtenerValor('#hdApellido');
+          const hdPuesto = obtenerValor('#hdPuesto');
+          const hdCelular = obtenerValor('#hdCelular');
+          const hdEmpresa = obtenerValor('#hdEmpresa');
+          const hdDedica = obtenerValor('#hdDedica');
+          const hdNumEmpleados = obtenerValor('#hdNumEmpleados');
+          let hdUser_id=0;
+
+          const data = {hdEmail, hdContrasenia};
+
+          fetch(scriptURL, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers:{
+              'Content-Type': 'application/json'
+            }
+          })
+          .then((resp) => resp.json())
+          .then(function(data) {
+
+            hdUser_id = data.usuario_id;
+
+            const dataC = {
+              hdNombre,
+              hdApellido,
+              hdPuesto,
+              hdCelular,
+              hdEmpresa,
+              hdDedica,
+              hdNumEmpleados,
+              hdUser_id,
+            }
+
+            fetch(scriptURLC, {
+              method: 'POST',
+              body: JSON.stringify(dataC),
+              headers:{
+                'Content-Type': 'application/json'
+              }
+            })
+            .then((resp) => resp.json())
+            .then(function(data) {
+              localStorage.setItem('user_id', JSON.stringify(hdUser_id));
+
+              btnTerminarRegistro.disabled = false;
+              setCargandoVisible(false);
+              document.querySelector("#BtnTerminar").click();
+            })
+            .catch(error => {
+              alert(error.message);
+              console.error('Error!', error.message);
+            });
+          })
+            .catch(error => {
+              alert(error.message);
+              console.error('Error!', error.message);
+            });
         }}
       >
         {({
@@ -41,7 +121,8 @@ export const Registro3 = () => {
 
                       <Space direction="vertical">
                         <Input.Password 
-                          name='password' 
+                          name='password'
+                          id="txtPassword"
                           placeholder="Contraseña" 
                           onChange={handleChange}
                           onBlur={handleBlur}
@@ -58,11 +139,12 @@ export const Registro3 = () => {
                       <div>
                         <p><strong>{(errors.password)?`Errores:`:null}</strong></p>
                         {errors.password}<br />
-                        {errors.repitePasword} <br /><br />
+                        {errors.repitePasword}<br /><br />
                       </div>
 
                       <div className='u-textLeft'>
-                        <input className={`${style.RegistroBtnSiguiente} u-floatRight u-redondeado u-efecto`} type="submit" value="Terminar registro" />
+                        <img className={cargandoVisible? "Cargando mostrar" : "Cargando"}  src="img/loading.gif" alt="" />
+                        <input id="btnTerminarRegistro" className={`${style.RegistroBtnSiguiente} u-floatRight u-redondeado u-efecto`} type="submit" value="Terminar registro" />
                       </div>
                   </Form>
                 }

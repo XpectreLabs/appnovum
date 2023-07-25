@@ -37,6 +37,10 @@ export const Registro2 = () => {
         // .required("* Celular"),
       })}
         onSubmit={(values, actions) => {
+          document.getElementById('hdEmpresa').value=document.getElementById('txtEmpresa').value;
+          document.getElementById('hdDedica').value=document.getElementById('txtDedicaTuEmpresa').value;
+          document.getElementById('hdNumEmpleados').value=document.getElementById('txtnumeroEmpreados').value;
+
           document.querySelector("#BtnSiguiente").click();
         }}
       >
@@ -56,6 +60,7 @@ export const Registro2 = () => {
                       placeholder="Nombre de la empresa"
                       type="text"
                       name="empresa"
+                      id="txtEmpresa"
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
@@ -64,6 +69,7 @@ export const Registro2 = () => {
                       placeholder="¿A que se dedica tu empresa?"
                       type="text"
                       name="dedicaTuEmpresa"
+                      id="txtDedicaTuEmpresa"
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
@@ -72,6 +78,7 @@ export const Registro2 = () => {
                       placeholder="Número de empleados"
                       type="text"
                       name="numeroEmpreados"
+                      id="txtnumeroEmpreados"
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />

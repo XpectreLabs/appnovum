@@ -275,3 +275,19 @@
 #BtnSiguiente, #BtnTerminar {
   display: none;
 }
+
+.Cargando {
+  display: none;
+  width: 25px;
+  float: right;
+  margin-top: -5px;
+  margin-left: 5px;
+}
+
+.Cargando.Mt {
+  margin-top: 0px;
+}
+
+.Cargando.mostrar{
+  display: block;
+}
