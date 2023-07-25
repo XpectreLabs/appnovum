@@ -1,0 +1,55 @@
+[
+
+	{
+		"id": 0,
+		"date_created": "16/06/2023",
+		"payment_method": "Efectivo",
+		"category": "cliente",
+    "name": "Franco Espinilla",
+    "concept": "Renta de local",
+    "amount": 1000990,
+    "date_to_pay": "26/10/2023",
+    "state": "Cobrado",
+    "date_cashed": "23/10/2023"
+	},
+  
+  {
+		"id": 1,
+		"date_created": "17/06/2023",
+		"payment_method": "Tranferencia",
+		"category": "Otro",
+    "name": "Silverter Stallone",
+    "concept": "Servicios de toldos",
+    "amount": 645000,
+    "date_to_pay": "26/10/2023",
+    "state": "Cobrado",
+    "date_cashed": "23/10/2023"
+	},
+
+  {
+		"id": 2,
+		"date_created": "07/07/2023",
+		"payment_method": "Efectivo",
+		"category": "cliente",
+    "name": "Mauricio de Montero",
+    "concept": "Prestamo",
+    "amount": 70559,
+    "date_to_pay": "26/10/2023",
+    "state": "No cobrado",
+    "date_cashed": "pendiente"
+	},
+
+  {
+		"id": 3,
+		"date_created": "15/07/2023",
+		"payment_method": "Tranferencia",
+		"category": "cliente",
+    "name": "Jessica Smit",
+    "concept": "Otro",
+    "amount": 1131,
+    "date_to_pay": "26/10/2023",
+    "state": "No cobrado",
+    "date_cashed": "23/10/2023"
+	}
+
+]
