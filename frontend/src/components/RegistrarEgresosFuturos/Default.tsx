@@ -27,7 +27,7 @@ export const Default = ({cambioTable}) => {
     };
 
     const handleOk = () => {
-      const scriptURL = 'http://localhost:3001/altaEgresoFuturo';
+      const scriptURL = 'http://44.215.186.171/altaEgresoFuturo';
       const txtNombre = obtenerValor('#txtNombre');
       const txtConcepto = obtenerValor('#txtConcepto');
       const stTipo = obtenerValor('#stTipo');

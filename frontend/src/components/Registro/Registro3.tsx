@@ -41,8 +41,8 @@ export const Registro3 = () => {
           //document.querySelector('#btnTerminarRegistro').disabled = true;
           setCargandoVisible(true);
 
-          const scriptURL = 'http://localhost:3001/crearUsuario';
-          const scriptURLC = 'http://localhost:3001/crearCliente'
+          const scriptURL = 'http://44.215.186.171/crearUsuario';
+          const scriptURLC = 'http://44.215.186.171/crearCliente'
           //const form = document.forms['form-registro'];
           const hdEmail = obtenerValor('#hdEmail');
           //hdContrasenia = document.getElementById('hdContrasenia').value;

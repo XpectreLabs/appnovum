@@ -21,7 +21,7 @@ export const Default = ({cambioTable}) => {
     };
 
     const handleOk = () => {
-      const scriptURL = 'http://localhost:3001/altaCajaBanco';
+      const scriptURL = 'http://44.215.186.171/altaCajaBanco';
       const txtNombre = obtenerValor('#txtNombre');
       const stTipo = obtenerValor('#stTipo');
       const txtCantidadActual = obtenerValor('#txtCantidadActual');

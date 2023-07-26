@@ -27,7 +27,7 @@ export const Login = () => {
           .required("La contraseña es requerida"),
         })}
         onSubmit={(values, actions) => {
-          const scriptURL = 'http://localhost:3001/loguear'
+          const scriptURL = 'http://44.215.186.171/loguear'
           const email = obtenerValor('#email');
           const password = obtenerValor('#password');
           const data = {email, password};
