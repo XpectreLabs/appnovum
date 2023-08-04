@@ -41,8 +41,8 @@ export const Registro3 = () => {
           //document.querySelector('#btnTerminarRegistro').disabled = true;
           setCargandoVisible(true);
 
-          const scriptURL = 'http://44.215.186.171/crearUsuario';
-          const scriptURLC = 'http://44.215.186.171/crearCliente'
+          const scriptURL = 'https://admin.bioesensi-crm.com/crearUsuario';
+          const scriptURLC = 'https://admin.bioesensi-crm.com/crearCliente'
           //const form = document.forms['form-registro'];
           const hdEmail = obtenerValor('#hdEmail');
           //hdContrasenia = document.getElementById('hdContrasenia').value;

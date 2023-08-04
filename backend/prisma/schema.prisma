@@ -24,6 +24,7 @@ model cajas_bancos {
 model categorias {
   categoria_id     Int                @id @default(autoincrement()) @db.SmallInt
   categoria        String             @db.VarChar(200)
+  tipo             Int                @default(1) @db.SmallInt
   egresos_futuros  egresos_futuros[]
   ingresos_futuros ingresos_futuros[]
 }
@@ -54,6 +55,8 @@ model egresos_futuros {
   monto                  Int
   fecha_tentativa_pago   DateTime    @db.Date
   user_id                Int
+  fecha_creacion         DateTime    @db.Date
+  fecha_pago             DateTime?   @db.Date
   activo                 Boolean
   categorias             categorias  @relation(fields: [categoria_id], references: [categoria_id], onUpdate: Restrict, map: "fk_categoria_id_egre")
   tipos_pagos            tipos_pagos @relation(fields: [tipo_pago_id], references: [tipo_pago_id], onUpdate: Restrict, map: "fk_tipo_pago_id_egre")
@@ -73,6 +76,8 @@ model ingresos_futuros {
   monto                  Int
   fecha_tentativa_cobro  DateTime    @db.Date
   user_id                Int
+  fecha_creacion         DateTime    @db.Date
+  fecha_cobro            DateTime?   @db.Date
   activo                 Boolean
   categorias             categorias  @relation(fields: [categoria_id], references: [categoria_id], onUpdate: Restrict, map: "fk_categoria_id_ing")
   tipos_pagos            tipos_pagos @relation(fields: [tipo_pago_id], references: [tipo_pago_id], onUpdate: Restrict, map: "fk_tipo_pago_id_ing")

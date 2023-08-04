@@ -22,6 +22,11 @@ strong {
   	margin-right: 0px !important;
 }
 
+.u-ocultar
+{
+ 	display: none !important;
+}
+
 .u-block
 {
  	display: block !important;
