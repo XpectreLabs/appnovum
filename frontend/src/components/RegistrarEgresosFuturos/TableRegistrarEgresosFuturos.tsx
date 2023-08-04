@@ -109,7 +109,7 @@ const formatNumber = (number) =>
 
   async function cargarDatos () {
     console.log("Yes");
-    const scriptURL = 'https://admin.bioesensi-crm.com/listEgresosFuturos';
+    const scriptURL = 'http://localhost:3001/listEgresosFuturos';
     const user_id = localStorage.getItem('user_id');
     const dataUrl = {user_id};
 
