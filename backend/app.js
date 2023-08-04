@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express();
 const http = require('http');
+const https = require('https');
 const cors = require('cors');
+const fs = require('fs');
 
 // const https = require('https');
 // const passport = require('passport');
@@ -211,16 +213,20 @@ async function findUser(email,password) {
 
 
 // Servidor HTTP
-// const serverHttp = http.createServer(router);
-// serverHttp.listen(process.env.HTTP_PORT, process.env.IP);
-// serverHttp.on('listening', () => console.info(`Notes App running at http://${process.env.IP}:${process.env.HTTP_PORT}`));
-router.listen(3001, () => {
-  console.log("Aplicación ejecutandose ....");
-});
-
+//const serverHttp = http.createServer(router);
+//serverHttp.listen(process.env.HTTP_PORT, process.env.IP);
+//serverHttp.on('listening', () => console.info(`Notes App running at http://${process.env.IP}:${process.env.HTTP_PORT}`));
 
 
 // Servidor HTTP
-// const httpsServer = https.createServer(options, router);
-// httpsServer.listen(443, process.env.IP);
+//cconst httpsServer = https.createServer(options, router);
+//httpsServer.listen(443, process.env.IP);
 
+
+let options = { cert: fs.readFileSync('./certificados/certificate.crt'), ca: 
+fs.readFileSync('./certificados/ca_bundle.crt'), key:
+fs.readFileSync('./certificados/private.key')};
+
+
+const httpsServer = https.createServer(options, router);
+httpsServer.listen(443, process.env.IP);
