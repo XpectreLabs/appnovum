@@ -1,17 +1,14 @@
 [
-
 	{
 		"id": 0,
 		"nombre": "Pepito",
 		"tipo": "Banco",
-		"cantidad": 6000000
+		"cantidad": 6100000
 	},
-	
 	{
 		"id": 1,
 		"nombre": "Caja",
 		"tipo": "Efectivo",
-		"cantidad": 803500
+		"cantidad": 813500
 	}
-
 ]

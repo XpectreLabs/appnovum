@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import Box from "@mui/material/Box";
 
 import Styles from "../../pages/RegisterBank/RegisterBank.module.css";
@@ -9,7 +9,13 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PaymentsIcon from "@mui/icons-material/Payments";
 
-export const DataBank = ({nombre, tipo, cantidad }:{nombre: string, tipo: string, cantidad: number}) => {
+interface Props {
+  nombre: string;
+  tipo: string;
+  cantidad: number;
+}
+
+export const DataBank: FC<Props> = ({nombre, tipo, cantidad }) => {
   const formatNumber = (number) =>
     new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 2,
@@ -21,7 +27,7 @@ export const DataBank = ({nombre, tipo, cantidad }:{nombre: string, tipo: string
       <Box className={Styles.information}>
         <Box className={Styles.headInfo}>
           <div>
-            <AccountBalanceIcon />
+            <span className={tipo=="Banco"?'icon-icoBankPlus':'icon-icoCash'}></span>
             <span>
               {nombre}
             </span>

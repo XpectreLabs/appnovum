@@ -1,3 +1,57 @@
+.ModalForm input {
+  margin-bottom: 6px;
+} 
+
+.ModalForm input::-webkit-input-placeholder, .ant-picker-input input::-webkit-input-placeholder
+{
+ 	color: #000000 !important;
+}
+
+.ModalForm input::-o-input-placeholder, .ant-picker-input input::-o-input-placeholder
+{
+ 	color: #000000 !important;
+}
+
+.ModalForm input::-ms-input-placeholder, .ant-picker-input input::-ms-input-placeholder
+{
+ 	color: #000000 !important;
+}
+
+.ModalForm input:-moz-input-placeholder, .ant-picker-input input:-moz-input-placeholder
+{
+ 	color: #000000 !important;
+}
+
+.ModalForm input::-moz-input-placeholder, .ant-picker-input input::-moz-input-placeholder
+{
+ 	color: #000000 !important;
+}
+
+.ModalSelect {
+  width: 232px;
+  height: 32px;
+  color: #000000;
+  padding-left: 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  margin-right: 8px;
+}
+
+.ModalCantidad {
+  width: 232px;
+  color: #000000;
+}
+
+.ModalCantidadMr {
+  margin-right: 8px !important;
+}
+
+.ModalCantidad input {
+  height: 10px !important;
+  padding-top: 6px !important;
+}
+
 .nav{
   display: flex;
   justify-content: space-between;
@@ -6,6 +60,9 @@
 }
 
 .btnCreateAccount{
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  padding: 5px 14px !important;
   background: #00C62F !important;
   border-radius: 10px !important;
   text-transform: full-size-kana !important;
@@ -51,6 +108,19 @@
 
 .chipTableNo svg{
   color: white !important;
+}
+
+
+.typeAmount2{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.typeAmount2 svg{
+  color: rgb(13, 172, 172);
+  background: #c6f4f7;
+  border-radius: 6px;
 }
 
 .txtNoCobrado{

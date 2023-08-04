@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import style from '../../pages/Home.module.css';
+import fn from "../../components/utility.tsx";
 import { Button, Modal, message, Input, DatePicker } from 'antd';
 import {
   PlusOutlined,
 } from '@ant-design/icons';
 import { Formik, Form } from "formik";
 import type { DatePickerProps } from 'antd';
+import * as Yup from "yup";
 
 const onChange: DatePickerProps['onChange'] = (date, dateString) => {
   console.log(date, dateString);
 };
-
 
 export const Default = ({cambioTable}) => {
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
+    const [initialValues, setInitialValues] = useState(({txtNombre:'', txtConcepto:'', stTipo:'', stCategoria:'', txtMonto:''}));
 
     const obtenerValor = (input) => {
       let valorInput: HTMLInputElement = document.querySelector(input);
@@ -27,8 +29,16 @@ export const Default = ({cambioTable}) => {
       setOpen(true);
     };
 
+    const validarSubmit = () => {
+      fn.ejecutarClick("#txtAceptar");
+    }
+
+    const validarSubit = () => {
+      handleOk();
+    }
+
     const handleOk = () => {
-      const scriptURL = 'http://44.215.186.171/altaIngresoFuturo';
+      const scriptURL = 'https://admin.bioesensi-crm.com/altaIngresoFuturo';
       const txtNombre = obtenerValor('#txtNombre');
       const txtConcepto = obtenerValor('#txtConcepto');
       const stTipo = obtenerValor('#stTipo');
@@ -47,25 +57,29 @@ export const Default = ({cambioTable}) => {
             'Content-Type': 'application/json'
           }
         })
-          .then(response => {
-            messageApi.open({
-              type: 'success',
-              content: 'Los datos del ingreso fue guardada con éxito',
-            });
-            setTimeout(() => {
-              setOpen(false);
-              setConfirmLoading(false);
-              cambioTable();
-            }, 3000);
-          })
-          .catch(error => {
-            alert(error.message);
-            console.error('Error!', error.message);
+        .then(response => {
+          messageApi.open({
+            type: 'success',
+            content: 'Los datos del ingreso fue guardada con éxito',
           });
+          setTimeout(() => {
+            setOpen(false);
+            setConfirmLoading(false);
+            cambioTable();
+          }, 3000);
+        })
+        .catch(error => {
+          console.log(error.message);
+          console.error('Error!', error.message);
+        });
     };
 
     const handleCancel = () => {
-      setOpen(false);
+      setInitialValues(({txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:''}));
+
+      setTimeout(()=>{
+        setOpen(false);
+      },500);
     };
 
     return (
@@ -82,16 +96,36 @@ export const Default = ({cambioTable}) => {
         <Modal
             title=""
             open={open}
-            onOk={handleOk}
+            onOk={validarSubmit}
             confirmLoading={confirmLoading}
             onCancel={handleCancel}
             okText="Guardar"
             cancelText="Cancelar"
           >
             <Formik
-              initialValues={{
-              }}
+              enableReinitialize={true}
+              initialValues={initialValues}
+              validationSchema={Yup.object().shape({
+                txtNombre: Yup.string()
+                  .min(3, "El nombre de la persona o empresa es demasiado corto")
+                  .required("* Nombre de la persona o empresa"),
+                txtConcepto: Yup.string()
+                  .min(3, "El concepto es demasiado corto")
+                  .required("* Concepto"),
+                stTipo: Yup.number()
+                  .min(1, "Efectivo o banco")
+                  .required("* Efectivo o banco"),
+                stCategoria: Yup.number()
+                  .min(1, "Categoria")
+                  .required("* Categoria"),
+                txtMonto:  Yup.number()
+                  .min(1, "Al menos un digito")
+                  .required("* Monto"),
+                // txtFechaTentativaCobro: Yup.date()
+                //   .required("* Fecha tentativa de cobro"),
+              })}
               onSubmit={(values, actions) => {
+                validarSubit();
               }}
             >
               {({
@@ -104,7 +138,13 @@ export const Default = ({cambioTable}) => {
                 return (
                   <>
                       {
-                        <Form className={`${style.ModalForm}`} name="form-contacto" id="form-contacto" method="post" onSubmit={handleSubmit}>
+                        <Form
+                          className={`${style.ModalForm}`}
+                          name="form-contacto"
+                          id="form-contacto"
+                          method="post"
+                          onSubmit={handleSubmit}
+                        >
                           {contextHolder}
 
                           <Input
@@ -112,6 +152,7 @@ export const Default = ({cambioTable}) => {
                             type="text"
                             id="txtNombre"
                             name="txtNombre"
+                            value={values.txtNombre}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             autoCapitalize="off"
@@ -122,20 +163,34 @@ export const Default = ({cambioTable}) => {
                             type="text"
                             id="txtConcepto"
                             name="txtConcepto"
+                            value={values.txtConcepto}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             autoCapitalize="off"
                           />
 
-                          <select name="stTipo" className={`${style.ModalSelect}`} id="stTipo">
-                            <option value="">Efectivo o banco</option>
+                          <select
+                            name="stTipo"
+                            id="stTipo"
+                            className={`${style.ModalSelect}`}
+                            value={values.stTipo}
+                            onChange={handleChange}
+                          >
+                            <option value="0">Efectivo o banco</option>
                             <option value="1">Efectivo</option>
                             <option value="2">Banco</option>
                           </select>
 
-                          <select name="stCategoria" className={`${style.ModalSelect} u-sinMargen`} id="stCategoria">
-                            <option value="">Categoria</option>
-                            <option value="1">Otros</option>
+                          <select
+                            name="stCategoria"
+                            id="stCategoria"
+                            className={`${style.ModalSelect} u-sinMargen`}
+                            value={values.stCategoria}
+                            onChange={handleChange}
+                          >
+                            <option value="0">Categoria</option>
+                            <option value="1">Cliente</option>
+                            <option value="2">Otros</option>
                           </select>
 
                           <Input
@@ -144,28 +199,39 @@ export const Default = ({cambioTable}) => {
                             type="text"
                             id="txtMonto"
                             name="txtMonto"
+                            value={values.txtMonto}
                             onChange={handleChange}
                             onBlur={handleBlur}
                           />
 
                           <DatePicker
-                            // format={dateFormatList}
+                            //format={dateFormatList}
                             className={`${style.ModalCantidad}`}
                             id='txtFechaTentativaCobro'
                             name='txtFechaTentativaCobro'
                             placeholder='Fecha tentativa de cobro'
-                            onChange={onChange}
                           />
 
+                          <div>
+                            <p><strong>{(errors.txtNombre||errors.txtConcepto)?`Errores:`:null}</strong></p>
+                            {errors.txtNombre??errors.txtNombre} 
+                            {errors.txtConcepto??errors.txtConcepto} 
+                            {errors.stTipo??errors.stTipo} 
+                            {errors.stCategoria??errors.stCategoria} 
+                            {errors.txtMonto??errors.txtMonto}
+                            {/* {errors.txtFechaTentativaCobro??errors.txtFechaTentativaCobro} */}
+                          </div>
+
+                          <div className='u-textLeft' style={{display:"none"}}>
+                            <input id="txtAceptar" type="submit" value="Aceptar" />
+                          </div>
                         </Form>
                       }
                   </>
                 );
               }}
             </Formik>
-
           </Modal>
       </>
-        
     )
 }

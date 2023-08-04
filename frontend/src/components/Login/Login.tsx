@@ -27,7 +27,7 @@ export const Login = () => {
           .required("La contraseña es requerida"),
         })}
         onSubmit={(values, actions) => {
-          const scriptURL = 'http://44.215.186.171/loguear'
+          const scriptURL = 'https://admin.bioesensi-crm.com/loguear'
           const email = obtenerValor('#email');
           const password = obtenerValor('#password');
           const data = {email, password};
@@ -44,7 +44,7 @@ export const Login = () => {
           .then(function(data) {
             setCargandoVisible(false);
 
-            if(data.usuario_id === 1){
+            if(data.usuario_id > 0){
               message.success('Logueado!');
               localStorage.setItem('user_id', JSON.stringify(data.usuario_id));
               window.location.href ='/Home';

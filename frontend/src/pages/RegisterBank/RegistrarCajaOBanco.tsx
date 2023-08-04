@@ -13,7 +13,7 @@ export const RegistrarCajaOBanco = ({cambioRegistroBan}) => {
       if (props.ban)
         return <TableRegistrarCajaOBanco />;
       else if (props.ban === false)
-        return <Default cambioRegistroBan={cambioRegistroBan} cambioTable={cambioTable}  />;
+        return <Default cambioRegistroBan={cambioRegistroBan} cambioTable={cambioTable} />;
     }
 
     return (

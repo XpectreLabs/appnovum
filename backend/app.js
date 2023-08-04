@@ -37,8 +37,6 @@ router.get('/', async (req,res,next) => {
   res.json({listaTipos});
 });
 
-
-
 router.post('/crearUsuario', async (req,res, next) => {
   //let fecha = new Date().toISOString();
   const nuevoUsuario = await prisma.users.create({
@@ -52,9 +50,6 @@ router.post('/crearUsuario', async (req,res, next) => {
 
   res.json({"usuario_id":nuevoUsuario.user_id});
 });
-
-
-
 
 router.post('/crearCliente', async (req,res, next) => {
   let fecha = new Date().toISOString();
@@ -76,8 +71,6 @@ router.post('/crearCliente', async (req,res, next) => {
   res.json({"cliente_id":nuevoCliente.cliente_id});
 });
 
-
-
 router.post('/altaCajaBanco', async (req,res, next) => {
   //let fecha = new Date().toISOString();
   const nuevoCajaBanco = await prisma.cajas_bancos.create({
@@ -93,11 +86,26 @@ router.post('/altaCajaBanco', async (req,res, next) => {
   res.json({"cajas_bancos_id":nuevoCajaBanco.cajas_bancos_id});
 });
 
+router.post('/editarCajaBanco', async (req,res,next) => {
+  const id = parseInt(req.body.caja_banco_id);
+  //console.log("->"+id);
 
-
+  const actualizarCajaBanco = await prisma.cajas_bancos.update({
+    where: {
+      cajas_bancos_id : parseInt(id),
+    },
+    data: {
+      nombre_cuenta: req.body.txtNombre,
+      tipo_pago_id : parseInt(req.body.stTipo),
+      cantidad_actual:  parseInt(req.body.txtCantidadActual),
+    }
+  });
+  res.json({"status":"exito"});
+});
 
 router.post('/altaIngresoFuturo', async (req,res, next) => {
   let fecha = new Date(req.body.txtFechaTentativaCobro+' 00:00:00').toISOString();
+  let fechaCreacion = new Date().toISOString();
   const nuevoIngresoFuturo = await prisma.ingresos_futuros.create({
     data:{
       nombre_persona_empresa: req.body.txtNombre,
@@ -107,6 +115,7 @@ router.post('/altaIngresoFuturo', async (req,res, next) => {
       monto: parseInt(req.body.txtMonto),
       fecha_tentativa_cobro: fecha,
       user_id: parseInt(req.body.user_id),
+      fecha_creacion: fechaCreacion,
       activo: true
     }
   });
@@ -114,10 +123,9 @@ router.post('/altaIngresoFuturo', async (req,res, next) => {
   res.json({"ingresos_futuros_id":nuevoIngresoFuturo.ingresos_futuros_id});
 });
 
-
-
 router.post('/altaEgresoFuturo', async (req,res, next) => {
   let fecha = new Date(req.body.txtFechaTentativaPago+' 00:00:00').toISOString();
+  let fechaCreacion = new Date().toISOString();
   const nuevoEgresoFuturo = await prisma.egresos_futuros.create({
     data:{
       nombre_persona_empresa: req.body.txtNombre,
@@ -127,6 +135,7 @@ router.post('/altaEgresoFuturo', async (req,res, next) => {
       monto: parseInt(req.body.txtMonto),
       fecha_tentativa_pago: fecha,
       user_id: parseInt(req.body.user_id),
+      fecha_creacion: fechaCreacion,
       activo: true
     }
   });
@@ -134,10 +143,11 @@ router.post('/altaEgresoFuturo', async (req,res, next) => {
   res.json({"egresos_futuros_id":nuevoEgresoFuturo.egresos_futuros_id});
 });
 
-
 router.post('/loguear', async (req,res, next) => {
   try{
+    console.log(req.body.email+" "+req.body.password);
     let user = await findUser(req.body.email,req.body.password);
+    console.log(user);
     res.json({"usuario_id":user});
   }catch(e) {
     res.json({"usuario_id":0});
@@ -160,56 +170,201 @@ async function findUser(email,password) {
     return users.user_id;
 }
 
-// router.get('/admin',passport.authenticate('jwt', { failureRedirect : '/', session: false }), async (req,res,next) => {
-//   const listClientes = await prisma.clientes.findMany({});
-//   res.render("admin",{listClientes});
-// });
 
-// router.get('/admin/alta-cliente',passport.authenticate('jwt', { failureRedirect : '/', session: false }), (req,res,next) => {
-//   let message = "";
-//   res.render("alta-cliente",{message});
-// });
+router.post('/listCajasBancos', async (req,res,next) => {
+  const id = req.body.user_id;//req.query.ordenPago;
 
-// router.post('/admin/alta-cliente',passport.authenticate('jwt', { session: false }), async (req,res, next) => {
-//   let fecha = new Date().toISOString();
+  const listCajasBancos = await prisma.cajas_bancos.findMany({
+    where: {
+      user_id : parseInt(id)
+    },
+    select: {
+      cajas_bancos_id: true,
+      nombre_cuenta: true,
+      tipo_pago_id:true,
+      cantidad_actual: true,
+      tipos_pagos: {
+        select: {
+          tipo_pago:true
+        },
+      },
+    },
+  });
+  res.json({listCajasBancos});
+});
 
-//   const nuevoCliente = await prisma.clientes.create({
-//     data:{
-//       nombre: req.body.txtNombre,
-//       apellidos: req.body.txtApellidos,
-//       email: req.body.txtEmail,
-//       telefono: req.body.txtTelefono,
-//       user_id: req.user,
-//       fecha: fecha,
-//       activo: 1
-//     }
-//   });
+router.post('/listCajasBancosB', async (req,res,next) => {
+  const id = req.body.user_id;
+  const nombre = req.body.busqueda;
 
-//   let message = "Guardado";
-//   res.render("alta-cliente",{message});
-// });
+  const listCajasBancos = await prisma.cajas_bancos.findMany({
+    where: {
+      user_id : parseInt(id),
+      nombre_cuenta : {
+        contains: nombre,
+      },
+    },
+    select: {
+      cajas_bancos_id: true,
+      nombre_cuenta: true,
+      tipo_pago_id:true,
+      cantidad_actual: true,
+      tipos_pagos: {
+        select: {
+          tipo_pago:true
+        },
+      },
+    },
+  });
+
+  res.json({listCajasBancos});
+});
 
 
-// router.get('/admin/editar-cliente/:id',passport.authenticate('jwt', { failureRedirect : '/', session: false }), async (req,res,next) => {
-//   let message = "";
-//   const { id } = req.params;
+router.post('/listIngresosFuturos', async (req,res,next) => {
+  const id = req.body.user_id;
 
-//   const cliente = await prisma.clientes.findFirst({
-//     where: {
-//       cliente_id : parseInt(id)
-//     },
-//     select: {
-//       nombre: true,
-//       apellidos: true,
-//       telefono: true,
-//       email: true
-//     }
-//     });
+  const listIngresosFuturos = await prisma.ingresos_futuros.findMany({
+    where: {
+      user_id : parseInt(id)
+    },
+    select: {
+      ingresos_futuros_id: true,
+      nombre_persona_empresa: true,
+      concepto: true,
+      tipo_pago_id:true,
+      categoria_id:true,
+      monto: true,
+      fecha_tentativa_cobro: true,
+      fecha_creacion: true,
+      fecha_cobro: true,
+      tipos_pagos: {
+        select: {
+          tipo_pago:true
+        },
+      },
+      categorias: {
+        select: {
+          categoria:true
+        },
+      },
+    },
+  });
+  //console.log(listIngresosFuturos);
+  res.json({listIngresosFuturos});
+});
 
-//   console.log(cliente);
-//   res.render("editar-cliente",{message,cliente});
-// });
+router.post('/listIngresosFuturosB', async (req,res,next) => {
+  const id = req.body.user_id;
+  const nombre = req.body.busqueda;
 
+  const listIngresosFuturos = await prisma.ingresos_futuros.findMany({
+    where: {
+      user_id : parseInt(id),
+      nombre_persona_empresa : {
+        contains: nombre,
+      },
+    },
+    select: {
+      ingresos_futuros_id: true,
+      nombre_persona_empresa: true,
+      concepto: true,
+      tipo_pago_id:true,
+      categoria_id:true,
+      monto: true,
+      fecha_tentativa_cobro: true,
+      fecha_creacion: true,
+      fecha_cobro: true,
+      tipos_pagos: {
+        select: {
+          tipo_pago:true
+        },
+      },
+      categorias: {
+        select: {
+          categoria:true
+        },
+      },
+    },
+  });
+  //console.log(listIngresosFuturos);
+  res.json({listIngresosFuturos});
+});
+
+
+
+
+
+
+router.post('/listEgresosFuturos', async (req,res,next) => {
+  const id = req.body.user_id;
+
+  const listEgresosFuturos = await prisma.egresos_futuros.findMany({
+    where: {
+      user_id : parseInt(id)
+    },
+    select: {
+      egresos_futuros_id: true,
+      nombre_persona_empresa: true,
+      concepto: true,
+      tipo_pago_id:true,
+      categoria_id:true,
+      monto: true,
+      fecha_tentativa_pago: true,
+      fecha_creacion: true,
+      fecha_pago: true,
+      tipos_pagos: {
+        select: {
+          tipo_pago:true
+        },
+      },
+      categorias: {
+        select: {
+          categoria:true
+        },
+      },
+    },
+  });
+  console.log(listEgresosFuturos);
+  res.json({listEgresosFuturos});
+});
+
+router.post('/listEgresosFuturosB', async (req,res,next) => {
+  const id = req.body.user_id;
+  const nombre = req.body.busqueda;
+
+  const listEgresosFuturos = await prisma.egresos_futuros.findMany({
+    where: {
+      user_id : parseInt(id),
+      nombre_persona_empresa : {
+        contains: nombre,
+      },
+    },
+    select: {
+      egresos_futuros_id: true,
+      nombre_persona_empresa: true,
+      concepto: true,
+      tipo_pago_id:true,
+      categoria_id:true,
+      monto: true,
+      fecha_tentativa_pago: true,
+      fecha_creacion: true,
+      fecha_pago: true,
+      tipos_pagos: {
+        select: {
+          tipo_pago:true
+        },
+      },
+      categorias: {
+        select: {
+          categoria:true
+        },
+      },
+    },
+  });
+  //console.log(listIngresosFuturos);
+  res.json({listEgresosFuturos});
+});
 
 
 // Servidor HTTP

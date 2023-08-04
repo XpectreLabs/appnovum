@@ -62,9 +62,12 @@
 }
 
 .btnCreateAccount{
+  font-size: 11px !important;
+  font-weight: 600 !important;
   background: #00C62F !important;
   border-radius: 10px !important;
   text-transform: full-size-kana !important;
+  padding: 5px 14px !important;
 }
 
 .counter{
@@ -86,7 +89,7 @@
   width: 30px;
   align-items: center;
   justify-content: center;
-  margin-top: -6px;
+  margin-top: -8px;
 }
 
 .information{
@@ -103,13 +106,18 @@
 
 .headInfo span{
   font-weight: bold;
-  font-size: 20px;
+  font-size: 17px;
+}
+
+.headInfo span .icon-icoBankPlus {
+  font-weight: normal !important;
+  font-size: 16px !important;
 }
 
 .headInfo div{
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0px;
 }
 
 .container{
@@ -124,7 +132,7 @@
   height: 32px;
   align-items: center;
   gap: 20px;
-  font-size: 22px;
+  font-size: 19px;
   padding:25px 10px 25px 10px;
   border-radius: 10px;
 }
