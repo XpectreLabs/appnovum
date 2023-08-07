@@ -41,6 +41,7 @@ export const DataIngreso = ({
         sx={{ width: "100%", overflow: "hidden", boxShadow: "none" }}
         className={Styles.divTable}
       >
+        <input type="hidden" name="hdIdIngresoFuturo" id="hdIdIngresoFuturo" />
         <TableContainer sx={{ maxHeight: 440 }} className={Styles.table}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
@@ -56,6 +57,7 @@ export const DataIngreso = ({
                 <TableCell align="left">Fecha de pago tentativa</TableCell>
                 <TableCell align="left">Estado</TableCell>
                 <TableCell align="left">Fecha en la que se cobró</TableCell>
+                <TableCell align="left"><span className="u-visibilityHiddn">Opciones</span></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

@@ -272,6 +272,12 @@ strong {
 }
 
 
+.u-visibilityHidden
+{
+	visibility: hidden;
+}
+
+
 .ant-modal-close {
   display: none !important;
 }

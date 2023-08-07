@@ -9,6 +9,19 @@ import MoneyOffIcon from "@mui/icons-material/MoneyOff";
 import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Button, message, Popconfirm } from 'antd';
+
+
+const confirm = () => {
+  console.log("Yes");
+  message.success('Click on Yes');
+};
+
+const cancel = () => {
+  message.error('Click on No');
+};
 
 const formatNumber = (number) =>
   new Intl.NumberFormat("en-US", {
@@ -25,6 +38,15 @@ export const RowsIngreso = ({
   page: any;
   rowsPerPage: any;
 }) => {
+
+  const editar = () => {
+    alert("Editar");
+  }
+
+  const eliminar = (id) => {
+    //if(window.confirm("¿Desea eliminar este registro? "+id)) {}
+  }
+
   return (
     <>
       {pullData
@@ -71,6 +93,20 @@ export const RowsIngreso = ({
               )}
             </TableCell>
             <TableCell align="left">{data.date_cashed}</TableCell>
+            <TableCell className="Iconos-Tabla" align="right">
+              <EditIcon className="u-efecto slideRight" onClick={editar} />
+              <Popconfirm
+                title="¿Desea eliminar este registro?"
+                description=""
+                onConfirm={()=>{eliminar(data.id)}}
+                onCancel={cancel}
+                okText="Si"
+                cancelText="No"
+              >
+                <DeleteIcon className="icoBorrar u-efecto slideRight" onClick={()=>{}}/>
+              </Popconfirm>
+              
+            </TableCell>
           </TableRow>
         ))}
     </>

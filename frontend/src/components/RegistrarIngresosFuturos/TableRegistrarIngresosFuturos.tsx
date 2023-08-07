@@ -108,63 +108,6 @@ export const TableRegistrarIngresosFuturos = () => {
     }
   }, 1000);
 
-
-/*  async function cargarDatos () {
-    //console.log("Prueba");
-    const scriptURL = 'https://admin.bioesensi-crm.com/listIngresosFuturos';
-    const user_id = localStorage.getItem('user_id');
-    const dataUrl = {user_id};
-
-    await fetch(scriptURL, {
-      method: 'POST',
-      body: JSON.stringify(dataUrl),
-      headers:{
-        'Content-Type': 'application/json'
-      }
-    })
-    .then((resp) => resp.json())
-    .then(function(info) {
-      let listData = [];
-      for(let j=0; j < (Object.keys(info['listIngresosFuturos']).length); j++) {
-        const fechaCreacion = fn.convertirFecha(info['listIngresosFuturos'][j]['fecha_creacion']);
-        const fechaCobro = fn.convertirFecha(info['listIngresosFuturos'][j]['fecha_tentativa_cobro']);
-        const fechaEnQueSeCobro = fn.convertirFecha(info['listIngresosFuturos'][j]['fecha_cobro']);
-        //console.log(fechaCreacion+" -> "+fechaCobro+" -> "+fechaEnQueSeCobro);
-        const state = fechaEnQueSeCobro?fechaEnQueSeCobro:'No cobrado';
-
-        let item = {
-          "id": info['listIngresosFuturos'][j]['ingresos_futuros_id'],
-          "date_created": fechaCreacion,
-          "payment_method": info['listIngresosFuturos'][j]['tipos_pagos']['tipo_pago'],
-          "category": info['listIngresosFuturos'][j]['categorias']['categoria'],
-          "name": info['listIngresosFuturos'][j]['nombre_persona_empresa'],
-          "concept": info['listIngresosFuturos'][j]['concepto'],
-          "amount": info['listIngresosFuturos'][j]['monto'],
-          "date_to_pay": fechaCobro,
-          "state": state,
-          "date_cashed": fechaEnQueSeCobro
-        }
-         listData.push(item);
-      }
-
-      //data = listData;
-      setListaDatos(listData);
-      //setMostrarData(true);
-
-
-      //console.log(listData);
-      //console.log(data);
-      //setCargandoVisible(false)
-    })
-    .catch(error => {
-      console.log(error.message);
-      console.error('Error!', error.message);
-    });
-  }
-
-  cargarDatos();*/
-
-
   const showModal = () => {
     setOpen(true);
   };
@@ -186,6 +129,7 @@ export const TableRegistrarIngresosFuturos = () => {
   };
 
   const addDataTable = () => {
+    
     const scriptURL = 'https://admin.bioesensi-crm.com/altaIngresoFuturo';
     const txtNombre = fn.obtenerValor('#txtNombre');
     const txtConcepto = fn.obtenerValor('#txtConcepto');
@@ -293,7 +237,7 @@ export const TableRegistrarIngresosFuturos = () => {
 
 
   const buscarEnTabla = () => {
-    const scriptURL = 'https://admin.bioesensi-crm.com/listIngresosFuturosB';
+    const scriptURL = 'https://admin.bioesensi-crm.com/listIngresosFuturosB'; // deberia es
     const busqueda = fn.obtenerValor('#txtSearch');
     const user_id = localStorage.getItem('user_id');
     const dataU = {busqueda, user_id};

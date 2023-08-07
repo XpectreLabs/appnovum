@@ -359,3 +359,41 @@
 :where(.css-dev-only-do-not-override-k7429z).ant-menu {
   text-align: left !important;
 }
+
+.MuiTable-root tr {
+  -webkit-transition: all 300ms ease-out;
+  -moz-transition: all 300ms ease-out;
+  -ms-transition: all 300ms ease-out;
+  -o-transition: all 300ms ease-out;
+  transition: all 300ms ease-out;
+}
+
+.MuiTable-root tr:hover {
+  background: #d9ffe2;
+  -webkit-transition: all 300ms ease-out;
+  -moz-transition: all 300ms ease-out;
+  -ms-transition: all 300ms ease-out;
+  -o-transition: all 300ms ease-out;
+  transition: all 300ms ease-out;
+}
+
+.MuiTable-root tr:hover {
+  background: #d9ffe2;
+}
+
+.Iconos-Tabla {
+
+}
+
+.Iconos-Tabla svg {
+  display: none;
+  font-size: 14px;
+}
+
+.MuiTable-root tr:hover svg {
+  display: inline-block;
+}
+
+.Iconos-Tabla .icoBorrar {
+  color: #f52121
+}

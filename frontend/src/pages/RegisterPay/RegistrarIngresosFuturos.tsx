@@ -3,7 +3,7 @@ import { Default } from '../../components/RegistrarIngresosFuturos/Default.tsx';
 import { TableRegistrarIngresosFuturos } from '../../components/RegistrarIngresosFuturos/TableRegistrarIngresosFuturos.tsx';
 
 export const RegistrarIngresosFuturos = ({cambioRegistroBan}) => {
-  const [status, setStatus] = useState(false);
+  const [status, setStatus] = useState(true);
 
   const cambioTable = () => {
     setStatus(true);

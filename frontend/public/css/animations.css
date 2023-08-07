@@ -395,11 +395,11 @@ slideRight
 	-moz-animation-name: slideRight;
 	-ms-animation-name: slideRight;
 
-	animation-duration: 1s;	
-	-webkit-animation-duration: 1s;
-	-o-animation-duration: 1s;
-	-moz-animation-duration: 1s;
-	-ms-animation-duration: 1s;
+	animation-duration: 400ms;
+	-webkit-animation-duration: 400ms;
+	-o-animation-duration: 400ms;
+	-moz-animation-duration: 400ms;
+	-ms-animation-duration: 400ms;
 
 	animation-timing-function: ease-in-out;	
 	-webkit-animation-timing-function: ease-in-out;
@@ -599,11 +599,11 @@ fadeIn
 	-moz-animation-name: fadeIn;
 	-ms-animation-name: fadeIn;
 
-	animation-duration: 1s;	
-	-webkit-animation-duration: 1s;
-	-o-animation-duration: 1s;
-	-moz-animation-duration: 1s;
-	-ms-animation-duration: 1s;
+	animation-duration: 500ms;	
+	-webkit-animation-duration: 500ms;
+	-o-animation-duration: 500ms;
+	-moz-animation-duration: 500ms;
+	-ms-animation-duration: 500ms;
 
 	animation-timing-function: ease-in-out;	
 	-webkit-animation-timing-function: ease-in-out;
@@ -1428,9 +1428,8 @@ stretchRight
 	animation-name: stretchRight;
 	-webkit-animation-name: stretchRight;	
 
-	animation-duration: 1.5s;	
-	-webkit-animation-duration: 1.5s;
-
+	animation-duration: 500ms;	
+	-webkit-animation-duration: 500ms;
 	animation-timing-function: ease-out;	
 	-webkit-animation-timing-function: ease-out;	
 
