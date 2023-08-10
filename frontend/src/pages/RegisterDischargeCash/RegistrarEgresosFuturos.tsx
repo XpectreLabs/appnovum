@@ -4,7 +4,7 @@ import { TableRegistrarEgresosFuturos } from '../../components/RegistrarEgresosF
 
 
 export const RegistrarEgresosFuturos = ({cambioRegistroBan}) => {
-    const [status, setStatus] = useState(true);
+    const [status, setStatus] = useState(false);
 
     const cambioTable = () => {
       setStatus(true);

@@ -6,23 +6,19 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 import { Formik, Form } from "formik";
+import dayjs, { Dayjs } from 'dayjs';
 import type { DatePickerProps } from 'antd';
 import * as Yup from "yup";
-
-const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-  console.log(date, dateString);
-};
 
 export const Default = ({cambioTable}) => {
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY', 'DD-MM-YYYY', 'DD-MM-YY'];
-    const [initialValues, setInitialValues] = useState(({txtNombre:'', txtConcepto:'', stTipo:'', stCategoria:'', txtMonto:''}));
+    const [initialValues, setInitialValues] = useState(({txtNombre:'', txtConcepto:'', stTipo:'', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
 
-    const obtenerValor = (input) => {
-      let valorInput: HTMLInputElement = document.querySelector(input);
-      return valorInput?.value;
+    const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+      setInitialValues(({txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaCobro:dayjs(dateString)}));
     };
 
     const showModal = () => {
@@ -33,49 +29,8 @@ export const Default = ({cambioTable}) => {
       fn.ejecutarClick("#txtAceptar");
     }
 
-    const validarSubit = () => {
-      handleOk();
-    }
-
-    const handleOk = () => {
-      const scriptURL = 'https://admin.bioesensi-crm.com/altaIngresoFuturo';
-      const txtNombre = obtenerValor('#txtNombre');
-      const txtConcepto = obtenerValor('#txtConcepto');
-      const stTipo = obtenerValor('#stTipo');
-      const stCategoria = obtenerValor('#stCategoria');
-      const txtMonto = obtenerValor('#txtMonto');
-      const user_id = localStorage.getItem('user_id');
-      const txtFechaTentativaCobro = obtenerValor('#txtFechaTentativaCobro');
-
-      const data = {txtNombre, txtConcepto,stTipo,stCategoria,txtMonto,user_id,txtFechaTentativaCobro};
-
-        setConfirmLoading(true);
-        fetch(scriptURL, {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers:{
-            'Content-Type': 'application/json'
-          }
-        })
-        .then(response => {
-          messageApi.open({
-            type: 'success',
-            content: 'Los datos del ingreso fue guardada con éxito',
-          });
-          setTimeout(() => {
-            setOpen(false);
-            setConfirmLoading(false);
-            cambioTable();
-          }, 3000);
-        })
-        .catch(error => {
-          console.log(error.message);
-          console.error('Error!', error.message);
-        });
-    };
-
     const handleCancel = () => {
-      setInitialValues(({txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:''}));
+      setInitialValues(({txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
 
       setTimeout(()=>{
         setOpen(false);
@@ -121,11 +76,43 @@ export const Default = ({cambioTable}) => {
                 txtMonto:  Yup.number()
                   .min(1, "Al menos un digito")
                   .required("* Monto"),
-                // txtFechaTentativaCobro: Yup.date()
-                //   .required("* Fecha tentativa de cobro"),
+                txtFechaTentativaCobro: Yup.date()
+                  .required("* Fecha tentativa de cobro"),
               })}
               onSubmit={(values, actions) => {
-                validarSubit();
+                const scriptURL = 'http://localhost:3001/altaIngresoFuturo';
+                const user_id = localStorage.getItem('user_id');
+                const txtNombre = values.txtNombre;
+                const txtConcepto = values.txtConcepto;
+                const stTipo = values.stTipo;
+                const stCategoria = values.stCategoria;
+                const txtMonto = values.txtMonto;
+                const txtFechaTentativaCobro = values.txtFechaTentativaCobro;
+                const data = {txtNombre, txtConcepto,stTipo,stCategoria,txtMonto,user_id,txtFechaTentativaCobro};
+
+                  setConfirmLoading(true);
+                  fetch(scriptURL, {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers:{
+                      'Content-Type': 'application/json'
+                    }
+                  })
+                  .then(response => {
+                    messageApi.open({
+                      type: 'success',
+                      content: 'Los datos del ingreso fue guardada con éxito',
+                    });
+                    setTimeout(() => {
+                      setOpen(false);
+                      setConfirmLoading(false);
+                      cambioTable();
+                    }, 3000);
+                  })
+                  .catch(error => {
+                    console.log(error.message);
+                    console.error('Error!', error.message);
+                  });
               }}
             >
               {({
@@ -210,16 +197,19 @@ export const Default = ({cambioTable}) => {
                             id='txtFechaTentativaCobro'
                             name='txtFechaTentativaCobro'
                             placeholder='Fecha tentativa de cobro'
+                            value={values.txtFechaTentativaCobro}
+                            onChange={onChange}
+                            onBlur={handleBlur}
                           />
 
                           <div>
-                            <p><strong>{(errors.txtNombre||errors.txtConcepto)?`Errores:`:null}</strong></p>
-                            {errors.txtNombre??errors.txtNombre} 
-                            {errors.txtConcepto??errors.txtConcepto} 
-                            {errors.stTipo??errors.stTipo} 
-                            {errors.stCategoria??errors.stCategoria} 
-                            {errors.txtMonto??errors.txtMonto}
-                            {/* {errors.txtFechaTentativaCobro??errors.txtFechaTentativaCobro} */}
+                            <p><strong>{(errors.txtNombre || errors.txtConcepto || errors.stTipo || errors.stCategoria || errors.txtMonto || errors.txtFechaTentativaCobro)?`Errores:`:null}</strong></p>
+                            {errors.txtNombre? (<p>{errors.txtNombre}</p>):null}
+                            {errors.txtConcepto? (<p>{errors.txtConcepto}</p>):null}
+                            {errors.stTipo? (<p>{errors.stTipo}</p>):null}
+                            {errors.stCategoria? (<p>{errors.stCategoria}</p>):null}
+                            {errors.txtMonto? (<p>{errors.txtMonto}</p>):null}
+                            {errors.txtFechaTentativaCobro? (<p>{errors.txtFechaTentativaCobro}</p>):null}
                           </div>
 
                           <div className='u-textLeft' style={{display:"none"}}>

@@ -2,18 +2,40 @@
   margin-top: 20px;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-tabs .ant-tabs-tab-btn {
+.ant-tabs-tab {
+  font-size: 12px;
+  line-height: 12px;
+  color: #00C62F;
+}
+
+.ant-tabs .ant-tabs-tab-btn {
+  color: #000 !important;
   font-size: 12px;
   line-height: 12px;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+.ant-tabs-tab:hover .ant-tabs-tab-btn, .ant-tabs-tab-active .ant-tabs-tab-btn{
+  color: #00C62F !important;
+}
+
+.ant-tabs-tab-active .ant-tabs-tab-btn{
+  color: #00C62F !important;
+}
+
+.ant-tabs  .ant-tabs-ink-bar {
+  background: #00C62F;
+}
+
+
+/* .ant-tabs-tab-btn {
+  font-size: 12px;
+  line-height: 12px;
   color: #00C62F;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-tabs .ant-tabs-ink-bar {
-  background: #00C62F;
-}
+.ant-tabs-ink-bar {
+  background: #00C62F !important;
+} */
 
 .Login_Login__VdlKH .ant-steps-horizontal:nth-child(2) {
   display: none !important;
@@ -23,12 +45,12 @@
   display: none !important;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-steps .ant-steps-item-process .ant-steps-item-icon {
+.ant-steps .ant-steps-item-process .ant-steps-item-icon {
   background-color: #00C62F;
   border-color: #00C62F;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-steps.ant-steps-navigation .ant-steps-item::before {
+.ant-steps.ant-steps-navigation .ant-steps-item::before {
   background-color: #00C62F;
 }
 
@@ -58,7 +80,7 @@
   background: #00df35;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-steps .ant-steps-item-finish .ant-steps-item-icon {
+.ant-steps .ant-steps-item-finish .ant-steps-item-icon {
   background-color: #D9FFE2;
   border-color: #D9FFE2;
 }
@@ -67,7 +89,7 @@
   color: #000 !important;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-steps .ant-steps-item-finish .ant-steps-item-icon >.ant-steps-icon {
+.ant-steps .ant-steps-item-finish .ant-steps-item-icon >.ant-steps-icon {
   color: #00C62F;
 }
 
@@ -139,22 +161,22 @@
   outline: 0px !important;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-space {
+.ant-space {
   display: block;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-input-affix-wrapper >input.ant-input {
+.ant-input-affix-wrapper >input.ant-input {
   height: 18px;
   font-size: 12px;
   margin-bottom: 0px !important;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-input-affix-wrapper {
+.ant-input-affix-wrapper {
   height: 29px;
   margin-bottom: 12px;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-menu-inline .ant-menu-item {
+.ant-menu-inline .ant-menu-item {
   width: 100%;
   height: 35px !important;
   font-size: 12px;
@@ -167,12 +189,12 @@
   border-radius: 0px !important;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-menu-light .ant-menu-item-selected, :where(.css-dev-only-do-not-override-k7429z).ant-menu-light>.ant-menu .ant-menu-item-selected {
+.ant-menu-light .ant-menu-item-selected, :where(.css-dev-only-do-not-override-k7429z).ant-menu-light>.ant-menu .ant-menu-item-selected {
   background: url(selectedMenu.png) no-repeat right;
   background-size: cover;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-menu-light:not(.ant-menu-horizontal) .ant-menu-item:not(.ant-menu-item-selected):hover, :where(.css-dev-only-do-not-override-k7429z).ant-menu-light>.ant-menu:not(.ant-menu-horizontal) .ant-menu-item:not(.ant-menu-item-selected):hover {
+.ant-menu-light:not(.ant-menu-horizontal) .ant-menu-item:not(.ant-menu-item-selected):hover, :where(.css-dev-only-do-not-override-k7429z).ant-menu-light>.ant-menu:not(.ant-menu-horizontal) .ant-menu-item:not(.ant-menu-item-selected):hover {
   background: url(hoverMenu.png) no-repeat right;
   background-size: cover;
   -webkit-transition: all 300ms ease-out;
@@ -182,7 +204,7 @@
  	transition: all 300ms ease-out;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-menu-light .ant-menu-item-selected, :where(.css-dev-only-do-not-override-k7429z).ant-menu-light>.ant-menu .ant-menu-item-selected {
+.ant-menu-light .ant-menu-item-selected, :where(.css-dev-only-do-not-override-k7429z).ant-menu-light>.ant-menu .ant-menu-item-selected {
   color: #ffffff;
 }
 
@@ -190,20 +212,19 @@
   color: #ffffff !important;
 }
 
-
-:where(.css-dev-only-do-not-override-k7429z).ant-btn-primary {
+.ant-btn-primary {
   color: #000;
   background-color: #ffffff;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-btn-primary {
+.ant-btn-primary {
   margin-left: 15px;
   padding: 4px 8px;
   position: relative;
   top: -8px;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-layout .ant-layout-sider-has-trigger {
+.ant-layout .ant-layout-sider-has-trigger {
   width: 236px !important;
   min-width: auto !important;
   max-width: initial !important;
@@ -212,20 +233,20 @@
   padding-bottom: 48px;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-layout .ant-layout-sider-trigger {
+.ant-layout .ant-layout-sider-trigger {
   width: 245px !important;
   min-width: 245px !important;
   max-width: 245px !important;
   background: #fff !important;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-menu-inline .ant-menu-item:not(:last-child), :where(.css-dev-only-do-not-override-k7429z).ant-menu-vertical .ant-menu-item:not(:last-child) {
+.ant-menu-inline .ant-menu-item:not(:last-child), :where(.css-dev-only-do-not-override-k7429z).ant-menu-vertical .ant-menu-item:not(:last-child) {
   margin: 0px;
   margin-bottom: 8px;
   border-radius: 0px;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-menu-inline-collapsed >.ant-menu-item {
+.ant-menu-inline-collapsed >.ant-menu-item {
   padding-left: 22px;
 }
 
@@ -238,7 +259,7 @@
   padding-bottom: 48px;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-layout .ant-layout-sider-children .ant-menu.ant-menu-inline-collapsed {
+.ant-layout .ant-layout-sider-children .ant-menu.ant-menu-inline-collapsed {
   width: 80px !important;
 }
 
@@ -247,7 +268,7 @@
   background-color: #ffffff;
 }
 
-:where(.css-dev-only-do-not-override-k7429z).ant-layout {
+.ant-layout {
   background: #ffffff !important;
 }
 
@@ -396,4 +417,59 @@
 
 .Iconos-Tabla .icoBorrar {
   color: #f52121
+}
+
+.css-18lrjg1-MuiCircularProgress-root {
+  color: #068822 !important;
+}
+
+.ant-layout {
+  background: #ffffff !important;
+}
+
+.ant-menu {
+  text-align: left !important;
+}
+
+.ant-btn-default:hover {
+  color: #fff !important;
+  background: #00df35;
+}
+
+.ant-btn-primary:hover {
+  background: #00df35 !important;
+}
+
+.ant-menu .ant-menu-item{
+   width: 100%;
+  height: 35px !important;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px !important;
+  margin-left: 0px;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+  padding-left: 26px !important;
+  border-radius: 0px !important;
+}
+
+.ant-menu .ant-menu-item:hover {
+  background: url(hoverMenu.png) no-repeat right;
+  background-size: cover;
+  -webkit-transition: all 300ms ease-out;
+ 	-moz-transition: all 300ms ease-out;
+	 -ms-transition: all 300ms ease-out;
+ 	-o-transition: all 300ms ease-out;
+ 	transition: all 300ms ease-out;
+}
+
+ .ant-menu-item-selected {
+  color: #FFF !important;
+  background: url(selectedMenu.png) no-repeat right;
+  background-size: cover;
+}
+
+
+.ant-menu-item-selected .icon-icoResumen:before {
+  color: #fff !important;
 }

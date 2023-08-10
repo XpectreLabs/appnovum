@@ -16,10 +16,16 @@ import TableRow from "@mui/material/TableRow";
 
 export const DataIngreso = ({
   arrays,
-  arrays2,
+  showModal,
+  setInitialValues,
+  setFechaTenCo,
+  fechaTenCo
 }: {
   arrays: any;
-  arrays2: any;
+  showModal: Function,
+  setInitialValues: Function,
+  setFechaTenCo: Function,
+  fechaTenCo: string
 }) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -36,7 +42,7 @@ export const DataIngreso = ({
   };
 
   return (
-    <Box> 
+    <Box>
       <Paper
         sx={{ width: "100%", overflow: "hidden", boxShadow: "none" }}
         className={Styles.divTable}
@@ -65,11 +71,10 @@ export const DataIngreso = ({
                 pullData={arrays}
                 page={page}
                 rowsPerPage={rowsPerPage}
-              />
-              <RowsIngreso
-                pullData={arrays2}
-                page={page}
-                rowsPerPage={rowsPerPage}
+                showModal={showModal}
+                setInitialValues={setInitialValues}
+                setFechaTenCo={setFechaTenCo}
+                fechaTenCo={fechaTenCo}
               />
             </TableBody>
           </Table>
@@ -77,7 +82,7 @@ export const DataIngreso = ({
         <TablePagination
           rowsPerPageOptions={[5, 10, 20]}
           component="div"
-          count={arrays.length + arrays2.length}
+          count={arrays.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

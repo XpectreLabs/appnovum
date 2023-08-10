@@ -102,7 +102,8 @@ router.post('/editarCajaBanco', async (req,res,next) => {
 });
 
 router.post('/altaIngresoFuturo', async (req,res, next) => {
-  let fecha = new Date(req.body.txtFechaTentativaCobro+' 00:00:00').toISOString();
+  //console.log("Fechas: "+req.body.txtFechaTentativaCobro);
+  //let fecha = new Date(req.body.txtFechaTentativaCobro+' 00:00:00').toISOString();
   let fechaCreacion = new Date().toISOString();
   const nuevoIngresoFuturo = await prisma.ingresos_futuros.create({
     data:{
@@ -111,18 +112,45 @@ router.post('/altaIngresoFuturo', async (req,res, next) => {
       tipo_pago_id: parseInt(req.body.stTipo),
       categoria_id: parseInt(req.body.stCategoria),
       monto: parseInt(req.body.txtMonto),
-      fecha_tentativa_cobro: fecha,
+      fecha_tentativa_cobro: req.body.txtFechaTentativaCobro,
       user_id: parseInt(req.body.user_id),
       fecha_creacion: fechaCreacion,
       activo: true
     }
   });
+  //console.log(nuevoIngresoFuturo);
 
   res.json({"ingresos_futuros_id":nuevoIngresoFuturo.ingresos_futuros_id});
 });
 
+
+
+router.post('/editarIngresoFuturo', async (req,res,next) => {
+  const id = parseInt(req.body.ingresos_futuros_id);
+  console.log("Fecha: "+req.body.txtFechaTentativaCobro+" -> "+id);
+  //let fecha = new Date(req.body.txtFechaTentativaCobro+' 00:00:00').toISOString();
+
+  const actualizarIngresoFuturo = await prisma.ingresos_futuros.update({
+    where: {
+      ingresos_futuros_id : parseInt(id),
+    },
+    data: {
+      nombre_persona_empresa: req.body.txtNombre,
+      concepto: req.body.txtConcepto,
+      tipo_pago_id: parseInt(req.body.stTipo),
+      categoria_id: parseInt(req.body.stCategoria),
+      monto: parseInt(req.body.txtMonto),
+      fecha_tentativa_cobro: req.body.txtFechaTentativaCobro,
+    }
+  });
+
+  console.log(actualizarIngresoFuturo);
+  res.json({"status":"exito"});
+});
+
+
 router.post('/altaEgresoFuturo', async (req,res, next) => {
-  let fecha = new Date(req.body.txtFechaTentativaPago+' 00:00:00').toISOString();
+  //let fecha = new Date(req.body.txtFechaTentativaPago+' 00:00:00').toISOString();
   let fechaCreacion = new Date().toISOString();
   const nuevoEgresoFuturo = await prisma.egresos_futuros.create({
     data:{
@@ -131,7 +159,7 @@ router.post('/altaEgresoFuturo', async (req,res, next) => {
       tipo_pago_id: parseInt(req.body.stTipo),
       categoria_id: parseInt(req.body.stCategoria),
       monto: parseInt(req.body.txtMonto),
-      fecha_tentativa_pago: fecha,
+      fecha_tentativa_pago: req.body.txtFechaTentativaPago,
       user_id: parseInt(req.body.user_id),
       fecha_creacion: fechaCreacion,
       activo: true
@@ -193,7 +221,7 @@ router.post('/listCajasBancos', async (req,res,next) => {
 
 router.post('/listCajasBancosB', async (req,res,next) => {
   const id = req.body.user_id;
-  const nombre = req.body.busqueda;
+  const nombre = req.body.busqueda; 
 
   const listCajasBancos = await prisma.cajas_bancos.findMany({
     where: {
@@ -211,7 +239,7 @@ router.post('/listCajasBancosB', async (req,res,next) => {
         select: {
           tipo_pago:true
         },
-      },
+      }, 
     },
   });
 
@@ -224,7 +252,8 @@ router.post('/listIngresosFuturos', async (req,res,next) => {
 
   const listIngresosFuturos = await prisma.ingresos_futuros.findMany({
     where: {
-      user_id : parseInt(id)
+      user_id : parseInt(id),
+      activo : true
     },
     select: {
       ingresos_futuros_id: true,
@@ -262,6 +291,7 @@ router.post('/listIngresosFuturosB', async (req,res,next) => {
       nombre_persona_empresa : {
         contains: nombre,
       },
+      activo : true
     },
     select: {
       ingresos_futuros_id: true,
@@ -289,6 +319,20 @@ router.post('/listIngresosFuturosB', async (req,res,next) => {
   res.json({listIngresosFuturos});
 });
 
+
+router.post('/eliminarIngresoFuturo', async (req,res,next) => {
+  const id = parseInt(req.body.ingresos_futuros_id);
+
+  const actualizarCajaBanco = await prisma.ingresos_futuros.update({
+    where: {
+      ingresos_futuros_id : parseInt(id),
+    },
+    data: {
+      activo: false
+    }
+  });
+  res.json({"status":"exito"});
+});
 
 
 
@@ -363,6 +407,7 @@ router.post('/listEgresosFuturosB', async (req,res,next) => {
   //console.log(listIngresosFuturos);
   res.json({listEgresosFuturos});
 });
+
 
 
 // Servidor HTTP

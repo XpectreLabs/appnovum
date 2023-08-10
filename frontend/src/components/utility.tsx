@@ -55,5 +55,23 @@ const convertirFecha = (fecha:string):string => {
   return fechaC;
 }
 
+const obtenerFecha = (fecha:string):string => {
+  return fecha.slice(0,10);
+}
 
-export default {obtenerValor, obtenerValorText, convertirModena, obtenerValorHtml, asignarValorInput, asignarValorSelect,asignarValorInnerHTML,ejecutarClick, convertirFecha};
+const agregarClase = (campo:string, clase:string):void => {
+  let element = document.querySelector(campo);
+  element.classList.add('u-ocultar')
+}
+
+const buscarPosicionArreglo = (arrray:Array,id:number):number => {
+  let pos = 0;
+  for(let j=0; j < arrray.length; j++) {
+    if(arrray[j]['id'] === id)
+      pos = j;
+  }
+  return pos;
+}
+
+
+export default {obtenerValor, obtenerValorText, convertirModena, obtenerValorHtml, asignarValorInput, asignarValorSelect,asignarValorInnerHTML,ejecutarClick, convertirFecha, agregarClase,buscarPosicionArreglo,obtenerFecha};

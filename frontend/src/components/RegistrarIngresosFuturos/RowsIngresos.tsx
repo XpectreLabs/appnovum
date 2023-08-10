@@ -1,9 +1,8 @@
 import * as React from "react";
 import Styles from "../../pages/RegisterPay/RegisterPay.module.css";
-
+import fn from "../../components/utility.tsx";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
-
 import Chip from "@mui/material/Chip";
 import MoneyOffIcon from "@mui/icons-material/MoneyOff";
 import PriceCheckIcon from "@mui/icons-material/PriceCheck";
@@ -11,13 +10,9 @@ import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button, message, Popconfirm } from 'antd';
+import {message, Popconfirm } from 'antd';
+import dayjs, { Dayjs } from 'dayjs';
 
-
-const confirm = () => {
-  console.log("Yes");
-  message.success('Click on Yes');
-};
 
 const cancel = () => {
   message.error('Click on No');
@@ -33,18 +28,57 @@ export const RowsIngreso = ({
   pullData,
   page,
   rowsPerPage,
+  showModal,
+  setInitialValues,
+  setFechaTenCo,
+  fechaTenCo
 }: {
   pullData: any;
   page: any;
   rowsPerPage: any;
+  showModal: Function;
+  setInitialValues: Function;
+  setFechaTenCo: Function;
+  fechaTenCo: string;
 }) => {
 
-  const editar = () => {
-    alert("Editar");
+  const editar = (id) => {
+
+  showModal();
+   console.log(pullData);
+   const pos = fn.buscarPosicionArreglo(pullData,id);
+
+    setTimeout(()=> {
+      setInitialValues(({hdId:id,txtNombre:pullData[pos]['name'], txtConcepto:pullData[pos]['concept'], stTipo:pullData[pos]['id_payment_method'], stCategoria:pullData[pos]['id_category'], txtMonto:pullData[pos]['amount'], txtFechaTentativaCobro:dayjs(pullData[pos]['date_to_pay_o'])}));
+    },100);
+
+
+    /*const cuenta = fn.obtenerValorHtml("#spName"+id_cb);
+    const cantidad = fn.obtenerValorHtml("#spCantidadO"+id_cb);
+    const id_tipo = fn.obtenerValorHtml("#spTipoO"+id_cb);*/
   }
 
   const eliminar = (id) => {
-    //if(window.confirm("¿Desea eliminar este registro? "+id)) {}
+    const scriptURL = 'http://localhost:3001/eliminarIngresoFuturo'; // deberia es
+    const ingresos_futuros_id = id;
+    const dataU = {ingresos_futuros_id};
+
+    fetch(scriptURL, {
+       method: 'POST',
+       body: JSON.stringify(dataU),
+       headers:{
+         'Content-Type': 'application/json'
+       }
+     })
+    .then((resp) => resp.json())
+    .then(function(info) {
+      fn.agregarClase("tr[idTr='"+id+"']", "u-ocultar");
+      fn.ejecutarClick("#btnBuscar");
+     })
+     .catch(error => {
+       alert(error.message);
+       console.error('Error!', error.message);
+     });
   }
 
   return (
@@ -55,6 +89,7 @@ export const RowsIngreso = ({
           <TableRow
             key={data.name}
             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+            idTr={data.id}
           >
             <TableCell scope="row">{data.date_created}</TableCell>
             <TableCell align="left">
@@ -66,7 +101,7 @@ export const RowsIngreso = ({
               ) : (
                 <div className={Styles.typeAmount2}>
                   <PaymentOutlinedIcon />
-                  <span>Transferencia</span>
+                  <span>Banco</span>
                 </div>
               )}
             </TableCell>
@@ -94,7 +129,7 @@ export const RowsIngreso = ({
             </TableCell>
             <TableCell align="left">{data.date_cashed}</TableCell>
             <TableCell className="Iconos-Tabla" align="right">
-              <EditIcon className="u-efecto slideRight" onClick={editar} />
+              <EditIcon className="u-efecto slideRight" onClick={()=>{editar(data.id)}} />
               <Popconfirm
                 title="¿Desea eliminar este registro?"
                 description=""
@@ -105,7 +140,6 @@ export const RowsIngreso = ({
               >
                 <DeleteIcon className="icoBorrar u-efecto slideRight" onClick={()=>{}}/>
               </Popconfirm>
-              
             </TableCell>
           </TableRow>
         ))}
