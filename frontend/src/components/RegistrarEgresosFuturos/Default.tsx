@@ -135,35 +135,12 @@ export const Default = ({cambioTable}) => {
 
                         {contextHolder}
 
-                        {/* <Input
-                          placeholder="Nombre de la persona o empresa"
-                          type="text"
-                          id="txtNombre"
-                          name="txtNombre"
-                          value={values.txtNombre}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          autoCapitalize="off"
-                        /> */}
-
                         <Field
                           className={`${style.ModalFormText}`}
                           placeholder="Nombre de la persona o empresa"
                           type="text"
                           id="txtNombre"
                           name="txtNombre" />
-
-
-                        {/* <Input
-                          placeholder="Concepto"
-                          type="text"
-                          id="txtConcepto"
-                          name="txtConcepto"
-                          value={values.txtConcepto}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          autoCapitalize="off"
-                        /> */}
 
                         <Field
                           className={`${style.ModalFormText}`}
@@ -172,19 +149,6 @@ export const Default = ({cambioTable}) => {
                           id="txtConcepto"
                           name="txtConcepto" />
 
-                        {/* <select
-                          name="stTipo"
-                          id="stTipo"
-                          className={`${style.ModalSelect}`}
-                          value={values.stTipo}
-                          onChange={handleChange}
-                        >
-                          <option value="0">Efectivo o banco</option>
-                          <option value="1">Efectivo</option>
-                          <option value="2">Banco</option>
-                        </select> */}
-
-
                         <Field
                           as="select"
                           name="stTipo"
@@ -196,13 +160,11 @@ export const Default = ({cambioTable}) => {
                           <option value="2">Banco</option>
                         </Field>
 
-
-                        {/* <select
+                        <Field
+                          as="select"
                           name="stCategoria"
                           id="stCategoria"
                           className={`${style.ModalSelect} u-sinMargen`}
-                          value={values.stCategoria}
-                          onChange={handleChange}
                         >
                           <option value="0">Categoria</option>
                           <option value="3">Proveedores o costo de mercancía</option>
@@ -211,34 +173,7 @@ export const Default = ({cambioTable}) => {
                           <option value="6">Deuda</option>
                           <option value="7">Impuestos</option>
                           <option value="8">Otros</option>
-                        </select> */}
-
-                        <Field
-                          as="select"
-                          name="stCategoria"
-                          id="stCategoria"
-                          className={`${style.ModalSelect} u-sinMargen`}
-                        >
-                          <option value="0">Categoria</option>
-                          <option value="3">Proveedores o costo de mercancía</option>
-                          <option value="4">Gastos fijos</option>
-                          <option value="5">Nómina</option>
-                          <option value="6">Deuda</option>
-                          <option value="7">Impuestos</option>
-                          <option value="8">Otros 2</option>
                         </Field>
-
-
-                        {/* <Input
-                          className={`${style.ModalCantidad} ${style.ModalCantidadMr}`}
-                          placeholder="Monto"
-                          type="text"
-                          id="txtMonto"
-                          name="txtMonto"
-                          value={values.txtMonto}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                        /> */}
 
                         <Field
                           className={`${style.ModalCantidad} ${style.ModalCantidadMr} ${style.ModalFormText}`}

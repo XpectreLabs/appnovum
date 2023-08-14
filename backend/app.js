@@ -127,7 +127,7 @@ router.post('/altaIngresoFuturo', async (req,res, next) => {
 
 router.post('/editarIngresoFuturo', async (req,res,next) => {
   const id = parseInt(req.body.ingresos_futuros_id);
-  console.log("Fecha: "+req.body.txtFechaTentativaCobro+" -> "+id);
+  //console.log("Fecha: "+req.body.txtFechaTentativaCobro+" -> "+id);
   //let fecha = new Date(req.body.txtFechaTentativaCobro+' 00:00:00').toISOString();
 
   const actualizarIngresoFuturo = await prisma.ingresos_futuros.update({
@@ -144,7 +144,7 @@ router.post('/editarIngresoFuturo', async (req,res,next) => {
     }
   });
 
-  console.log(actualizarIngresoFuturo);
+  //console.log(actualizarIngresoFuturo);
   res.json({"status":"exito"});
 });
 
@@ -166,7 +166,30 @@ router.post('/altaEgresoFuturo', async (req,res, next) => {
     }
   });
 
+  //console.log(nuevoEgresoFuturo);
   res.json({"egresos_futuros_id":nuevoEgresoFuturo.egresos_futuros_id});
+});
+
+
+router.post('/editarEgresoFuturo', async (req,res,next) => {
+  const id = parseInt(req.body.egresos_futuros_id);
+
+  const actualizarEgresoFuturo = await prisma.egresos_futuros.update({
+    where: {
+      egresos_futuros_id : parseInt(id),
+    },
+    data: {
+      nombre_persona_empresa: req.body.txtNombre,
+      concepto: req.body.txtConcepto,
+      tipo_pago_id: parseInt(req.body.stTipo),
+      categoria_id: parseInt(req.body.stCategoria),
+      monto: parseInt(req.body.txtMonto),
+      fecha_tentativa_pago: req.body.txtFechaTentativaPago,
+    }
+  });
+
+  //console.log(actualizarEgresoFuturo);
+  res.json({"status":"exito"});
 });
 
 router.post('/loguear', async (req,res, next) => {
@@ -323,7 +346,7 @@ router.post('/listIngresosFuturosB', async (req,res,next) => {
 router.post('/eliminarIngresoFuturo', async (req,res,next) => {
   const id = parseInt(req.body.ingresos_futuros_id);
 
-  const actualizarCajaBanco = await prisma.ingresos_futuros.update({
+  const actualizarIngresoFuturo = await prisma.ingresos_futuros.update({
     where: {
       ingresos_futuros_id : parseInt(id),
     },
@@ -340,10 +363,12 @@ router.post('/eliminarIngresoFuturo', async (req,res,next) => {
 
 router.post('/listEgresosFuturos', async (req,res,next) => {
   const id = req.body.user_id;
+  //console.log("->" + id);
 
   const listEgresosFuturos = await prisma.egresos_futuros.findMany({
     where: {
-      user_id : parseInt(id)
+      user_id : parseInt(id),
+      activo : true
     },
     select: {
       egresos_futuros_id: true,
@@ -367,7 +392,7 @@ router.post('/listEgresosFuturos', async (req,res,next) => {
       },
     },
   });
-  console.log(listEgresosFuturos);
+  //console.log(listEgresosFuturos);
   res.json({listEgresosFuturos});
 });
 
@@ -381,6 +406,7 @@ router.post('/listEgresosFuturosB', async (req,res,next) => {
       nombre_persona_empresa : {
         contains: nombre,
       },
+      activo : true
     },
     select: {
       egresos_futuros_id: true,
@@ -409,6 +435,20 @@ router.post('/listEgresosFuturosB', async (req,res,next) => {
 });
 
 
+
+router.post('/eliminarEgresoFuturo', async (req,res,next) => {
+  const id = parseInt(req.body.egresos_futuros_id);
+
+  const actualizarEgresoFuturo = await prisma.egresos_futuros.update({
+    where: {
+      egresos_futuros_id : parseInt(id),
+    },
+    data: {
+      activo: false
+    }
+  });
+  res.json({"status":"exito"});
+});
 
 // Servidor HTTP
 // const serverHttp = http.createServer(router);

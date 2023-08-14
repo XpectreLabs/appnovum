@@ -29,24 +29,20 @@ export const RowsIngreso = ({
   page,
   rowsPerPage,
   showModal,
-  setInitialValues,
-  setFechaTenCo,
-  fechaTenCo
+  setInitialValues
 }: {
   pullData: any;
   page: any;
   rowsPerPage: any;
   showModal: Function;
-  setInitialValues: Function;
-  setFechaTenCo: Function;
-  fechaTenCo: string;
+  setInitialValues: Function
 }) => {
 
   const editar = (id) => {
 
-  showModal();
-   console.log(pullData);
-   const pos = fn.buscarPosicionArreglo(pullData,id);
+    showModal();
+    console.log(pullData);
+    const pos = fn.buscarPosicionArreglo(pullData,id);
 
     setTimeout(()=> {
       setInitialValues(({hdId:id,txtNombre:pullData[pos]['name'], txtConcepto:pullData[pos]['concept'], stTipo:pullData[pos]['id_payment_method'], stCategoria:pullData[pos]['id_category'], txtMonto:pullData[pos]['amount'], txtFechaTentativaCobro:dayjs(pullData[pos]['date_to_pay_o'])}));
@@ -136,7 +132,7 @@ export const RowsIngreso = ({
                 onConfirm={()=>{eliminar(data.id)}}
                 onCancel={cancel}
                 okText="Si"
-                cancelText="No"
+                cancelText="No" 
               >
                 <DeleteIcon className="icoBorrar u-efecto slideRight" onClick={()=>{}}/>
               </Popconfirm>

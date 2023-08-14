@@ -17,15 +17,11 @@ import TableRow from "@mui/material/TableRow";
 export const DataIngreso = ({
   arrays,
   showModal,
-  setInitialValues,
-  setFechaTenCo,
-  fechaTenCo
+  setInitialValues
 }: {
   arrays: any;
   showModal: Function,
   setInitialValues: Function,
-  setFechaTenCo: Function,
-  fechaTenCo: string
 }) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -73,8 +69,6 @@ export const DataIngreso = ({
                 rowsPerPage={rowsPerPage}
                 showModal={showModal}
                 setInitialValues={setInitialValues}
-                setFechaTenCo={setFechaTenCo}
-                fechaTenCo={fechaTenCo}
               />
             </TableBody>
           </Table>

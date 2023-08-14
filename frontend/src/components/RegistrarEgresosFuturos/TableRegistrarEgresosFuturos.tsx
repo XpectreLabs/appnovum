@@ -1,204 +1,90 @@
 import * as React from "react";
 import Styles from "../../pages/RegisterDischargeCash/DischargeCash.module.css";
 import fn from "../../components/utility.tsx";
-
+import fng from './Funciones.tsx';
 import { DataEgreso } from './DataEgreso.tsx';
 import { EgresoResponsive } from './EgresoResponsive.tsx';
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-// import Table from "@mui/material/Table";
-// import TableBody from "@mui/material/TableBody";
-// import TableCell from "@mui/material/TableCell";
-// import TableContainer from "@mui/material/TableContainer";
-// import TableHead from "@mui/material/TableHead";
-// import TablePagination from "@mui/material/TablePagination";
-// import TableRow from "@mui/material/TableRow";
-
-// import Chip from "@mui/material/Chip";
-// import PriceCheckIcon from "@mui/icons-material/PriceCheck";
-// import MoneyOffIcon from "@mui/icons-material/MoneyOff";
-// import MoreVertIcon from "@mui/icons-material/MoreVert";
-// import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
-
-// import { LayoutAdmin } from '../hocs/Layout.tsx';
 import InputBase from "@mui/material/InputBase";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
-import { Formik, Form } from "formik";
+import { Field, Formik, Form } from "formik";
 import { Modal, message, Input, DatePicker } from "antd";
+import dayjs, { Dayjs } from 'dayjs';
 import type { DatePickerProps } from "antd";
 import { useState } from "react";
 import * as Yup from "yup";
 let data = [];
+const user_id = localStorage.getItem('user_id');
 
-/*interface Column {
-  id:
-    | "date_created"
-    | "payment_method"
-    | "category"
-    | "name"
-    | "concept"
-    | "amount"
-    | "date_to_pay"
-    | "state"
-    | "date_cashed";
-  label: string;
-  minWidth?: number;
-  align?: "right";
-  format?: (value: number) => string;
-}
+async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='') {
+  let scriptURL = 'http://localhost:3001/listEgresosFuturos';
+  let dataUrl = {user_id};
+  let busqueda = "";
 
-const columns: readonly Column[] = [
-  { id: "date_created", label: "Fecha de creación", minWidth: 100 },
-  { id: "payment_method", label: "Método de pago", minWidth: 100 },
-  { id: "category", label: "Categoria", minWidth: 100 },
-  { id: "name", label: "Nombre de la persona o empresa", minWidth: 100 },
-  { id: "concept", label: "Concepto", minWidth: 100 },
-  { id: "amount", label: "Monto", minWidth: 100 },
-  { id: "date_to_pay", label: "Fecha de pago tentativa", minWidth: 100 },
-  { id: "state", label: "Estado", minWidth: 100 },
-  { id: "date_cashed", label: "Fecha en la que se pago", minWidth: 100 },
-];
-
-interface Data {
-  date_created: string;
-  payment_method: any;
-  category: string;
-  name: string;
-  concept: string;
-  amount: any;
-  date_to_pay: string;
-  state: any;
-  date_cashed: any;
-}
-
-function createData(
-  date_created: string,
-  payment_method: any,
-  category: string,
-  name: string,
-  concept: string,
-  amount: any,
-  date_to_pay: string,
-  state: any,
-  date_cashed: any
-): Data {
-  return {
-    date_created,
-    payment_method,
-    category,
-    name,
-    concept,
-    amount,
-    date_to_pay,
-    state,
-    date_cashed,
-  };
-}
-
-const formatNumber = (number) =>
-  new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(number);*/
-
-
-
-
-  async function cargarDatos () {
-    console.log("Yes");
-    const scriptURL = 'http://localhost:3001/listEgresosFuturos';
-    const user_id = localStorage.getItem('user_id');
-    const dataUrl = {user_id};
-
-    await fetch(scriptURL, {
-      method: 'POST',
-      body: JSON.stringify(dataUrl),
-      headers:{
-        'Content-Type': 'application/json'
-      }
-    })
-    .then((resp) => resp.json())
-    .then(function(info) {
-      console.log(Object.keys(info['listEgresosFuturos']));
-      let listData = [];
-      for(let j=0; j < (Object.keys(info['listEgresosFuturos']).length); j++) {
-        const fechaCreacion = fn.convertirFecha(info['listEgresosFuturos'][j]['fecha_creacion']);
-        const fechaPago = fn.convertirFecha(info['listEgresosFuturos'][j]['fecha_tentativa_pago']);
-        const fechaEnQueSePago = fn.convertirFecha(info['listEgresosFuturos'][j]['fecha_pago']);
-        //console.log(fechaCreacion+" -> "+fechaCobro+" -> "+fechaEnQueSeCobro);
-        const state = fechaEnQueSePago?fechaEnQueSePago:'No pagado';
-
-        let item = {
-          "id": info['listEgresosFuturos'][j]['egresos_futuros_id'],
-          "date_created": fechaCreacion,
-          "payment_method": info['listEgresosFuturos'][j]['tipos_pagos']['tipo_pago'],
-          "category": info['listEgresosFuturos'][j]['categorias']['categoria'],
-          "name": info['listEgresosFuturos'][j]['nombre_persona_empresa'],
-          "concept": info['listEgresosFuturos'][j]['concepto'],
-          "amount": info['listEgresosFuturos'][j]['monto'],
-          "date_to_pay": fechaPago,
-          "state": state,
-          "date_cashed": fechaEnQueSePago
-        }
-         listData.push(item);
-      }
-      data = listData;
-      //fn.asignarValorInnerHTML("NumCuenta",data.length);//Ajustar
-    })
-    .catch(error => {
-      console.log(error.message);
-      console.error('Error!', error.message);
-    });
+  if(buscar) {
+    scriptURL = 'http://localhost:3001/listEgresosFuturosB';
+    busqueda = fn.obtenerValor('#txtSearch');
+    dataUrl = {user_id, busqueda};
   }
 
-  cargarDatos();
+  await fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify(dataUrl),
+    headers:{
+      'Content-Type': 'application/json'
+    }
+  })
+  .then((resp) => resp.json())
+  .then(function(info) {
+    data = fng.obtenerList(info);
+
+    if(buscar)
+      setListaDatos(data);
+
+    if(ejecutarSetInitialValues) {
+      setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaPago:''}));
+      setTimeout(() => {
+        setListaDatos(data);
+        setOpen(false);
+        setConfirmLoading(false);
+      }, 1000);
+    }
+  })
+  .catch(error => {
+    console.log(error.message);
+    console.error('Error!', error.message);
+  });
+}
+
+cargarDatos();
 
 export const TableRegistrarEgresosFuturos = () => {
 const [open, setOpen] = useState(false);
 const [confirmLoading, setConfirmLoading] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();
-const [page, setPage] = React.useState(0);
-const [rowsPerPage, setRowsPerPage] = React.useState(10);
-const [initialValues, setInitialValues] = useState(({hdId:' ',txtNombre:'', txtConcepto:'', stTipo:'', stCategoria:'', txtMonto:''}));
-const [cantidadV, setCantidadV] = useState("0");
-const [tabla, setTabla] = useState<Data[]>([]);
-const [listaDatos, setListaDatos] = useState([]);
+const [messageApi, contextHolder] = message.useMessage();
 const [cargandoVisible, setCargandoVisible] = useState(true);
+const [listaDatos, setListaDatos] = useState([]);
+const [initialValues, setInitialValues] = useState(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'', stCategoria:'', txtMonto:'', txtFechaTentativaPago:''}));
+const [cantidadV, setCantidadV] = useState("0");
 
+const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+  setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaPago:dayjs(dateString)}));
+};
 
 let idSI = setInterval(() => {
   if(!data)
-    alert("Vacio");
+    console.log("Vacio");
   else {
-    console.log("Ja"+data.length);
     setCantidadV(data.length);
     setListaDatos(data);
     setCargandoVisible(false);
     clearInterval(idSI);
   }
 }, 1000);
-
-
-/*const handleChangePage = (event: unknown, newPage: number) => {
-  setPage(newPage);
-};*/
-
-const onChange: DatePickerProps["onChange"] = (date, dateString) => {
-  console.log(date, dateString);
-};
-/*
-const handleChangeRowsPerPage = (
-  event: React.ChangeEvent<HTMLInputElement>
-) => {
-  setRowsPerPage(+event.target.value);
-  setPage(0);
-};*/
-
-
-
 
 const showModal = () => {
   setOpen(true);
@@ -208,156 +94,81 @@ const validarSubmit = () => {
   fn.ejecutarClick("#txtAceptar");
 }
 
-const validarSubit = () => {
-  addDataTable();
-}
-
 const handleCancel = () => {
-  setInitialValues(({hdId:' ',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:''}));
+  setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
 
   setTimeout(()=>{
     setOpen(false);
   },500);
 };
 
-const addDataTable = () => {
-  const scriptURL = 'https://admin.bioesensi-crm.com/altaEgresoFuturo';
-  const txtNombre = fn.obtenerValor('#txtNombre');
-  const txtConcepto = fn.obtenerValor('#txtConcepto');
-  const stTipo = fn.obtenerValor('#stTipo');
-  const stCategoria = fn.obtenerValor('#stCategoria');
-  const txtMonto = fn.obtenerValor('#txtMonto');
-  const user_id = localStorage.getItem('user_id');
-  const txtFechaTentativaPago = fn.obtenerValor('#txtFechaTentativaPago');
-  const egresos_futuros_id = fn.obtenerValor("#hdId");
-  const dataC = {txtNombre, txtConcepto, stTipo, stCategoria, txtMonto, user_id, txtFechaTentativaPago, egresos_futuros_id};
-
-  setConfirmLoading(true);
-  fetch(scriptURL, {
-    method: 'POST',
-    body: JSON.stringify(dataC),
-    headers:{
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(response => {
-    messageApi.open({
-      type: 'success',
-      content: 'Los datos del ingreso fue guardada con éxito',
-    });
-    console.log("Si");
-
-    const scriptURLG = 'https://admin.bioesensi-crm.com/listEgresosFuturos';
-    const dataUrlG = {user_id};
-
-    fetch(scriptURLG, {
-      method: 'POST',
-      body: JSON.stringify(dataUrlG),
-      headers:{
-        'Content-Type': 'application/json'
-      }
-    })
-    .then((resp) => resp.json())
-    .then(function(info) {
-      //console.log("Si -> 1");
-      let listData = [];
-      for(let j=0; j < (Object.keys(info['listEgresosFuturos']).length); j++) {
-        const fechaCreacion = fn.convertirFecha(info['listEgresosFuturos'][j]['fecha_creacion']);
-        const fechaPago = fn.convertirFecha(info['listEgresosFuturos'][j]['fecha_tentativa_pago']);
-        const fechaEnQueSePago = fn.convertirFecha(info['listEgresosFuturos'][j]['fecha_pago']);
-        const state = fechaEnQueSePago?fechaEnQueSePago:'No pagado';
-
-        let item = {
-          "id": info['listEgresosFuturos'][j]['ingresos_futuros_id'],
-          "date_created": fechaCreacion,
-          "payment_method": info['listEgresosFuturos'][j]['tipos_pagos']['tipo_pago'],
-          "category": info['listEgresosFuturos'][j]['categorias']['categoria'],
-          "name": info['listEgresosFuturos'][j]['nombre_persona_empresa'],
-          "concept": info['listEgresosFuturos'][j]['concepto'],
-          "amount": info['listEgresosFuturos'][j]['monto'],
-          "date_to_pay": fechaPago,
-          "state": state,
-          "date_cashed": fechaEnQueSePago
-        }
-        listData.push(item);
-      }
-      //console.log("Si -> 2");
-      data = listData;
-
-      setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:''}));
-      setTimeout(() => {
-        setListaDatos(data);
-        setOpen(false);
-        setConfirmLoading(false);
-      }, 1000);
-
-      //console.log(listData);
-      //console.log(data);
-      //setCargandoVisible(false)
-    })
-    .catch(error => {
-      console.log(error.message);
-      console.error('Error!', error.message);
-    });
-  })
-  .catch(error => {
-    console.log(error.message);
-    console.error('Error!', error.message);
-  });
-  //setOpen(false);
-};
-
-
-const buscarEnTabla = () => {
-  const scriptURL = 'https://admin.bioesensi-crm.com/listEgresosFuturosB';
-  const busqueda = fn.obtenerValor('#txtSearch');
-  const user_id = localStorage.getItem('user_id');
-  const dataU = {busqueda, user_id};
-
-  fetch(scriptURL, {
-     method: 'POST',
-     body: JSON.stringify(dataU),
-     headers:{
-       'Content-Type': 'application/json'
-     }
-   })
-  .then((resp) => resp.json())
-  .then(function(info) {
-    let listData = [];
-
-    for(let j=0; j < (Object.keys(info['listEgresosFuturos']).length); j++) {
-      const fechaCreacion = fn.convertirFecha(info['listEgresosFuturos'][j]['fecha_creacion']);
-      const fechaPago = fn.convertirFecha(info['listEgresosFuturos'][j]['fecha_tentativa_pago']);
-      const fechaEnQueSePago = fn.convertirFecha(info['listEgresosFuturos'][j]['fecha_pago']);
-      const state = fechaEnQueSePago?fechaEnQueSePago:'No pagado';
-
-      let item = {
-        "id": info['listEgresosFuturos'][j]['ingresos_futuros_id'],
-        "date_created": fechaCreacion,
-        "payment_method": info['listEgresosFuturos'][j]['tipos_pagos']['tipo_pago'],
-        "category": info['listEgresosFuturos'][j]['categorias']['categoria'],
-        "name": info['listEgresosFuturos'][j]['nombre_persona_empresa'],
-        "concept": info['listEgresosFuturos'][j]['concepto'],
-        "amount": info['listEgresosFuturos'][j]['monto'],
-        "date_to_pay": fechaPago,
-        "state": state,
-        "date_cashed": fechaEnQueSePago
-      }
-      listData.push(item);
-    }
-
-    data = listData;
-    setListaDatos(data);
-   })
-   .catch(error => {
-     alert(error.message);
-     console.error('Error!', error.message);
-   });
-};
-
-
   return (
     <Box>
+      <Box className={Styles.nav}>
+        <Box className={Styles.counter}>
+          <p>Cuentas</p>
+          <div id="NumCuenta" className={Styles.chip}>{cantidadV}</div>
+        </Box>
+
+        <Box className={Styles.itemSearch}>
+          <Paper
+            component="form"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <InputBase
+              id="txtSearch"
+              name="txtSearch"
+              sx={{ ml: 1, flex: 1 }}
+              placeholder="Buscar"
+              inputProps={{ "aria-label": "search google maps" }}
+            />
+            <IconButton id="btnBuscar" type="button" sx={{ p: "10px" }} aria-label="search" onClick={()=>{cargarDatos(true,setListaDatos)}}>
+              <SearchIcon />
+            </IconButton>
+          </Paper>
+        </Box>
+
+        <Box className={Styles.itemButton}>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<AddIcon />}
+            classes={{
+              root: Styles.btnCreateAccount,
+            }}
+            onClick={showModal}
+          >
+            Egreso futuro
+          </Button>
+        </Box>
+      </Box>
+
+      <DataEgreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} />
+
+      <div>
+          <img className={cargandoVisible? "Cargando Mt mostrarI-b Sf" : "Cargando Mt Sf"}  src="img/loading.gif" alt="" />
+      </div>
+
+      <Box>
+        {listaDatos.map((data) => (
+          <EgresoResponsive
+            key={data.id}
+            date_created={data.date_created}
+            payment_method={data.payment_method}
+            category={data.category}
+            name={data.name}
+            concept={data.concept}
+            amount={data.amount}
+            date_to_pay={data.date_to_pay}
+            state={data.state}
+            date_cashed={data.date_cashed}
+          />
+        ))}
+      </Box>
+
       <Modal
           title=""
           open={open}
@@ -386,305 +197,142 @@ const buscarEnTabla = () => {
             txtMonto:  Yup.number()
               .min(1, "Al menos un digito")
               .required("* Monto"),
-            // txtFechaTentativaCobro: Yup.date()
-            //   .required("* Fecha tentativa de cobro"),
+            txtFechaTentativaPago: Yup.date()
+              .required("* Fecha tentativa de pago"),
           })}
           onSubmit={(values, actions) => {
-            validarSubit();
+            let scriptURL = 'http://localhost:3001/altaEgresoFuturo';
+
+            if(values.hdId)
+                scriptURL = 'http://localhost:3001/editarEgresoFuturo';
+
+            const txtNombre = values.txtNombre;
+            const txtConcepto = values.txtConcepto;
+            const stTipo = values.stTipo;
+            const stCategoria = values.stCategoria;
+            const txtMonto = values.txtMonto;
+            const txtFechaTentativaPago = values.txtFechaTentativaPago;
+            const egresos_futuros_id = values.hdId;
+            const dataC = {txtNombre, txtConcepto, stTipo, stCategoria, txtMonto, user_id, txtFechaTentativaPago, egresos_futuros_id};
+
+            setConfirmLoading(true);
+            fetch(scriptURL, {
+              method: 'POST',
+              body: JSON.stringify(dataC),
+              headers:{
+                'Content-Type': 'application/json'
+              }
+            })
+            .then(response => {
+              messageApi.open({
+                type: 'success',
+                content: 'Los datos del ingreso fue guardada con éxito',
+              });
+              console.log("Si");
+
+              cargarDatos(false,setListaDatos,true,setInitialValues,setOpen,setConfirmLoading);
+            })
+            .catch(error => {
+              console.log(error.message);
+              console.error('Error!', error.message);
+            });
           }}
         >
-          {({
-            values,
-            errors,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-          }) => {
+          {({ values, errors, handleChange, handleBlur, handleSubmit}) => {
             return (
-              <>
-                  {
-                    <Form
-                      className={`${Styles.ModalForm}`}
-                      name="form-contacto"
-                      id="form-contacto"
-                      method="post"
-                      onSubmit={handleSubmit}
-                    >
+              <Form
+                className={`${Styles.ModalForm}`}
+                name="form-contacto"
+                  id="form-contacto"
+                method="post"
+                onSubmit={handleSubmit}
+              >
 
-                      {contextHolder}
+                {contextHolder}
 
-                      <Input
-                        placeholder="Nombre de la persona o empresa"
-                        type="text"
-                        id="txtNombre"
-                        name="txtNombre"
-                        value={values.txtNombre}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        autoCapitalize="off"
-                      />
+                <Input
+                  id="hdId"
+                  name="hdId"
+                  type="hidden"
+                  value={values.hdId}
+                />
 
-                      <Input
-                        placeholder="Concepto"
-                        type="text"
-                        id="txtConcepto"
-                        name="txtConcepto"
-                        value={values.txtConcepto}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        autoCapitalize="off"
-                      />
+                <Field
+                  className={`${Styles.ModalFormText}`}
+                  placeholder="Nombre de la persona o empresa"
+                  type="text"
+                  id="txtNombre"
+                  name="txtNombre" />
 
-                      <select
-                        name="stTipo"
-                        id="stTipo"
-                        className={`${Styles.ModalSelect}`}
-                        value={values.stTipo}
-                        onChange={handleChange}
-                      >
-                        <option value="0">Efectivo o banco</option>
-                        <option value="1">Efectivo</option>
-                        <option value="2">Banco</option>
-                      </select>
+                <Field
+                  className={`${Styles.ModalFormText}`}
+                  placeholder="Concepto"
+                   type="text"
+                  id="txtConcepto"
+                  name="txtConcepto" />
 
-                      <select
-                        name="stCategoria"
-                        id="stCategoria"
-                        className={`${Styles.ModalSelect} u-sinMargen`}
-                        value={values.stCategoria}
-                        onChange={handleChange}
-                      >
-                        <option value="0">Categoria</option>
-                        <option value="3">Proveedores o costo de mercancía</option>
-                        <option value="4">Gastos fijos</option>
-                        <option value="5">Nómina</option>
-                        <option value="6">Deuda</option>
-                        <option value="7">Impuestos</option>
-                        <option value="8">Otros</option>
-                      </select>
+                <Field
+                  as="select"
+                  name="stTipo"
+                  id="stTipo"
+                  className={`${Styles.ModalSelect}`}
+                >
+                  <option value="0">Efectivo o banco</option>
+                  <option value="1">Efectivo</option>
+                  <option value="2">Banco</option>
+                </Field>
 
-                      <Input
-                        className={`${Styles.ModalCantidad} ${Styles.ModalCantidadMr}`}
-                        placeholder="Monto"
-                        type="text"
-                        id="txtMonto"
-                        name="txtMonto"
-                        value={values.txtMonto}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
+                <Field
+                  as="select"
+                  name="stCategoria"
+                  id="stCategoria"
+                  className={`${Styles.ModalSelect} u-sinMargen`}
+                >
+                  <option value="0">Categoria</option>
+                  <option value="3">Proveedores o costo de mercancía</option>
+                  <option value="4">Gastos fijos</option>
+                  <option value="5">Nómina</option>
+                  <option value="6">Deuda</option>
+                  <option value="7">Impuestos</option>
+                  <option value="8">Otros</option>
+                </Field>
 
-                      <DatePicker
-                        // format={dateFormatList}
-                        className={`${Styles.ModalCantidad}`}
-                        id='txtFechaTentativaPago'
-                        name='txtFechaTentativaPago'
-                        placeholder='Fecha tentativa de pago'
-                        onChange={onChange}
-                      />
+                <Field
+                  className={`${Styles.ModalCantidad} ${Styles.ModalCantidadMr} ${Styles.ModalFormText}`}
+                  placeholder="Monto"
+                  type="text"
+                  id="txtMonto"
+                  name="txtMonto" />
 
-                      <div>
-                        <p><strong>{(errors.txtNombre)?`Errores:`:null}</strong></p>
-                        {errors.txtNombre??errors.txtNombre} 
-                        {errors.txtConcepto??errors.txtConcepto} 
-                        {errors.stTipo??errors.stTipo} 
-                        {errors.stCategoria??errors.stCategoria} 
-                        {errors.txtMonto??errors.txtMonto}
-                        {/* {errors.txtFechaTentativaCobro??errors.txtFechaTentativaCobro} */}
-                      </div>
+                <DatePicker
+                    // format={dateFormatList}
+                  className={`${Styles.ModalCantidad}`}
+                  id='txtFechaTentativaPago'
+                  name='txtFechaTentativaPago'
+                  placeholder='Fecha tentativa de pago'
+                  value={values.txtFechaTentativaPago}
+                  onChange={onChange}
+                  onBlur={handleBlur}
+                />
 
-                      <div className='u-textLeft' style={{display:"none"}}>
-                        <input id="txtAceptar" type="submit" value="Aceptar" />
-                      </div>
-                    </Form>
-                  }
-              </>
+                <div>
+                  <p><strong>{(errors.txtNombre || errors.txtConcepto || errors.stTipo || errors.stCategoria || errors.txtMonto || errors.txtFechaTentativaPago)?`Errores:`:null}</strong></p>
+                  {errors.txtNombre? (<p>{errors.txtNombre}</p>):null}
+                  {errors.txtConcepto? (<p>{errors.txtConcepto}</p>):null}
+                  {errors.stTipo? (<p>{errors.stTipo}</p>):null}
+                  {errors.stCategoria? (<p>{errors.stCategoria}</p>):null}
+                  {errors.txtMonto? (<p>{errors.txtMonto}</p>):null}
+                  {errors.txtFechaTentativaPago? (<p>{errors.txtFechaTentativaPago}</p>):null}
+                </div>
+
+                <div className='u-textLeft' style={{display:"none"}}>
+                  <input id="txtAceptar" type="submit" value="Aceptar" />
+                </div>
+              </Form>
             );
           }}
         </Formik>
       </Modal>
-
-
-      <Box className={Styles.nav}>
-        <Box className={Styles.counter}>
-          <p>Cuentas</p>
-          <div className={Styles.chip}>{cantidadV}</div>
-        </Box>
-
-        <Box className={Styles.itemSearch}>
-          <Paper
-            component="form"
-            sx={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <InputBase
-              id="txtSearch"
-              name="txtSearch"
-              sx={{ ml: 1, flex: 1 }}
-              placeholder="Buscar"
-              inputProps={{ "aria-label": "search google maps" }}
-            />
-            <IconButton type="button" sx={{ p: "10px" }} aria-label="search" onClick={buscarEnTabla}>
-              <SearchIcon />
-            </IconButton>
-          </Paper>
-        </Box>
-
-        <Box className={Styles.itemButton}>
-          <Button
-            variant="contained"
-            color="success"
-            startIcon={<AddIcon />}
-            classes={{
-              root: Styles.btnCreateAccount,
-            }}
-            onClick={showModal}
-          >
-            Egreso futuro
-          </Button>
-        </Box>
-      </Box>
-
-      <DataEgreso arrays={listaDatos} arrays2={tabla} />
-
-      <div>
-          <img className={cargandoVisible? "Cargando Mt mostrarI-b Sf" : "Cargando Mt Sf"}  src="img/loading.gif" alt="" />
-      </div>
-      <Box>
-        {data.map((data) => (
-          <EgresoResponsive
-            key={data.id}
-            date_created={data.date_created}
-            payment_method={data.payment_method}
-            category={data.category}
-            name={data.name}
-            concept={data.concept}
-            amount={data.amount}
-            date_to_pay={data.date_to_pay}
-            state={data.state}
-            date_cashed={data.date_cashed}
-          />
-        ))}
-      </Box>
-
-      <div>
-        {tabla.map((data) => (
-          <EgresoResponsive
-            key={data.id}
-            date_created={data.date_created}
-            payment_method={data.payment_method}
-            category={data.category}
-            name={data.name}
-            concept={data.concept}
-            amount={data.amount}
-            date_to_pay={data.date_to_pay}
-            state={data.state}
-            date_cashed={data.date_cashed}
-          />
-        ))}
-      </div>
-
-      {/* <Paper
-        sx={{ width: "100%", overflow: "hidden", boxShadow: "none" }}
-        className={Styles.divTable}
-      >
-        <TableContainer sx={{ maxHeight: 440 }} className={Styles.table}>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.name}
-                    >
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === "number"
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper> */}
-
-      {/* <Box className={Styles.results}>
-        <Box className={Styles.conten}>
-          <Box className={Styles.resultResponsive}>
-            <div className={Styles.btnEdit}>
-              <IconButton aria-label="delete" size="small">
-                <MoreVertIcon fontSize="small" />
-              </IconButton>
-            </div>
-            <Box className={Styles.columnas}>
-              <li>Fecha de creación:</li>
-              <li>Persona o empresa:</li>
-              <li>Concepto:</li>
-              <li>Monto:</li>
-              <li>Fecha tentativa de pago:</li>
-              <li>Estatus:</li>
-              <li>
-                <p>23/06/2023</p>
-              </li>
-              <li>
-                <p>Santiago Elan Dido</p>
-              </li>
-              <li>
-                <p>Renta de local en venta</p>
-              </li>
-              <li>
-                <p>$ {formatNumber(8000000)}</p>
-              </li>
-              <li>
-                <p>Pendiente</p>
-              </li>
-              <li>
-                <Chip
-                  icon={<MoneyOffIcon />}
-                  label="No cobrado"
-                  size="small"
-                  className={Styles.chipTableNo}
-                />
-              </li>
-            </Box>
-          </Box>
-        </Box>
-      </Box> */}
     </Box>
   );
 };

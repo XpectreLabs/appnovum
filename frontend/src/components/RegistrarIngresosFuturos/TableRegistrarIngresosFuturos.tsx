@@ -65,7 +65,8 @@ cargarDatos();
 export const TableRegistrarIngresosFuturos = () => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();  const [cargandoVisible, setCargandoVisible] = useState(true);
+  const [messageApi, contextHolder] = message.useMessage();  
+  const [cargandoVisible, setCargandoVisible] = useState(true);
   const [listaDatos, setListaDatos] = useState([]);
   const [initialValues, setInitialValues] = useState(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
   const [cantidadV, setCantidadV] = useState("0");
