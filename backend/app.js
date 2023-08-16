@@ -35,6 +35,34 @@ router.get('/', async (req,res,next) => {
   res.json({listaTipos});
 });
 
+
+router.post('/loguear', async (req,res, next) => {
+  try{
+    console.log(req.body.email+" "+req.body.password);
+    let user = await findUser(req.body.email,req.body.password);
+    console.log(user);
+    res.json({"usuario_id":user});
+  }catch(e) {
+    res.json({"usuario_id":0});
+  }
+});
+
+async function findUser(email,password) {
+  const users = await prisma.users.findFirst({
+    where: {
+      email,
+      password
+    },
+    select: {
+      user_id:true
+    }});
+
+    if(users == null)
+      return 0;
+
+    return users.user_id;
+}
+
 router.post('/crearUsuario', async (req,res, next) => {
   //let fecha = new Date().toISOString();
   const nuevoUsuario = await prisma.users.create({
@@ -88,7 +116,7 @@ router.post('/editarCajaBanco', async (req,res,next) => {
   const id = parseInt(req.body.caja_banco_id);
   //console.log("->"+id);
 
-  const actualizarCajaBanco = await prisma.cajas_bancos.update({
+  await prisma.cajas_bancos.update({
     where: {
       cajas_bancos_id : parseInt(id),
     },
@@ -100,6 +128,57 @@ router.post('/editarCajaBanco', async (req,res,next) => {
   });
   res.json({"status":"exito"});
 });
+
+
+router.post('/listCajasBancos', async (req,res,next) => {
+  const id = req.body.user_id;//req.query.ordenPago;
+
+  const listCajasBancos = await prisma.cajas_bancos.findMany({
+    where: {
+      user_id : parseInt(id)
+    },
+    select: {
+      cajas_bancos_id: true,
+      nombre_cuenta: true,
+      tipo_pago_id:true,
+      cantidad_actual: true,
+      tipos_pagos: {
+        select: {
+          tipo_pago:true
+        },
+      },
+    },
+  });
+  res.json({listCajasBancos});
+});
+
+router.post('/listCajasBancosB', async (req,res,next) => {
+  const id = req.body.user_id;
+  const nombre = req.body.busqueda;
+
+  const listCajasBancos = await prisma.cajas_bancos.findMany({
+    where: {
+      user_id : parseInt(id),
+      nombre_cuenta : {
+        contains: nombre,
+      },
+    },
+    select: {
+      cajas_bancos_id: true,
+      nombre_cuenta: true,
+      tipo_pago_id:true,
+      cantidad_actual: true,
+      tipos_pagos: {
+        select: {
+          tipo_pago:true
+        },
+      },
+    },
+  });
+
+  res.json({listCajasBancos});
+});
+
 
 router.post('/altaIngresoFuturo', async (req,res, next) => {
   //console.log("Fechas: "+req.body.txtFechaTentativaCobro);
@@ -130,7 +209,7 @@ router.post('/editarIngresoFuturo', async (req,res,next) => {
   //console.log("Fecha: "+req.body.txtFechaTentativaCobro+" -> "+id);
   //let fecha = new Date(req.body.txtFechaTentativaCobro+' 00:00:00').toISOString();
 
-  const actualizarIngresoFuturo = await prisma.ingresos_futuros.update({
+   await prisma.ingresos_futuros.update({
     where: {
       ingresos_futuros_id : parseInt(id),
     },
@@ -144,129 +223,7 @@ router.post('/editarIngresoFuturo', async (req,res,next) => {
     }
   });
 
-  //console.log(actualizarIngresoFuturo);
   res.json({"status":"exito"});
-});
-
-
-router.post('/altaEgresoFuturo', async (req,res, next) => {
-  //let fecha = new Date(req.body.txtFechaTentativaPago+' 00:00:00').toISOString();
-  let fechaCreacion = new Date().toISOString();
-  const nuevoEgresoFuturo = await prisma.egresos_futuros.create({
-    data:{
-      nombre_persona_empresa: req.body.txtNombre,
-      concepto: req.body.txtConcepto,
-      tipo_pago_id: parseInt(req.body.stTipo),
-      categoria_id: parseInt(req.body.stCategoria),
-      monto: parseInt(req.body.txtMonto),
-      fecha_tentativa_pago: req.body.txtFechaTentativaPago,
-      user_id: parseInt(req.body.user_id),
-      fecha_creacion: fechaCreacion,
-      activo: true
-    }
-  });
-
-  //console.log(nuevoEgresoFuturo);
-  res.json({"egresos_futuros_id":nuevoEgresoFuturo.egresos_futuros_id});
-});
-
-
-router.post('/editarEgresoFuturo', async (req,res,next) => {
-  const id = parseInt(req.body.egresos_futuros_id);
-
-  const actualizarEgresoFuturo = await prisma.egresos_futuros.update({
-    where: {
-      egresos_futuros_id : parseInt(id),
-    },
-    data: {
-      nombre_persona_empresa: req.body.txtNombre,
-      concepto: req.body.txtConcepto,
-      tipo_pago_id: parseInt(req.body.stTipo),
-      categoria_id: parseInt(req.body.stCategoria),
-      monto: parseInt(req.body.txtMonto),
-      fecha_tentativa_pago: req.body.txtFechaTentativaPago,
-    }
-  });
-
-  //console.log(actualizarEgresoFuturo);
-  res.json({"status":"exito"});
-});
-
-router.post('/loguear', async (req,res, next) => {
-  try{
-    console.log(req.body.email+" "+req.body.password);
-    let user = await findUser(req.body.email,req.body.password);
-    console.log(user);
-    res.json({"usuario_id":user});
-  }catch(e) {
-    res.json({"usuario_id":0});
-  }
-});
-
-async function findUser(email,password) {
-  const users = await prisma.users.findFirst({
-    where: {
-      email,
-      password
-    },
-    select: {
-      user_id:true
-    }});
-
-    if(users == null)
-      return 0;
-
-    return users.user_id;
-}
-
-
-router.post('/listCajasBancos', async (req,res,next) => {
-  const id = req.body.user_id;//req.query.ordenPago;
-
-  const listCajasBancos = await prisma.cajas_bancos.findMany({
-    where: {
-      user_id : parseInt(id)
-    },
-    select: {
-      cajas_bancos_id: true,
-      nombre_cuenta: true,
-      tipo_pago_id:true,
-      cantidad_actual: true,
-      tipos_pagos: {
-        select: {
-          tipo_pago:true
-        },
-      },
-    },
-  });
-  res.json({listCajasBancos});
-});
-
-router.post('/listCajasBancosB', async (req,res,next) => {
-  const id = req.body.user_id;
-  const nombre = req.body.busqueda; 
-
-  const listCajasBancos = await prisma.cajas_bancos.findMany({
-    where: {
-      user_id : parseInt(id),
-      nombre_cuenta : {
-        contains: nombre,
-      },
-    },
-    select: {
-      cajas_bancos_id: true,
-      nombre_cuenta: true,
-      tipo_pago_id:true,
-      cantidad_actual: true,
-      tipos_pagos: {
-        select: {
-          tipo_pago:true
-        },
-      }, 
-    },
-  });
-
-  res.json({listCajasBancos});
 });
 
 
@@ -358,8 +315,66 @@ router.post('/eliminarIngresoFuturo', async (req,res,next) => {
 });
 
 
+router.post('/actualizarStatus', async (req,res, next) => {
+  const id = parseInt(req.body.ingresos_futuros_id);
+  let fechaDeCobro = new Date().toISOString();
+
+  await prisma.ingresos_futuros.update({
+    where: {
+      ingresos_futuros_id : parseInt(id),
+    },
+    data:{
+      fecha_cobro:fechaDeCobro
+    }
+  });
+
+  res.json({"status":"exito"});
+});
 
 
+
+router.post('/altaEgresoFuturo', async (req,res, next) => {
+  //let fecha = new Date(req.body.txtFechaTentativaPago+' 00:00:00').toISOString();
+  let fechaCreacion = new Date().toISOString();
+  const nuevoEgresoFuturo = await prisma.egresos_futuros.create({
+    data:{
+      nombre_persona_empresa: req.body.txtNombre,
+      concepto: req.body.txtConcepto,
+      tipo_pago_id: parseInt(req.body.stTipo),
+      categoria_id: parseInt(req.body.stCategoria),
+      monto: parseInt(req.body.txtMonto),
+      fecha_tentativa_pago: req.body.txtFechaTentativaPago,
+      user_id: parseInt(req.body.user_id),
+      fecha_creacion: fechaCreacion,
+      activo: true
+    }
+  });
+
+  //console.log(nuevoEgresoFuturo);
+  res.json({"egresos_futuros_id":nuevoEgresoFuturo.egresos_futuros_id});
+});
+
+
+router.post('/editarEgresoFuturo', async (req,res,next) => {
+  const id = parseInt(req.body.egresos_futuros_id);
+
+  const actualizarEgresoFuturo = await prisma.egresos_futuros.update({
+    where: {
+      egresos_futuros_id : parseInt(id),
+    },
+    data: {
+      nombre_persona_empresa: req.body.txtNombre,
+      concepto: req.body.txtConcepto,
+      tipo_pago_id: parseInt(req.body.stTipo),
+      categoria_id: parseInt(req.body.stCategoria),
+      monto: parseInt(req.body.txtMonto),
+      fecha_tentativa_pago: req.body.txtFechaTentativaPago,
+    }
+  });
+
+  //console.log(actualizarEgresoFuturo);
+  res.json({"status":"exito"});
+});
 
 router.post('/listEgresosFuturos', async (req,res,next) => {
   const id = req.body.user_id;
@@ -392,7 +407,6 @@ router.post('/listEgresosFuturos', async (req,res,next) => {
       },
     },
   });
-  //console.log(listEgresosFuturos);
   res.json({listEgresosFuturos});
 });
 
@@ -433,8 +447,6 @@ router.post('/listEgresosFuturosB', async (req,res,next) => {
   //console.log(listIngresosFuturos);
   res.json({listEgresosFuturos});
 });
-
-
 
 router.post('/eliminarEgresoFuturo', async (req,res,next) => {
   const id = parseInt(req.body.egresos_futuros_id);

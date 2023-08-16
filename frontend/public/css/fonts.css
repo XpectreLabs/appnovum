@@ -25,7 +25,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-
+.icon-icoCobrar:before {
+  content: "\e9cf";
+  color: #00c62f;
+  font-size: 40px !important;
+}
 .icon-icoCash:before {
   content: "\e9cd";
   font-weight: normal !important;

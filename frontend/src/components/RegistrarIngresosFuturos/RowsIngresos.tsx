@@ -29,14 +29,20 @@ export const RowsIngreso = ({
   page,
   rowsPerPage,
   showModal,
-  setInitialValues
+  setInitialValues,
+  setModal2Open
 }: {
   pullData: any;
   page: any;
   rowsPerPage: any;
   showModal: Function;
-  setInitialValues: Function
+  setInitialValues: Function;
+  setModal2Open: Function;
 }) => {
+
+  const cambiarStatus = (id) => {
+    alert(id);
+  }
 
   const editar = (id) => {
 
@@ -47,8 +53,6 @@ export const RowsIngreso = ({
     setTimeout(()=> {
       setInitialValues(({hdId:id,txtNombre:pullData[pos]['name'], txtConcepto:pullData[pos]['concept'], stTipo:pullData[pos]['id_payment_method'], stCategoria:pullData[pos]['id_category'], txtMonto:pullData[pos]['amount'], txtFechaTentativaCobro:dayjs(pullData[pos]['date_to_pay_o'])}));
     },100);
-
-
     /*const cuenta = fn.obtenerValorHtml("#spName"+id_cb);
     const cantidad = fn.obtenerValorHtml("#spCantidadO"+id_cb);
     const id_tipo = fn.obtenerValorHtml("#spTipoO"+id_cb);*/
@@ -120,6 +124,7 @@ export const RowsIngreso = ({
                   label="No cobrado"
                   size="small"
                   className={Styles.chipTableNo}
+                  onClick={()=>{setModal2Open(true)}}
                 />
               )}
             </TableCell>
@@ -132,7 +137,7 @@ export const RowsIngreso = ({
                 onConfirm={()=>{eliminar(data.id)}}
                 onCancel={cancel}
                 okText="Si"
-                cancelText="No" 
+                cancelText="No"
               >
                 <DeleteIcon className="icoBorrar u-efecto slideRight" onClick={()=>{}}/>
               </Popconfirm>

@@ -70,6 +70,7 @@ export const TableRegistrarIngresosFuturos = () => {
   const [listaDatos, setListaDatos] = useState([]);
   const [initialValues, setInitialValues] = useState(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
   const [cantidadV, setCantidadV] = useState("0");
+  const [modal2Open, setModal2Open] = useState(false);
 
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
       setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaCobro:dayjs(dateString)}));
@@ -147,7 +148,7 @@ export const TableRegistrarIngresosFuturos = () => {
         </Box>
       </Box>
 
-      <DataIngreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} />
+      <DataIngreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} setModal2Open={setModal2Open} />
 
       <div>
           <img className={cargandoVisible? "Cargando Mt mostrarI-b Sf" : "Cargando Mt Sf"}  src="img/loading.gif" alt="" />
@@ -341,6 +342,21 @@ export const TableRegistrarIngresosFuturos = () => {
             );
           }}
         </Formik>
+      </Modal>
+
+      <Modal
+        width={340}
+        title=""
+        centered
+        open={modal2Open}
+        onOk={() => setModal2Open(false)}
+        onCancel={() => setModal2Open(false)}
+        okText="Cobrar"
+        cancelText="Cancelar"
+        className={`${Styles.ModalCobrar} u-textCenter`}
+      >
+        <span className="icon-icoCobrar"></span>
+        <p><strong>Deseas cobrar esta deuda, se creará un registro de cobro</strong></p>
       </Modal>
     </Box>
   );
