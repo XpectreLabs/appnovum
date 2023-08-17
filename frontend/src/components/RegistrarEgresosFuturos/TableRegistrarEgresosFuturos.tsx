@@ -9,6 +9,7 @@ import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import { Field, Formik, Form } from "formik";
@@ -148,9 +149,13 @@ const handleCancel = () => {
 
       <DataEgreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} />
 
-      <div>
+      {/* <div>
           <img className={cargandoVisible? "Cargando Mt mostrarI-b Sf" : "Cargando Mt Sf"}  src="img/loading.gif" alt="" />
-      </div>
+      </div> */}
+
+      <Box className={cargandoVisible?'u-textCenter':'u-textCenter u-ocultar'}>
+        <CircularProgress />
+      </Box>
 
       <Box>
         {listaDatos.map((data) => (

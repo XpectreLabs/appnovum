@@ -24,7 +24,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+.icon-icoCobrarDismiss:before {
+  content: "\e9d0";
+  color: #f5222d;
+  font-size: 40px !important;
+}
 .icon-icoCobrar:before {
   content: "\e9cf";
   color: #00c62f;

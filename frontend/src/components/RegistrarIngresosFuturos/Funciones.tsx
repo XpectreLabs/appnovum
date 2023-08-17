@@ -6,7 +6,12 @@ function obtenerList(info) {
     const fechaCreacion = fn.convertirFecha(info['listIngresosFuturos'][j]['fecha_creacion']);
     const fechaCobro = fn.convertirFecha(info['listIngresosFuturos'][j]['fecha_tentativa_cobro']);
     const fechaEnQueSeCobro = fn.convertirFecha(info['listIngresosFuturos'][j]['fecha_cobro']);
-    const state = fechaEnQueSeCobro?fechaEnQueSeCobro:'No cobrado';
+    const state = fechaEnQueSeCobro==="Pendiente"?'No cobrado':'Cobrado';
+    let validarCobro;
+
+    if(fechaEnQueSeCobro!=="Pendiente") {
+      validarCobro = Date.parse(info['listIngresosFuturos'][j]['fecha_cobro']) <= Date.parse(info['listIngresosFuturos'][j]['fecha_tentativa_cobro']);
+    }
 
     let item = {
       "id": info['listIngresosFuturos'][j]['ingresos_futuros_id'],
@@ -21,7 +26,8 @@ function obtenerList(info) {
       "date_to_pay": fechaCobro,
       "date_to_pay_o": fn.obtenerFecha(info['listIngresosFuturos'][j]['fecha_tentativa_cobro']),
       "state": state,
-      "date_cashed": fechaEnQueSeCobro
+      "date_cashed": fechaEnQueSeCobro,
+      "statusCobro": validarCobro
     }
      listData.push(item);
   }

@@ -17,6 +17,7 @@ import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
+import { Redirect } from 'react-router-dom';
 
 const drawerWidth = 250;
 
@@ -62,6 +63,10 @@ const items: MenuItem[] = [
 export const Home = (props: any) => {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  if(localStorage.getItem('user_id')===null)
+    location.href = '/';
+
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);

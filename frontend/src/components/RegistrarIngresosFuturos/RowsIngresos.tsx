@@ -30,22 +30,17 @@ export const RowsIngreso = ({
   rowsPerPage,
   showModal,
   setInitialValues,
-  setModal2Open
+  showModalC
 }: {
   pullData: any;
   page: any;
   rowsPerPage: any;
   showModal: Function;
   setInitialValues: Function;
-  setModal2Open: Function;
+  showModalC: Function;
 }) => {
 
-  const cambiarStatus = (id) => {
-    alert(id);
-  }
-
   const editar = (id) => {
-
     showModal();
     console.log(pullData);
     const pos = fn.buscarPosicionArreglo(pullData,id);
@@ -53,9 +48,6 @@ export const RowsIngreso = ({
     setTimeout(()=> {
       setInitialValues(({hdId:id,txtNombre:pullData[pos]['name'], txtConcepto:pullData[pos]['concept'], stTipo:pullData[pos]['id_payment_method'], stCategoria:pullData[pos]['id_category'], txtMonto:pullData[pos]['amount'], txtFechaTentativaCobro:dayjs(pullData[pos]['date_to_pay_o'])}));
     },100);
-    /*const cuenta = fn.obtenerValorHtml("#spName"+id_cb);
-    const cantidad = fn.obtenerValorHtml("#spCantidadO"+id_cb);
-    const id_tipo = fn.obtenerValorHtml("#spTipoO"+id_cb);*/
   }
 
   const eliminar = (id) => {
@@ -117,6 +109,7 @@ export const RowsIngreso = ({
                   size="small"
                   label="Cobrado"
                   className={Styles.chipTable}
+                  onClick={()=>{showModalC(data.id,2)}}
                 />
               ) : (
                 <Chip
@@ -124,11 +117,11 @@ export const RowsIngreso = ({
                   label="No cobrado"
                   size="small"
                   className={Styles.chipTableNo}
-                  onClick={()=>{setModal2Open(true)}}
+                  onClick={()=>{showModalC(data.id,1)}}
                 />
               )}
             </TableCell>
-            <TableCell align="left">{data.date_cashed}</TableCell>
+            <TableCell align="left"className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{data.date_cashed}</TableCell>
             <TableCell className="Iconos-Tabla" align="right">
               <EditIcon className="u-efecto slideRight" onClick={()=>{editar(data.id)}} />
               <Popconfirm

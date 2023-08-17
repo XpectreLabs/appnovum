@@ -84,10 +84,10 @@ export const Registro2 = () => {
                     />
 
                     <div>
-                      <p><strong>{(errors.empresa)?`Errores:`:null}</strong></p>
-                      {errors.empresa}<br />
-                      {errors.dedicaTuEmpresa}<br />
-                      {errors.numeroEmpreados}
+                      <p><strong>{(errors.empresa || errors.dedicaTuEmpresa || errors.numeroEmpreados)?`Errores:`:null}</strong></p>
+                      {errors.empresa ? (<p>{errors.empresa}</p>) : null}
+                      {errors.dedicaTuEmpresa ? (<p>{errors.dedicaTuEmpresa}</p>) : null}
+                      {errors.numeroEmpreados ? (<p>{errors.numeroEmpreados}</p>) : null}
                     </div>
 
                     <div className='u-textLeft'>

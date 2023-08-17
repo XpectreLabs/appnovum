@@ -137,9 +137,13 @@ export const TableRegistrarCajaOBanco = () => {
         </Box>
       </Box>
 
-      <div>
+      {/* <div>
           <img className={cargandoVisible? "Cargando Mt mostrarI-b Sf" : "Cargando Mt Sf"}  src="img/loading.gif" alt="" />
-      </div>
+      </div> */}
+
+      <Box className={cargandoVisible?'u-textCenter':'u-textCenter u-ocultar'}>
+        <CircularProgress />
+      </Box>
 
       <div id="listDatos" style={{ paddingBottom: "50px" }}></div>
 

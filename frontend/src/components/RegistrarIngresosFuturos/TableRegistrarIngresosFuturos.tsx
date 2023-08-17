@@ -9,6 +9,7 @@ import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import { Formik, Form } from "formik";
@@ -41,6 +42,7 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
   .then((resp) => resp.json())
   .then(function(info) {
     data = fng.obtenerList(info);
+    console.log(data);
 
     if(buscar)
       setListaDatos(data);
@@ -65,12 +67,15 @@ cargarDatos();
 export const TableRegistrarIngresosFuturos = () => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirm2Loading, setConfirm2Loading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();  
   const [cargandoVisible, setCargandoVisible] = useState(true);
   const [listaDatos, setListaDatos] = useState([]);
   const [initialValues, setInitialValues] = useState(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
   const [cantidadV, setCantidadV] = useState("0");
   const [modal2Open, setModal2Open] = useState(false);
+  const [idIngresoStatus, setIdIngresoStatus] = useState("0");
+  const [cobrado, setCobrado] = useState(false);
 
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
       setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaCobro:dayjs(dateString)}));
@@ -104,6 +109,68 @@ export const TableRegistrarIngresosFuturos = () => {
     },500);
   };
 
+  const showModalC = (id,tipo) => {
+    tipo===1?setCobrado(false):setCobrado(true);
+    setModal2Open(true);
+
+    setTimeout(()=>{
+      setIdIngresoStatus(id);
+    },500);
+  };
+
+  const cobrar = () => {
+    const scriptURL = 'http://localhost:3001/cambiarCobrado'; // deberia es
+    const ingresos_futuros_id = idIngresoStatus;
+    const dataU = {ingresos_futuros_id};
+    setConfirm2Loading(true)
+    fetch(scriptURL, {
+       method: 'POST',
+       body: JSON.stringify(dataU),
+       headers:{
+         'Content-Type': 'application/json'
+       }
+     })
+    .then((resp) => resp.json())
+    .then(function(info) {
+      cargarDatos(true,setListaDatos);
+      setTimeout(()=> {
+        setModal2Open(false);
+        setConfirm2Loading(false)
+      },600)
+    })
+    .catch(error => {
+      console.log(error.message);
+      console.error('Error!', error.message);
+    });
+  };
+
+
+  const revertir = () => {
+    const scriptURL = 'http://localhost:3001/revertirCobro'; // deberia es
+    const ingresos_futuros_id = idIngresoStatus;
+    const dataU = {ingresos_futuros_id};
+    setConfirm2Loading(true)
+    fetch(scriptURL, {
+       method: 'POST',
+       body: JSON.stringify(dataU),
+       headers:{
+         'Content-Type': 'application/json'
+       }
+     })
+    .then((resp) => resp.json())
+    .then(function(info) {
+      cargarDatos(true,setListaDatos);
+      setTimeout(()=> {
+        setModal2Open(false);
+        setConfirm2Loading(false)
+      },600)
+    })
+    .catch(error => {
+      console.log(error.message);
+      console.error('Error!', error.message);
+    });
+  };
+
   return (
     <Box>
       <Box className={Styles.nav}>
@@ -133,6 +200,39 @@ export const TableRegistrarIngresosFuturos = () => {
           </Paper>
         </Box>
 
+        <Box className={Styles.itemSearch}>
+          <Paper
+            component="form"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+          <select
+             name="stTipoB"
+            id="stTipoB"
+            className={Styles.ModalSelect}
+          >
+            <option value="0">Todos</option>
+            <option value="1">Efectivo</option>
+            <option value="2">Bancos</option>
+          </select>
+
+          <select
+             name="stEstadoB"
+            id="stEstadoB"
+            className={Styles.ModalSelect}
+          >
+            <option value="0">Todos</option>
+            <option value="1">Solo bancos</option>
+            <option value="2">Solo pagados</option>
+            <option value="2">Solo no pagados</option>
+            <option value="2">Solo efectivo</option>
+          </select>
+
+          </Paper>
+        </Box>
+
         <Box className={Styles.itemButton}>
           <Button
             variant="contained"
@@ -148,11 +248,14 @@ export const TableRegistrarIngresosFuturos = () => {
         </Box>
       </Box>
 
-      <DataIngreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} setModal2Open={setModal2Open} />
+      <DataIngreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} showModalC={showModalC} />
 
-      <div>
+      <Box className={cargandoVisible?'u-textCenter':'u-textCenter u-ocultar'}>
+        <CircularProgress />
+      </Box>
+      {/* <div>
           <img className={cargandoVisible? "Cargando Mt mostrarI-b Sf" : "Cargando Mt Sf"}  src="img/loading.gif" alt="" />
-      </div>
+      </div> */}
 
       <Box>
         {listaDatos.map((data) => (
@@ -349,14 +452,16 @@ export const TableRegistrarIngresosFuturos = () => {
         title=""
         centered
         open={modal2Open}
-        onOk={() => setModal2Open(false)}
+        onOk={cobrado?revertir:cobrar}
         onCancel={() => setModal2Open(false)}
-        okText="Cobrar"
+        okText={cobrado?"Cambiar":"Cobrar"}
         cancelText="Cancelar"
-        className={`${Styles.ModalCobrar} u-textCenter`}
+        className={cobrado?`${Styles.ModalCobrar} Cobrado u-textCenter`:`${Styles.ModalCobrar} u-textCenter`}
+        confirmLoading={confirm2Loading}
       >
-        <span className="icon-icoCobrar"></span>
-        <p><strong>Deseas cobrar esta deuda, se creará un registro de cobro</strong></p>
+        <input type="hidden" name="idIngresoFuturo" id="idIngresoFuturo" value={idIngresoStatus} />
+        <span className={cobrado?"icon-icoCobrarDismiss":"icon-icoCobrar"}></span>
+        <p><strong>{cobrado?"¿Este ingreso ya fue cobrado, desea cambiarlo?":"Deseas cobrar esta deuda, se creará un registro de cobro"}</strong></p>
       </Modal>
     </Box>
   );

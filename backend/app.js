@@ -23,7 +23,6 @@ router.use(express.urlencoded({ extended:false }));
 router.use(express.json());
 router.use(cors());
 
-
 router.get('/', async (req,res,next) => {
   const listaTipos = await prisma.typesusers.findMany({
     select: {
@@ -31,10 +30,8 @@ router.get('/', async (req,res,next) => {
       typeuser: true
     },
   });
-
   res.json({listaTipos});
 });
-
 
 router.post('/loguear', async (req,res, next) => {
   try{
@@ -55,16 +52,15 @@ async function findUser(email,password) {
     },
     select: {
       user_id:true
-    }});
+  }});
 
-    if(users == null)
-      return 0;
+  if(users == null)
+    return 0;
 
-    return users.user_id;
+  return users.user_id;
 }
 
 router.post('/crearUsuario', async (req,res, next) => {
-  //let fecha = new Date().toISOString();
   const nuevoUsuario = await prisma.users.create({
     data:{
       email: req.body.hdEmail,
@@ -73,7 +69,6 @@ router.post('/crearUsuario', async (req,res, next) => {
       activo: 1
     }
   });
-
   res.json({"usuario_id":nuevoUsuario.user_id});
 });
 
@@ -93,12 +88,10 @@ router.post('/crearCliente', async (req,res, next) => {
       activo: 1
     }
   });
-
   res.json({"cliente_id":nuevoCliente.cliente_id});
 });
 
 router.post('/altaCajaBanco', async (req,res, next) => {
-  //let fecha = new Date().toISOString();
   const nuevoCajaBanco = await prisma.cajas_bancos.create({
     data:{
       nombre_cuenta: req.body.txtNombre,
@@ -108,13 +101,11 @@ router.post('/altaCajaBanco', async (req,res, next) => {
       activo: 1
     }
   });
-
   res.json({"cajas_bancos_id":nuevoCajaBanco.cajas_bancos_id});
 });
 
 router.post('/editarCajaBanco', async (req,res,next) => {
   const id = parseInt(req.body.caja_banco_id);
-  //console.log("->"+id);
 
   await prisma.cajas_bancos.update({
     where: {
@@ -129,60 +120,59 @@ router.post('/editarCajaBanco', async (req,res,next) => {
   res.json({"status":"exito"});
 });
 
-
 router.post('/listCajasBancos', async (req,res,next) => {
-  const id = req.body.user_id;//req.query.ordenPago;
+  if(req.body.user_id!==null) {
+    const id = req.body.user_id;//req.query.ordenPago;
 
-  const listCajasBancos = await prisma.cajas_bancos.findMany({
-    where: {
-      user_id : parseInt(id)
-    },
-    select: {
-      cajas_bancos_id: true,
-      nombre_cuenta: true,
-      tipo_pago_id:true,
-      cantidad_actual: true,
-      tipos_pagos: {
-        select: {
-          tipo_pago:true
+    const listCajasBancos = await prisma.cajas_bancos.findMany({
+      where: {
+        user_id : parseInt(id)
+      },
+      select: {
+        cajas_bancos_id: true,
+        nombre_cuenta: true,
+        tipo_pago_id:true,
+        cantidad_actual: true,
+        tipos_pagos: {
+          select: {
+            tipo_pago:true
+          },
         },
       },
-    },
-  });
-  res.json({listCajasBancos});
+    });
+    res.json({listCajasBancos});
+  }
 });
 
 router.post('/listCajasBancosB', async (req,res,next) => {
-  const id = req.body.user_id;
-  const nombre = req.body.busqueda;
+  if(req.body.user_id!==null) {
+    const id = req.body.user_id;
+    const nombre = req.body.busqueda;
 
-  const listCajasBancos = await prisma.cajas_bancos.findMany({
-    where: {
-      user_id : parseInt(id),
-      nombre_cuenta : {
-        contains: nombre,
-      },
-    },
-    select: {
-      cajas_bancos_id: true,
-      nombre_cuenta: true,
-      tipo_pago_id:true,
-      cantidad_actual: true,
-      tipos_pagos: {
-        select: {
-          tipo_pago:true
+    const listCajasBancos = await prisma.cajas_bancos.findMany({
+      where: {
+        user_id : parseInt(id),
+        nombre_cuenta : {
+          contains: nombre,
         },
       },
-    },
-  });
-
-  res.json({listCajasBancos});
+      select: {
+        cajas_bancos_id: true,
+        nombre_cuenta: true,
+        tipo_pago_id:true,
+        cantidad_actual: true,
+        tipos_pagos: {
+          select: {
+            tipo_pago:true
+          },
+        },
+      },
+    });
+    res.json({listCajasBancos});
+  }
 });
 
-
 router.post('/altaIngresoFuturo', async (req,res, next) => {
-  //console.log("Fechas: "+req.body.txtFechaTentativaCobro);
-  //let fecha = new Date(req.body.txtFechaTentativaCobro+' 00:00:00').toISOString();
   let fechaCreacion = new Date().toISOString();
   const nuevoIngresoFuturo = await prisma.ingresos_futuros.create({
     data:{
@@ -197,17 +187,11 @@ router.post('/altaIngresoFuturo', async (req,res, next) => {
       activo: true
     }
   });
-  //console.log(nuevoIngresoFuturo);
-
   res.json({"ingresos_futuros_id":nuevoIngresoFuturo.ingresos_futuros_id});
 });
 
-
-
 router.post('/editarIngresoFuturo', async (req,res,next) => {
   const id = parseInt(req.body.ingresos_futuros_id);
-  //console.log("Fecha: "+req.body.txtFechaTentativaCobro+" -> "+id);
-  //let fecha = new Date(req.body.txtFechaTentativaCobro+' 00:00:00').toISOString();
 
    await prisma.ingresos_futuros.update({
     where: {
@@ -222,88 +206,88 @@ router.post('/editarIngresoFuturo', async (req,res,next) => {
       fecha_tentativa_cobro: req.body.txtFechaTentativaCobro,
     }
   });
-
   res.json({"status":"exito"});
 });
 
-
 router.post('/listIngresosFuturos', async (req,res,next) => {
-  const id = req.body.user_id;
+  if(req.body.user_id!==null) {
+    const id = req.body.user_id;
 
-  const listIngresosFuturos = await prisma.ingresos_futuros.findMany({
-    where: {
-      user_id : parseInt(id),
-      activo : true
-    },
-    select: {
-      ingresos_futuros_id: true,
-      nombre_persona_empresa: true,
-      concepto: true,
-      tipo_pago_id:true,
-      categoria_id:true,
-      monto: true,
-      fecha_tentativa_cobro: true,
-      fecha_creacion: true,
-      fecha_cobro: true,
-      tipos_pagos: {
-        select: {
-          tipo_pago:true
+    const listIngresosFuturos = await prisma.ingresos_futuros.findMany({
+      where: {
+        user_id : parseInt(id),
+        activo : true
+      },
+      select: {
+        ingresos_futuros_id: true,
+        nombre_persona_empresa: true,
+        concepto: true,
+        tipo_pago_id:true,
+        categoria_id:true,
+        monto: true,
+        fecha_tentativa_cobro: true,
+        fecha_creacion: true,
+        fecha_cobro: true,
+        tipos_pagos: {
+          select: {
+            tipo_pago:true
+          },
+        },
+        categorias: {
+          select: {
+            categoria:true
+          },
         },
       },
-      categorias: {
-        select: {
-          categoria:true
-        },
-      },
-    },
-  });
-  //console.log(listIngresosFuturos);
-  res.json({listIngresosFuturos});
+    });
+    res.json({listIngresosFuturos});
+  }
 });
 
 router.post('/listIngresosFuturosB', async (req,res,next) => {
-  const id = req.body.user_id;
-  const nombre = req.body.busqueda;
+  if(req.body.user_id!==null) {
+    const id = req.body.user_id;
+    const nombre = req.body.busqueda;
 
-  const listIngresosFuturos = await prisma.ingresos_futuros.findMany({
-    where: {
-      user_id : parseInt(id),
-      nombre_persona_empresa : {
-        contains: nombre,
+    const listIngresosFuturos = await prisma.ingresos_futuros.findMany({
+      where: {
+        user_id : parseInt(id),
+        nombre_persona_empresa : {
+          contains: nombre,
+        },
+        activo : true
       },
-      activo : true
-    },
-    select: {
-      ingresos_futuros_id: true,
-      nombre_persona_empresa: true,
-      concepto: true,
-      tipo_pago_id:true,
-      categoria_id:true,
-      monto: true,
-      fecha_tentativa_cobro: true,
-      fecha_creacion: true,
-      fecha_cobro: true,
-      tipos_pagos: {
-        select: {
-          tipo_pago:true
+      select: {
+        ingresos_futuros_id: true,
+        nombre_persona_empresa: true,
+        concepto: true,
+        tipo_pago_id:true,
+        categoria_id:true,
+        monto: true,
+        fecha_tentativa_cobro: true,
+        fecha_creacion: true,
+        fecha_cobro: true,
+        tipos_pagos: {
+          select: {
+            tipo_pago:true
+          },
+        },
+        categorias: {
+          select: {
+            categoria:true
+          },
         },
       },
-      categorias: {
-        select: {
-          categoria:true
-        },
-      },
-    },
-  });
-  //console.log(listIngresosFuturos);
-  res.json({listIngresosFuturos});
+    });
+    res.json({listIngresosFuturos});
+  }
 });
 
 
 router.post('/eliminarIngresoFuturo', async (req,res,next) => {
   const id = parseInt(req.body.ingresos_futuros_id);
 
-  const actualizarIngresoFuturo = await prisma.ingresos_futuros.update({
+  await prisma.ingresos_futuros.update({
     where: {
       ingresos_futuros_id : parseInt(id),
     },
@@ -315,7 +299,7 @@ router.post('/eliminarIngresoFuturo', async (req,res,next) => {
 });
 
 
-router.post('/actualizarStatus', async (req,res, next) => {
+router.post('/cambiarCobrado', async (req,res, next) => {
   const id = parseInt(req.body.ingresos_futuros_id);
   let fechaDeCobro = new Date().toISOString();
 
@@ -327,14 +311,26 @@ router.post('/actualizarStatus', async (req,res, next) => {
       fecha_cobro:fechaDeCobro
     }
   });
-
   res.json({"status":"exito"});
 });
 
 
+router.post('/revertirCobro', async (req,res, next) => {
+  const id = parseInt(req.body.ingresos_futuros_id);
+  //let fechaDeCobro = new Date().toISOString();
+
+  await prisma.ingresos_futuros.update({
+    where: {
+      ingresos_futuros_id : parseInt(id),
+    },
+    data:{
+      fecha_cobro:null
+    }
+  });
+  res.json({"status":"exito"});
+});
 
 router.post('/altaEgresoFuturo', async (req,res, next) => {
-  //let fecha = new Date(req.body.txtFechaTentativaPago+' 00:00:00').toISOString();
   let fechaCreacion = new Date().toISOString();
   const nuevoEgresoFuturo = await prisma.egresos_futuros.create({
     data:{
@@ -349,16 +345,13 @@ router.post('/altaEgresoFuturo', async (req,res, next) => {
       activo: true
     }
   });
-
-  //console.log(nuevoEgresoFuturo);
   res.json({"egresos_futuros_id":nuevoEgresoFuturo.egresos_futuros_id});
 });
-
 
 router.post('/editarEgresoFuturo', async (req,res,next) => {
   const id = parseInt(req.body.egresos_futuros_id);
 
-  const actualizarEgresoFuturo = await prisma.egresos_futuros.update({
+  await prisma.egresos_futuros.update({
     where: {
       egresos_futuros_id : parseInt(id),
     },
@@ -371,87 +364,87 @@ router.post('/editarEgresoFuturo', async (req,res,next) => {
       fecha_tentativa_pago: req.body.txtFechaTentativaPago,
     }
   });
-
-  //console.log(actualizarEgresoFuturo);
   res.json({"status":"exito"});
 });
 
 router.post('/listEgresosFuturos', async (req,res,next) => {
-  const id = req.body.user_id;
-  //console.log("->" + id);
+  if(req.body.user_id!==null) {
+    const id = req.body.user_id;
 
-  const listEgresosFuturos = await prisma.egresos_futuros.findMany({
-    where: {
-      user_id : parseInt(id),
-      activo : true
-    },
-    select: {
-      egresos_futuros_id: true,
-      nombre_persona_empresa: true,
-      concepto: true,
-      tipo_pago_id:true,
-      categoria_id:true,
-      monto: true,
-      fecha_tentativa_pago: true,
-      fecha_creacion: true,
-      fecha_pago: true,
-      tipos_pagos: {
-        select: {
-          tipo_pago:true
+    const listEgresosFuturos = await prisma.egresos_futuros.findMany({
+      where: {
+        user_id : parseInt(id),
+        activo : true
+      },
+      select: {
+        egresos_futuros_id: true,
+        nombre_persona_empresa: true,
+        concepto: true,
+        tipo_pago_id:true,
+        categoria_id:true,
+        monto: true,
+        fecha_tentativa_pago: true,
+        fecha_creacion: true,
+        fecha_pago: true,
+        tipos_pagos: {
+          select: {
+            tipo_pago:true
+          },
+        },
+        categorias: {
+          select: {
+            categoria:true
+          },
         },
       },
-      categorias: {
-        select: {
-          categoria:true
-        },
-      },
-    },
-  });
-  res.json({listEgresosFuturos});
+    });
+    res.json({listEgresosFuturos});
+  }
 });
 
 router.post('/listEgresosFuturosB', async (req,res,next) => {
-  const id = req.body.user_id;
-  const nombre = req.body.busqueda;
+  if(req.body.user_id!==null) {
+    const id = req.body.user_id;
+    const nombre = req.body.busqueda;
 
-  const listEgresosFuturos = await prisma.egresos_futuros.findMany({
-    where: {
-      user_id : parseInt(id),
-      nombre_persona_empresa : {
-        contains: nombre,
+    const listEgresosFuturos = await prisma.egresos_futuros.findMany({
+      where: {
+        user_id : parseInt(id),
+        nombre_persona_empresa : {
+          contains: nombre,
+        },
+        activo : true
       },
-      activo : true
-    },
-    select: {
-      egresos_futuros_id: true,
-      nombre_persona_empresa: true,
-      concepto: true,
-      tipo_pago_id:true,
-      categoria_id:true,
-      monto: true,
-      fecha_tentativa_pago: true,
-      fecha_creacion: true,
-      fecha_pago: true,
-      tipos_pagos: {
-        select: {
-          tipo_pago:true
+      select: {
+        egresos_futuros_id: true,
+        nombre_persona_empresa: true,
+        concepto: true,
+        tipo_pago_id:true,
+        categoria_id:true,
+        monto: true,
+        fecha_tentativa_pago: true,
+        fecha_creacion: true,
+        fecha_pago: true,
+        tipos_pagos: {
+          select: {
+            tipo_pago:true
+          },
+        },
+        categorias: {
+          select: {
+            categoria:true
+          },
         },
       },
-      categorias: {
-        select: {
-          categoria:true
-        },
-      },
-    },
-  });
-  //console.log(listIngresosFuturos);
-  res.json({listEgresosFuturos});
+    });
+    res.json({listEgresosFuturos});
+  }
 });
 
 router.post('/eliminarEgresoFuturo', async (req,res,next) => {
   const id = parseInt(req.body.egresos_futuros_id);
 
-  const actualizarEgresoFuturo = await prisma.egresos_futuros.update({
+  await prisma.egresos_futuros.update({
     where: {
       egresos_futuros_id : parseInt(id),
     },
@@ -470,9 +463,6 @@ router.listen(3001, () => {
   console.log("Aplicación ejecutandose ....");
 });
 
-
-
 // Servidor HTTP
 // const httpsServer = https.createServer(options, router);
 // httpsServer.listen(443, process.env.IP);
-

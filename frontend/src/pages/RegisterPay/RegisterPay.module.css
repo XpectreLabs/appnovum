@@ -113,11 +113,11 @@
 }
 
 .txtCobrado{
-  color: #00C62F;
+  color: #00C62F !important;
 }
 
 .txtNoCobrado{
-  color: #f52121;
+  color: #f52121 !important;
 }
 
 .txtPendiente{
@@ -203,7 +203,7 @@
 
 .ModalCobrar
 {
-
+  padding: 50px 0px !important;
 }
 
 .ModalCobrar span.icon-icoCobrar
