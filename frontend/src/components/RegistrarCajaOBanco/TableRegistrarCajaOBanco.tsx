@@ -42,12 +42,12 @@ export const TableRegistrarCajaOBanco = () => {
   }
 
   async function cargarDatos (ejecutarSetCargando=true,buscar=false) {
-    let scriptURL = 'https://admin.bioesensi-crm.com/listCajasBancos';
+    let scriptURL = localStorage.getItem('site')+"/listCajasBancos";
     let dataUrl = {user_id};
     let busqueda = "";
 
     if(buscar) {
-      scriptURL = 'https://admin.bioesensi-crm.com/listCajasBancosB';
+      scriptURL = localStorage.getItem('site')+"/listCajasBancosB";
       busqueda = fn.obtenerValor('#txtSearch');
       dataUrl = {user_id, busqueda};
     }
@@ -71,7 +71,9 @@ export const TableRegistrarCajaOBanco = () => {
     });
   }
 
-  cargarDatos();
+  if(user_id!==""&&user_id!==null) {
+    cargarDatos();
+  }
 
   const validarSubmit = () => {
     fn.ejecutarClick("#txtAceptar");
@@ -172,10 +174,10 @@ export const TableRegistrarCajaOBanco = () => {
             .required("* Cantidad actual"),
           })}
           onSubmit={(values, actions) => {
-              let scriptURL = 'https://admin.bioesensi-crm.com/altaCajaBanco';
+              let scriptURL = localStorage.getItem('site')+"/altaCajaBanco";
 
               if(values.hdId)
-                scriptURL = 'https://admin.bioesensi-crm.com/editarCajaBanco';
+                scriptURL = localStorage.getItem('site')+"/editarCajaBanco";
 
               const txtNombre = values.txtNombre;
               const stTipo = values.stTipo;

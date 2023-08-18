@@ -22,16 +22,18 @@ let data = [];
 const user_id = localStorage.getItem('user_id');
 
 async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='') {
-  let scriptURL = 'http://localhost:3001/listIngresosFuturos';
+  let scriptURL = localStorage.getItem('site')+"/listIngresosFuturos";
   let dataUrl = {user_id};
   let busqueda = "";
 
   if(buscar) {
-    scriptURL = 'http://localhost:3001/listIngresosFuturosB';
+    scriptURL = localStorage.getItem('site')+"/listIngresosFuturosB";
     busqueda = fn.obtenerValor('#txtSearch');
     dataUrl = {user_id, busqueda};
   }
 
+  console.log("Data:");
+  console.log(dataUrl);
   await fetch(scriptURL, {
     method: 'POST',
     body: JSON.stringify(dataUrl),
@@ -43,6 +45,8 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
   .then(function(info) {
     data = fng.obtenerList(info);
     console.log(data);
+
+    //alert(data);
 
     if(buscar)
       setListaDatos(data);
@@ -62,7 +66,10 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
   });
 }
 
-cargarDatos();
+
+if(user_id!==""&&user_id!==null) {
+  cargarDatos();
+}
 
 export const TableRegistrarIngresosFuturos = () => {
   const [open, setOpen] = useState(false);
@@ -119,7 +126,7 @@ export const TableRegistrarIngresosFuturos = () => {
   };
 
   const cobrar = () => {
-    const scriptURL = 'http://localhost:3001/cambiarCobrado'; // deberia es
+    const scriptURL = localStorage.getItem('site')+"/cambiarCobrado"; // deberia es
     const ingresos_futuros_id = idIngresoStatus;
     const dataU = {ingresos_futuros_id};
     setConfirm2Loading(true)
@@ -146,7 +153,7 @@ export const TableRegistrarIngresosFuturos = () => {
 
 
   const revertir = () => {
-    const scriptURL = 'http://localhost:3001/revertirCobro'; // deberia es
+    const scriptURL = localStorage.getItem('site')+"/revertirCobro"; // deberia es
     const ingresos_futuros_id = idIngresoStatus;
     const dataU = {ingresos_futuros_id};
     setConfirm2Loading(true)
@@ -208,20 +215,22 @@ export const TableRegistrarIngresosFuturos = () => {
               alignItems: "center",
             }}
           >
+          <label htmlFor="stTipoB" className={Styles.LblFilter}>Método</label>
           <select
              name="stTipoB"
             id="stTipoB"
-            className={Styles.ModalSelect}
+            className={`${Styles.ModalSelect} ${Styles.ModalSelectBrVerde}`}
           >
             <option value="0">Todos</option>
             <option value="1">Efectivo</option>
             <option value="2">Bancos</option>
           </select>
 
+          <label htmlFor="stEstadoB" className={Styles.LblFilter}>Estado</label>
           <select
              name="stEstadoB"
             id="stEstadoB"
-            className={Styles.ModalSelect}
+            className={`${Styles.ModalSelect} ${Styles.ModalSelectBrVerde}`}
           >
             <option value="0">Todos</option>
             <option value="1">Solo bancos</option>
@@ -306,10 +315,10 @@ export const TableRegistrarIngresosFuturos = () => {
               .required("* Fecha tentativa de cobro"),
           })}
           onSubmit={(values, actions) => {
-            let scriptURL = 'http://localhost:3001/altaIngresoFuturo';
+            let scriptURL = localStorage.getItem('site')+"/altaIngresoFuturo";
 
             if(values.hdId)
-                scriptURL = 'http://localhost:3001/editarIngresoFuturo';
+                scriptURL = localStorage.getItem('site')+"/editarIngresoFuturo";
 
             const txtNombre = values.txtNombre;
             const txtConcepto = values.txtConcepto;

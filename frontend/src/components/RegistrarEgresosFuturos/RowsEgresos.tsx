@@ -54,7 +54,7 @@ export const RowsEgresos = ({
   }
 
   const eliminar = (id) => {
-    const scriptURL = 'http://localhost:3001/eliminarEgresoFuturo'; // deberia es
+    const scriptURL = localStorage.getItem('site')+"/eliminarEgresoFuturo"; // deberia es
     const egresos_futuros_id = id;
     const dataU = {egresos_futuros_id};
 

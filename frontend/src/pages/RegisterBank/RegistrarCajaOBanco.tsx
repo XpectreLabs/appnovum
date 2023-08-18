@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Default } from '../../components/RegistrarCajaOBanco/Default.tsx';
 import { TableRegistrarCajaOBanco } from '../../components/RegistrarCajaOBanco/TableRegistrarCajaOBanco.tsx';
 
-export const RegistrarCajaOBanco = ({cambioRegistroBan}) => {
-    const [status, setStatus] = useState(true);
+export const RegistrarCajaOBanco = ({cajaActive,setCajaActive}) => {
+    const [status, setStatus] = useState(cajaActive);
 
     const cambioTable = () => {
       setStatus(true);
@@ -13,7 +13,7 @@ export const RegistrarCajaOBanco = ({cambioRegistroBan}) => {
       if (props.ban)
         return <TableRegistrarCajaOBanco />;
       else if (props.ban === false)
-        return <Default cambioRegistroBan={cambioRegistroBan} cambioTable={cambioTable} />;
+        return <Default cambioTable={cambioTable} />;
     }
 
     return (

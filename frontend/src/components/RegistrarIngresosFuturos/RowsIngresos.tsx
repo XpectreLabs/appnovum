@@ -51,7 +51,7 @@ export const RowsIngreso = ({
   }
 
   const eliminar = (id) => {
-    const scriptURL = 'http://localhost:3001/eliminarIngresoFuturo'; // deberia es
+    const scriptURL = localStorage.getItem('site')+"/eliminarIngresoFuturo"; // deberia es
     const ingresos_futuros_id = id;
     const dataU = {ingresos_futuros_id};
 

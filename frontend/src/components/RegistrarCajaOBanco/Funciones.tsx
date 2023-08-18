@@ -43,8 +43,10 @@ function mostrarData(info:any):void {
   if(listData==="")
     listData="<p><strong>No hay resultados en la busqueda.</strong></p>";
 
-  fn.asignarValorInnerHTML("listDatos",listData);
-  fn.asignarValorInnerHTML("NumCuenta",Object.keys(info['listCajasBancos']).length);
+  if(listData) {
+    fn.asignarValorInnerHTML("listDatos",listData);
+    fn.asignarValorInnerHTML("NumCuenta",Object.keys(info['listCajasBancos']).length);
+  }
 }
 
 

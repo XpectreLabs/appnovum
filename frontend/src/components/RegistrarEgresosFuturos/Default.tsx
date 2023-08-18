@@ -80,7 +80,7 @@ export const Default = ({cambioTable}) => {
                 .required("* Fecha tentativa de pago"),
             })}
             onSubmit={(values, actions) => {
-              const scriptURL = 'http://localhost:3001/altaEgresoFuturo';
+              const scriptURL = localStorage.getItem('site')+"/altaEgresoFuturo";
               const user_id = localStorage.getItem('user_id');
               const txtNombre = values.txtNombre;
               const txtConcepto = values.txtConcepto;
@@ -107,6 +107,10 @@ export const Default = ({cambioTable}) => {
                     setOpen(false);
                     setConfirmLoading(false);
                     cambioTable();
+
+                    setTimeout(() => {
+                      fn.ejecutarClick("#btnBuscar");
+                    }, 500);
                   }, 3000);
                 })
                 .catch(error => {

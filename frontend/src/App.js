@@ -20,7 +20,7 @@ function App() {
           <Route exact path='/Recovery-pass' element={<Recovery/>}/>
         </Route>
       </Routes>
-    </Router>
+    </Router> 
   );
 }
 

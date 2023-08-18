@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Default } from '../../components/RegistrarIngresosFuturos/Default.tsx';
 import { TableRegistrarIngresosFuturos } from '../../components/RegistrarIngresosFuturos/TableRegistrarIngresosFuturos.tsx';
-
-export const RegistrarIngresosFuturos = ({cambioRegistroBan}) => {
-  const [status, setStatus] = useState(true);
+ 
+export const RegistrarIngresosFuturos = ({ingresoActive, setIngresoActive}) => {
+  const [status, setStatus] = useState(ingresoActive);
 
   const cambioTable = () => {
     setStatus(true);
@@ -13,7 +13,7 @@ export const RegistrarIngresosFuturos = ({cambioRegistroBan}) => {
     if (props.ban)
       return <TableRegistrarIngresosFuturos />;
     else if (props.ban === false)
-      return <Default cambioRegistroBan={cambioRegistroBan} cambioTable={cambioTable}  />;
+      return <Default cambioTable={cambioTable}  />;
   }
 
   return (

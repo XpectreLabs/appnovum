@@ -28,10 +28,11 @@ export const Login = () => {
           .required("La contraseña es requerida"),
         })}
         onSubmit={(values, actions) => {
-          const scriptURL = 'https://admin.bioesensi-crm.com/loguear'
+          const scriptURL = localStorage.getItem('site')+"/loguear";
           const email = obtenerValor('#email');
           const password = obtenerValor('#password');
           const data = {email, password};
+          console.log(data);
           setCargandoVisible(true);
 
           fetch(scriptURL, {

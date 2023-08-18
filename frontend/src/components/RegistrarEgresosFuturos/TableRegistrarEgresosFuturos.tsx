@@ -22,12 +22,12 @@ let data = [];
 const user_id = localStorage.getItem('user_id');
 
 async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='') {
-  let scriptURL = 'http://localhost:3001/listEgresosFuturos';
+  let scriptURL = localStorage.getItem('site')+"/listEgresosFuturos";
   let dataUrl = {user_id};
   let busqueda = "";
 
   if(buscar) {
-    scriptURL = 'http://localhost:3001/listEgresosFuturosB';
+    scriptURL = localStorage.getItem('site')+"/listEgresosFuturosB";
     busqueda = fn.obtenerValor('#txtSearch');
     dataUrl = {user_id, busqueda};
   }
@@ -61,7 +61,9 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
   });
 }
 
-cargarDatos();
+if(user_id!==""&&user_id!==null) {
+  cargarDatos();
+}
 
 export const TableRegistrarEgresosFuturos = () => {
 const [open, setOpen] = useState(false);
@@ -206,10 +208,10 @@ const handleCancel = () => {
               .required("* Fecha tentativa de pago"),
           })}
           onSubmit={(values, actions) => {
-            let scriptURL = 'http://localhost:3001/altaEgresoFuturo';
+            let scriptURL = localStorage.getItem('site')+"/altaEgresoFuturo";
 
             if(values.hdId)
-                scriptURL = 'http://localhost:3001/editarEgresoFuturo';
+                scriptURL = localStorage.getItem('site')+"/editarEgresoFuturo";
 
             const txtNombre = values.txtNombre;
             const txtConcepto = values.txtConcepto;
