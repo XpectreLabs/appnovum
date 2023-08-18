@@ -208,7 +208,7 @@ router.post('/editarIngresoFuturo', async (req,res,next) => {
   });
   res.json({"status":"exito"});
 });
-
+ 
 router.post('/listIngresosFuturos', async (req,res,next) => {
   if(req.body.user_id!==null) {
     const id = req.body.user_id;
@@ -368,6 +368,7 @@ router.post('/editarEgresoFuturo', async (req,res,next) => {
 });
 
 router.post('/listEgresosFuturos', async (req,res,next) => {
+  
   if(req.body.user_id!==null) {
     const id = req.body.user_id;
 
@@ -454,6 +455,40 @@ router.post('/eliminarEgresoFuturo', async (req,res,next) => {
   });
   res.json({"status":"exito"});
 });
+
+
+router.post('/todos', async (req,res,next) => {
+  if(req.body.user_id!==null) {
+    const id = req.body.user_id;
+
+    const listCajasBancos = await prisma.cajas_bancos.findMany({
+      where: {
+        user_id : parseInt(id)
+      },
+    });
+
+    const listIngresosFuturos = await prisma.ingresos_futuros.findMany({
+      where: {
+        user_id : parseInt(id),
+        activo : true
+      },
+    });
+
+    const listEgresosFuturos = await prisma.egresos_futuros.findMany({
+      where: {
+        user_id : parseInt(id),
+        activo : true
+      },
+    });
+
+    /*console.log(listCajasBancos.length);
+    console.log(listIngresosFuturos.length);
+    console.log(listEgresosFuturos.length);*/
+
+    res.json({"caja":listCajasBancos.length,"ingreso":listIngresosFuturos.length,"egreso":listEgresosFuturos.length});
+  }
+});
+
 
 // Servidor HTTP
 // const serverHttp = http.createServer(router);
