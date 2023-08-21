@@ -7,7 +7,7 @@ import { Registro } from '../components/Registro/Registro.tsx';
 
 
 //if(localStorage.getItem('site')!==null&&localStorage.getItem('site')!=="")
-  localStorage.setItem('site', "https://admin.bioesensi-crm.com");
+  localStorage.setItem('site', "http://localhost:3001");
 
 const onChange = (key: string) => {
   console.log(key);

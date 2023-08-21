@@ -37,7 +37,8 @@ router.post('/loguear', async (req,res, next) => {
   try{
     console.log(req.body.email+" "+req.body.password);
     let user = await findUser(req.body.email,req.body.password);
-    console.log(user);
+    console.log("User: "+user);
+
     res.json({"usuario_id":user});
   }catch(e) {
     res.json({"usuario_id":0});
@@ -52,13 +53,41 @@ async function findUser(email,password) {
     },
     select: {
       user_id:true
-  }});
+    }
+  });
 
   if(users == null)
     return 0;
 
   return users.user_id;
 }
+
+router.post('/obtenerIniciales', async (req,res, next) => {
+  try{
+      if(req.body.user_id!==null) {
+        const id = req.body.user_id;
+        const cliente = await prisma.clientes.findMany({
+          where: {
+            user_id : parseInt(id),
+            activo : 1
+          },
+          select: {
+            nombre: true,
+            apellido: true,
+          },
+        });
+
+        let resultado = "";
+        if(cliente.length>0)
+          resultado= cliente[0]['nombre'].substring(0,1)+""+cliente[0]['apellido'].substring(0,1);
+
+        res.json({"iniciales":resultado});
+      }
+    }catch(e) {
+      res.json({"iniciales":"00"});
+  }
+});
+
 
 router.post('/crearUsuario', async (req,res, next) => {
   const nuevoUsuario = await prisma.users.create({
@@ -368,7 +397,6 @@ router.post('/editarEgresoFuturo', async (req,res,next) => {
 });
 
 router.post('/listEgresosFuturos', async (req,res,next) => {
-  
   if(req.body.user_id!==null) {
     const id = req.body.user_id;
 
