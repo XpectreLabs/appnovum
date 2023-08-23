@@ -21,10 +21,21 @@ import * as Yup from "yup";
 let data = [];
 const user_id = localStorage.getItem('user_id');
 
-async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='') {
+async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='')
+{
   let scriptURL = localStorage.getItem('site')+"/listIngresosFuturos";
   let dataUrl = {user_id};
   let busqueda = "";
+  let metodo_id = fn.obtenerValor("#stTipoB");
+  let estado_id = fn.obtenerValor("#stEstadoB");
+
+  if(metodo_id!==undefined&&estado_id!==undefined&&buscar===false) {
+    metodo_id = fn.obtenerValor("#stTipoB");
+    estado_id = fn.obtenerValor("#stEstadoB");
+
+    scriptURL = localStorage.getItem('site')+"/listIngresosFuturosFiltro";
+    dataUrl = {user_id,metodo_id,estado_id};
+  }
 
   if(buscar) {
     scriptURL = localStorage.getItem('site')+"/listIngresosFuturosB";
@@ -46,10 +57,12 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
     data = fng.obtenerList(info);
     console.log(data);
 
-    //alert(data);
-
     if(buscar)
       setListaDatos(data);
+
+    if(metodo_id!==undefined&&estado_id!==undefined&&buscar===false) {
+      setListaDatos(data);
+    }
 
     if(ejecutarSetInitialValues) {
       setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
@@ -178,6 +191,10 @@ export const TableRegistrarIngresosFuturos = () => {
     });
   };
 
+  const buscarPorSelect = () => {
+    cargarDatos(false,setListaDatos);
+  }
+
   return (
     <Box>
       <Box className={Styles.nav}>
@@ -188,11 +205,12 @@ export const TableRegistrarIngresosFuturos = () => {
 
         <Box className={Styles.itemSearch}>
           <Paper
-            component="form"
+            // component="form"
             sx={{
               display: "flex",
               alignItems: "center",
             }}
+            className="BorderContenedor"
           >
             <InputBase
               id="txtSearch"
@@ -200,6 +218,7 @@ export const TableRegistrarIngresosFuturos = () => {
               sx={{ ml: 1, flex: 1 }}
               placeholder="Buscar"
               inputProps={{ "aria-label": "search google maps" }}
+              onKeyUp={()=>{ fn.ejecutarClick("#btnBuscar") }}
             />
             <IconButton id="btnBuscar" type="button" sx={{ p: "10px" }} aria-label="search" onClick={()=>{cargarDatos(true,setListaDatos)}}>
               <SearchIcon />
@@ -209,7 +228,6 @@ export const TableRegistrarIngresosFuturos = () => {
 
         <Box className={Styles.itemSearch}>
           <Paper
-            component="form"
             sx={{
               display: "flex",
               alignItems: "center",
@@ -217,13 +235,14 @@ export const TableRegistrarIngresosFuturos = () => {
           >
           <label htmlFor="stTipoB" className={Styles.LblFilter}>Método</label>
           <select
-             name="stTipoB"
+            name="stTipoB"
             id="stTipoB"
             className={`${Styles.ModalSelect} ${Styles.ModalSelectBrVerde}`}
+            onChange={buscarPorSelect}
           >
             <option value="0">Todos</option>
             <option value="1">Efectivo</option>
-            <option value="2">Bancos</option>
+            <option value="2">Transferencia</option>
           </select>
 
           <label htmlFor="stEstadoB" className={Styles.LblFilter}>Estado</label>
@@ -231,12 +250,11 @@ export const TableRegistrarIngresosFuturos = () => {
              name="stEstadoB"
             id="stEstadoB"
             className={`${Styles.ModalSelect} ${Styles.ModalSelectBrVerde}`}
+            onChange={buscarPorSelect}
           >
             <option value="0">Todos</option>
-            <option value="1">Solo bancos</option>
-            <option value="2">Solo pagados</option>
-            <option value="2">Solo no pagados</option>
-            <option value="2">Solo efectivo</option>
+            <option value="1">Cobrados</option>
+            <option value="2">No cobrados</option>
           </select>
 
           </Paper>
@@ -262,9 +280,6 @@ export const TableRegistrarIngresosFuturos = () => {
       <Box className={cargandoVisible?'u-textCenter':'u-textCenter u-ocultar'}>
         <CircularProgress />
       </Box>
-      {/* <div>
-          <img className={cargandoVisible? "Cargando Mt mostrarI-b Sf" : "Cargando Mt Sf"}  src="img/loading.gif" alt="" />
-      </div> */}
 
       <Box>
         {listaDatos.map((data) => (
@@ -427,7 +442,6 @@ export const TableRegistrarIngresosFuturos = () => {
                 />
 
                 <DatePicker
-                  // format={dateFormatList}
                   className={Styles.ModalCantidad}
                   id='txtFechaTentativaCobro'
                   name='txtFechaTentativaCobro'

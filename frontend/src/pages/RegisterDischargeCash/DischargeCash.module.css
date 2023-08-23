@@ -38,6 +38,10 @@
   margin-right: 8px;
 }
 
+.ModalSelectBrVerde {
+  border-color: #00C62F !important;
+}
+
 .ModalCantidad {
   width: 232px !important;
   color: #000000;
@@ -123,7 +127,11 @@
   border-radius: 6px;
 }
 
-.txtNoCobrado{
+.txtCobrado{
+  color: #00C62F !important;
+}
+
+.txtNoCobrado {
   color: #f52121;
   font-weight: bold;
 }
@@ -205,6 +213,13 @@
   border: 1px solid #d9d9d9;
   border-radius: 6px;
   transition: all 0.2s;
+}
+
+.LblFilter {
+  display: inline-block;
+  padding-right: 8px;
+  padding-left: 3px;
+  margin-top: -7px;
 }
 
 @media all and (min-width: 718px){

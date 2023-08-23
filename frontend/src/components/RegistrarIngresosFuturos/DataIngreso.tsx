@@ -1,10 +1,7 @@
 import * as React from "react";
 import Styles from "../../pages/RegisterPay/RegisterPay.module.css";
-
 import { RowsIngreso } from "./RowsIngresos.tsx";
-
 import Box from "@mui/material/Box";
-
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";

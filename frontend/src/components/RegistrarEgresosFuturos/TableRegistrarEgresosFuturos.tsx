@@ -21,15 +21,26 @@ import * as Yup from "yup";
 let data = [];
 const user_id = localStorage.getItem('user_id');
 
-async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='') {
+async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='')
+{
   let scriptURL = localStorage.getItem('site')+"/listEgresosFuturos";
   let dataUrl = {user_id};
   let busqueda = "";
+  let metodo_id = fn.obtenerValor("#stTipoB");
+  let estado_id = fn.obtenerValor("#stEstadoB");
 
   if(buscar) {
     scriptURL = localStorage.getItem('site')+"/listEgresosFuturosB";
     busqueda = fn.obtenerValor('#txtSearch');
     dataUrl = {user_id, busqueda};
+  }
+
+  if(metodo_id!==undefined&&estado_id!==undefined&&buscar===false) {
+    metodo_id = fn.obtenerValor("#stTipoB");
+    estado_id = fn.obtenerValor("#stEstadoB");
+
+    scriptURL = localStorage.getItem('site')+"/listEgresosFuturosFiltro";
+    dataUrl = {user_id,metodo_id,estado_id};
   }
 
   await fetch(scriptURL, {
@@ -45,6 +56,10 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
 
     if(buscar)
       setListaDatos(data);
+
+    if(metodo_id!==undefined&&estado_id!==undefined&&buscar===false) {
+      setListaDatos(data);
+    }
 
     if(ejecutarSetInitialValues) {
       setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaPago:''}));
@@ -66,44 +81,48 @@ if(user_id!==""&&user_id!==null) {
 }
 
 export const TableRegistrarEgresosFuturos = () => {
-const [open, setOpen] = useState(false);
-const [confirmLoading, setConfirmLoading] = useState(false);
-const [messageApi, contextHolder] = message.useMessage();
-const [cargandoVisible, setCargandoVisible] = useState(true);
-const [listaDatos, setListaDatos] = useState([]);
-const [initialValues, setInitialValues] = useState(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'', stCategoria:'', txtMonto:'', txtFechaTentativaPago:''}));
-const [cantidadV, setCantidadV] = useState("0");
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [cargandoVisible, setCargandoVisible] = useState(true);
+  const [listaDatos, setListaDatos] = useState([]);
+  const [initialValues, setInitialValues] = useState(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'', stCategoria:'', txtMonto:'', txtFechaTentativaPago:''}));
+  const [cantidadV, setCantidadV] = useState("0");
 
-const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-  setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaPago:dayjs(dateString)}));
-};
+  const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+    setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaPago:dayjs(dateString)}));
+  };
 
-let idSI = setInterval(() => {
-  if(!data)
-    console.log("Vacio");
-  else {
-    setCantidadV(data.length);
-    setListaDatos(data);
-    setCargandoVisible(false);
-    clearInterval(idSI);
+  let idSI = setInterval(() => {
+    if(!data)
+      console.log("Vacio");
+    else {
+      setCantidadV(data.length);
+      setListaDatos(data);
+      setCargandoVisible(false);
+      clearInterval(idSI);
+    }
+  }, 1000);
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const validarSubmit = () => {
+    fn.ejecutarClick("#txtAceptar");
   }
-}, 1000);
 
-const showModal = () => {
-  setOpen(true);
-};
+  const handleCancel = () => {
+    setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
 
-const validarSubmit = () => {
-  fn.ejecutarClick("#txtAceptar");
-}
+    setTimeout(()=>{
+      setOpen(false);
+    },500);
+  };
 
-const handleCancel = () => {
-  setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
-
-  setTimeout(()=>{
-    setOpen(false);
-  },500);
-};
+  const buscarPorSelect = () => {
+    cargarDatos(false,setListaDatos);
+  }
 
   return (
     <Box>
@@ -115,11 +134,11 @@ const handleCancel = () => {
 
         <Box className={Styles.itemSearch}>
           <Paper
-            component="form"
             sx={{
               display: "flex",
               alignItems: "center",
             }}
+            className="BorderContenedor"
           >
             <InputBase
               id="txtSearch"
@@ -127,10 +146,44 @@ const handleCancel = () => {
               sx={{ ml: 1, flex: 1 }}
               placeholder="Buscar"
               inputProps={{ "aria-label": "search google maps" }}
+              onKeyUp={()=>{ fn.ejecutarClick("#btnBuscar") }}
             />
             <IconButton id="btnBuscar" type="button" sx={{ p: "10px" }} aria-label="search" onClick={()=>{cargarDatos(true,setListaDatos)}}>
               <SearchIcon />
             </IconButton>
+          </Paper>
+        </Box>
+
+        <Box className={Styles.itemSearch}>
+          <Paper
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <label htmlFor="stTipoB" className={Styles.LblFilter}>Método</label>
+            <select
+              name="stTipoB"
+              id="stTipoB"
+              className={`${Styles.ModalSelect} ${Styles.ModalSelectBrVerde}`}
+              onChange={buscarPorSelect}
+            >
+              <option value="0">Todos</option>
+              <option value="1">Efectivo</option>
+              <option value="2">Transferencia</option>
+            </select>
+
+            <label htmlFor="stEstadoB" className={Styles.LblFilter}>Estado</label>
+            <select
+              name="stEstadoB"
+              id="stEstadoB"
+              className={`${Styles.ModalSelect} ${Styles.ModalSelectBrVerde}`}
+              onChange={buscarPorSelect}
+            >
+              <option value="0">Todos</option>
+              <option value="1">Pagados</option>
+              <option value="2">No pagados</option>
+            </select>
           </Paper>
         </Box>
 

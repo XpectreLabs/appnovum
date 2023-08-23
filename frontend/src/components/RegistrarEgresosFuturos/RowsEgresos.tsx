@@ -13,7 +13,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {message, Popconfirm } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 
-
 const cancel = () => {
   message.error('Click on No');
 };
@@ -29,17 +28,18 @@ export const RowsEgresos = ({
   page,
   rowsPerPage,
   showModal,
-  setInitialValues
+  setInitialValues,
+  showModalC
 }: {
   pullData: any;
   page: any;
   rowsPerPage: any;
   showModal: Function;
   setInitialValues: Function;
+  showModalC: Function;
 }) => {
 
   const editar = (id) => {
-
     showModal();
     console.log(pullData);
     const pos = fn.buscarPosicionArreglo(pullData,id);
@@ -47,10 +47,6 @@ export const RowsEgresos = ({
     setTimeout(()=> {
       setInitialValues(({hdId:id,txtNombre:pullData[pos]['name'], txtConcepto:pullData[pos]['concept'], stTipo:pullData[pos]['id_payment_method'], stCategoria:pullData[pos]['id_category'], txtMonto:pullData[pos]['amount'], txtFechaTentativaPago:dayjs(pullData[pos]['date_to_pay_o'])}));
     },100);
-
-    /*const cuenta = fn.obtenerValorHtml("#spName"+id_cb);
-    const cantidad = fn.obtenerValorHtml("#spCantidadO"+id_cb);
-    const id_tipo = fn.obtenerValorHtml("#spTipoO"+id_cb);*/
   }
 
   const eliminar = (id) => {
@@ -75,10 +71,9 @@ export const RowsEgresos = ({
        console.error('Error!', error.message);
      });
   }
-
   return (
     <>
-      {pullData
+      {Object.keys(pullData).length>0?pullData
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
         .map((data) => (
           <TableRow
@@ -96,7 +91,7 @@ export const RowsEgresos = ({
               ) : (
                 <div className={Styles.typeAmount2}>
                   <PaymentOutlinedIcon />
-                  <span>Banco</span>
+                  <span>Transferencia</span>
                 </div>
               )}
             </TableCell>
@@ -112,6 +107,7 @@ export const RowsEgresos = ({
                   size="small"
                   label="Pagado"
                   className={Styles.chipTable}
+                  onClick={()=>{showModalC(data.id,2)}}
                 />
               ) : (
                 <Chip
@@ -119,10 +115,11 @@ export const RowsEgresos = ({
                   label="No pagado"
                   size="small"
                   className={Styles.chipTableNo}
+                  onClick={()=>{showModalC(data.id,1)}}
                 />
               )}
             </TableCell>
-            <TableCell align="left"><p className={Styles.txtNoCobrado}>{data.date_cashed}</p></TableCell>
+            <TableCell align="left"><p className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{data.date_cashed}</p></TableCell>
             <TableCell className="Iconos-Tabla" align="right">
               <EditIcon className="u-efecto slideRight" onClick={()=>{editar(data.id)}} />
               <Popconfirm
@@ -137,7 +134,13 @@ export const RowsEgresos = ({
               </Popconfirm>
             </TableCell>
           </TableRow>
-        ))}
+        )):(
+          <TableRow
+            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+          >
+            <TableCell scope="row" colSpan={10} align="center"><strong>No hay egresos registrados</strong></TableCell>
+          </TableRow>
+        )}
 
         {/* {
           if(pullData.length===0) { 

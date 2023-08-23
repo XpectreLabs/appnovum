@@ -93,6 +93,12 @@ export const TableRegistrarCajaOBanco = () => {
         },300);
       },800);
   }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter')
+      fn.ejecutarClick("#btnBuscar");
+  };
+
   return (
     <Box>
       <Box className={Styles.nav}>
@@ -103,7 +109,7 @@ export const TableRegistrarCajaOBanco = () => {
 
         <Box className={Styles.itemSearch}>
           <Paper
-            component="form"
+            // component="form"
             sx={{
               display: "flex",
               alignItems: "center",
@@ -115,8 +121,9 @@ export const TableRegistrarCajaOBanco = () => {
               sx={{ ml: 1, flex: 1 }}
               placeholder="Buscar"
               inputProps={{ "aria-label": "search google maps" }}
+              onKeyDown={ handleKeyDown }
             />
-            <IconButton type="button" sx={{ p: "10px" }} aria-label="search" onClick={ () => { cargarDatos (false,true); }}>
+            <IconButton id="btnBuscar" type="button" sx={{ p: "10px" }} aria-label="search" onClick={ () => { cargarDatos (false,true); }}>
               <SearchIcon />
             </IconButton>
 

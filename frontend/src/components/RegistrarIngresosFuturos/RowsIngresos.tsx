@@ -13,7 +13,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {message, Popconfirm } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 
-
 const cancel = () => {
   message.error('Click on No');
 };
@@ -72,10 +71,9 @@ export const RowsIngreso = ({
        console.error('Error!', error.message);
      });
   }
-
   return (
     <>
-      {pullData
+      {Object.keys(pullData).length>0?pullData
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
         .map((data) => (
           <TableRow
@@ -93,7 +91,7 @@ export const RowsIngreso = ({
               ) : (
                 <div className={Styles.typeAmount2}>
                   <PaymentOutlinedIcon />
-                  <span>Banco</span>
+                  <span>Transferencia</span>
                 </div>
               )}
             </TableCell>
@@ -121,7 +119,7 @@ export const RowsIngreso = ({
                 />
               )}
             </TableCell>
-            <TableCell align="left"className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{data.date_cashed}</TableCell>
+            <TableCell align="left" className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{data.date_cashed}</TableCell>
             <TableCell className="Iconos-Tabla" align="right">
               <EditIcon className="u-efecto slideRight" onClick={()=>{editar(data.id)}} />
               <Popconfirm
@@ -136,7 +134,13 @@ export const RowsIngreso = ({
               </Popconfirm>
             </TableCell>
           </TableRow>
-        ))}
+        )):(
+          <TableRow
+            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+          >
+            <TableCell scope="row" colSpan={10} align="center"><strong>No hay ingresos registrados</strong></TableCell>
+          </TableRow>
+        )}
     </>
   );
 };
