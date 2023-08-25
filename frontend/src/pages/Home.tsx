@@ -8,7 +8,6 @@ import { Resumen } from "./Resumen.tsx";
 import { RegistrarCajaOBanco } from "./RegisterBank/RegistrarCajaOBanco.tsx";
 import { RegistrarIngresosFuturos } from "./RegisterPay/RegistrarIngresosFuturos.tsx";
 import { RegistrarEgresosFuturos } from "./RegisterDischargeCash/RegistrarEgresosFuturos.tsx";
-
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -17,11 +16,11 @@ import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
+import { CerrarSesion } from "./CerrarSesion.tsx";
+
 
 const drawerWidth = 250;
-
 const { Header, Content, Sider } = Layout;
-
 type MenuItem = Required<MenuProps>["items"][number];
 
 function getItem(
@@ -62,6 +61,38 @@ const items: MenuItem[] = [
 export const Home = (props: any) => {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [cajaActive, setCajaActive] = React.useState(true);
+  const [ingresoActive, setIngresoActive] = React.useState(true);
+  const [egresoActive, setEgresoActive] = React.useState(true);
+  const user_id = localStorage.getItem('user_id');
+
+  if(localStorage.getItem('user_id')===''||localStorage.getItem('user_id')===null)
+    location.href = '/';
+
+  function verificar() {
+    let scriptURL = localStorage.getItem('site')+"/todos";
+    let dataUrl = {user_id};
+
+    fetch(scriptURL, {
+      method: 'POST',
+      body: JSON.stringify(dataUrl),
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((resp) => resp.json())
+    .then(function(info) {
+      info['caja']===0?setCajaActive(false):setCajaActive(true);
+      info['ingreso']===0?setIngresoActive(false):setIngresoActive(true);
+      info['egreso']===0?setEgresoActive(false):setEgresoActive(true);
+    })
+    .catch(error => {
+      console.log(error.message);
+      console.error('Error!', error.message);
+    });
+  }
+
+  verificar();
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -100,9 +131,9 @@ export const Home = (props: any) => {
   const Cambio = (props) => {
     if (props.pos === "1")
       return <Resumen cambioRegistroBan={cambioRegistroBan} />;
-    else if (props.pos === "2") return <RegistrarCajaOBanco />;
-    else if (props.pos === "3") return <RegistrarIngresosFuturos />;
-    else if (props.pos === "4") return <RegistrarEgresosFuturos />;
+    else if (props.pos === "2") return <RegistrarCajaOBanco cajaActive={cajaActive} setCajaActive={setCajaActive} />;
+    else if (props.pos === "3") return <RegistrarIngresosFuturos ingresoActive={ingresoActive} setIngresoActive={setIngresoActive} />;
+    else if (props.pos === "4") return <RegistrarEgresosFuturos egresoActive={egresoActive} setEgresoActive={setEgresoActive} />;
   };
 
   const drawer = (
@@ -129,7 +160,7 @@ export const Home = (props: any) => {
 
 /* navbar antigua */
 
-/* 
+/*
 
 <Sider
   className={style.web}
@@ -167,7 +198,6 @@ export const Home = (props: any) => {
     />
   </div>
 </Sider>
-
 */
 
   return (
@@ -192,11 +222,7 @@ export const Home = (props: any) => {
               <span className="path6"></span>
             </span>
           </Box>
-          <Box>
-            <Avatar size={40} className={`${style.HomeUser} u-floatRight`}>
-              AP
-            </Avatar>
-          </Box>
+          <CerrarSesion />
         </Toolbar>
       </AppBar>
       <Box component="nav">

@@ -16,10 +16,14 @@ import TableRow from "@mui/material/TableRow";
 
 export const DataIngreso = ({
   arrays,
-  arrays2,
+  showModal,
+  setInitialValues,
+  showModalC
 }: {
   arrays: any;
-  arrays2: any;
+  showModal: Function,
+  setInitialValues: Function,
+  showModalC: Function
 }) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -36,11 +40,12 @@ export const DataIngreso = ({
   };
 
   return (
-    <Box> 
+    <Box>
       <Paper
         sx={{ width: "100%", overflow: "hidden", boxShadow: "none" }}
         className={Styles.divTable}
       >
+        <input type="hidden" name="hdIdIngresoFuturo" id="hdIdIngresoFuturo" />
         <TableContainer sx={{ maxHeight: 440 }} className={Styles.table}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
@@ -56,6 +61,7 @@ export const DataIngreso = ({
                 <TableCell align="left">Fecha de pago tentativa</TableCell>
                 <TableCell align="left">Estado</TableCell>
                 <TableCell align="left">Fecha en la que se cobró</TableCell>
+                <TableCell align="left"><span className="u-visibilityHiddn">Opciones</span></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -63,11 +69,9 @@ export const DataIngreso = ({
                 pullData={arrays}
                 page={page}
                 rowsPerPage={rowsPerPage}
-              />
-              <RowsIngreso
-                pullData={arrays2}
-                page={page}
-                rowsPerPage={rowsPerPage}
+                showModal={showModal}
+                setInitialValues={setInitialValues}
+                showModalC={showModalC}
               />
             </TableBody>
           </Table>
@@ -75,7 +79,7 @@ export const DataIngreso = ({
         <TablePagination
           rowsPerPageOptions={[5, 10, 20]}
           component="div"
-          count={arrays.length + arrays2.length}
+          count={arrays.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

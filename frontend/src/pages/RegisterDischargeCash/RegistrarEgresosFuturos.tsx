@@ -3,8 +3,8 @@ import { Default } from '../../components/RegistrarEgresosFuturos/Default.tsx';
 import { TableRegistrarEgresosFuturos } from '../../components/RegistrarEgresosFuturos/TableRegistrarEgresosFuturos.tsx';
 
 
-export const RegistrarEgresosFuturos = ({cambioRegistroBan}) => {
-    const [status, setStatus] = useState(true);
+export const RegistrarEgresosFuturos = ({egresoActive, setEgresoActive}) => {
+    const [status, setStatus] = useState(egresoActive);
 
     const cambioTable = () => {
       setStatus(true);
@@ -14,7 +14,7 @@ export const RegistrarEgresosFuturos = ({cambioRegistroBan}) => {
       if (props.ban)
         return <TableRegistrarEgresosFuturos />;
       else if (props.ban === false)
-        return <Default cambioRegistroBan={cambioRegistroBan} cambioTable={cambioTable}  />;
+        return <Default cambioTable={cambioTable}  />;
     }
 
     return (

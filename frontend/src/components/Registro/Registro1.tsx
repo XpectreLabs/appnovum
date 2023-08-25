@@ -103,11 +103,11 @@ export const Registro1 = () => {
                     />
 
                     <div>
-                      <p><strong>{(errors.Nombre)?`Errores:`:null}</strong></p>
-                      {errors.Nombre}<br />
-                      {errors.Apellido}<br />
-                      {errors.Puesto}<br />
-                      {errors.Email}
+                      <p><strong>{(errors.Nombre || errors.Apellido || errors.Puesto || errors.Email)?`Errores:`:null}</strong></p>
+                      {errors.Nombre ? (<p>{errors.Nombre}</p>) : null}
+                      {errors.Apellido ? (<p>{errors.Apellido}</p>) : null}
+                      {errors.Puesto ? (<p>{errors.Puesto}</p>) : null}
+                      {errors.Email ? (<p>{errors.Email}</p>) : null}
                     </div>
 
                     <div className='u-textLeft'>

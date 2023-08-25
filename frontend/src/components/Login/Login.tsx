@@ -3,6 +3,7 @@ import style from './Login.module.css';
 import { Input, message } from 'antd';
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import CircularProgress from '@mui/material/CircularProgress';
 import { Link } from "react-router-dom";
 
 export const Login = () => {
@@ -27,10 +28,11 @@ export const Login = () => {
           .required("La contraseña es requerida"),
         })}
         onSubmit={(values, actions) => {
-          const scriptURL = 'https://admin.bioesensi-crm.com/loguear'
+          const scriptURL = localStorage.getItem('site')+"/loguear";
           const email = obtenerValor('#email');
           const password = obtenerValor('#password');
           const data = {email, password};
+          console.log(data);
           setCargandoVisible(true);
 
           fetch(scriptURL, {
@@ -100,7 +102,9 @@ export const Login = () => {
                     ¿Olvido su contraseña?
                   </Link>
 
-                  <img className={cargandoVisible? "Cargando Mt mostrar" : "Cargando Mt"}  src="img/loading.gif" alt="" />
+                  {/* <img className={cargandoVisible? "Cargando Mt mostrar" : "Cargando Mt"}  src="img/loading.gif" alt="" /> */}
+                  <CircularProgress  className={cargandoVisible?'Cargando Mt mostrar':'Cargando Mt'}/>
+
                   <input
                     className={`${style.LoginBtnIniciarSesion} u-floatRight u-redondeado u-efecto`}
                     type="submit"

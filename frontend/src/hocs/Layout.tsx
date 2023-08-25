@@ -89,7 +89,7 @@ export const LayoutAdmin = (props:any) => {
             </Space>
           </Header>
           <Content style={{ margin: '0 16px' }} className='u-textCenter'>
-            {page==='1'?<Default />:"<p>Hole</p>"}
+            {page==='1'?<Default />:"<p>Hola</p>"}
             {props.children}
           </Content>
         </Layout>

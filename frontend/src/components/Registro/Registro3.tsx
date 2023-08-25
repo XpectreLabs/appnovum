@@ -3,6 +3,7 @@ import {Button, Input, Space } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Formik, Form } from "formik";
 import style from './Registro.module.css';
+import CircularProgress from '@mui/material/CircularProgress';
 import * as Yup from "yup";
 
 export const Registro3 = () => {
@@ -41,8 +42,8 @@ export const Registro3 = () => {
           //document.querySelector('#btnTerminarRegistro').disabled = true;
           setCargandoVisible(true);
 
-          const scriptURL = 'https://admin.bioesensi-crm.com/crearUsuario';
-          const scriptURLC = 'https://admin.bioesensi-crm.com/crearCliente'
+          const scriptURL = localStorage.getItem('site')+"/crearUsuario";
+          const scriptURLC = localStorage.getItem('site')+"/crearCliente";
           //const form = document.forms['form-registro'];
           const hdEmail = obtenerValor('#hdEmail');
           //hdContrasenia = document.getElementById('hdContrasenia').value;
@@ -137,13 +138,14 @@ export const Registro3 = () => {
                       </Space>
 
                       <div>
-                        <p><strong>{(errors.password)?`Errores:`:null}</strong></p>
-                        {errors.password}<br />
-                        {errors.repitePasword}<br /><br />
+                        <p><strong>{(errors.password || errors.repitePasword)?`Errores:`:null}</strong></p>
+                        {errors.password ? (<p>{errors.password}</p>) : null}
+                        {errors.repitePasword ? (<p>{errors.repitePasword}</p>) : null}
                       </div>
 
                       <div className='u-textLeft'>
-                        <img className={cargandoVisible? "Cargando mostrar" : "Cargando"}  src="img/loading.gif" alt="" />
+                        {/* <img className={cargandoVisible? "Cargando mostrar" : "Cargando"}  src="img/loading.gif" alt="" /> */}
+                        <CircularProgress  className={cargandoVisible?'Cargando Mt mostrar':'Cargando Mt'}/>
                         <input id="btnTerminarRegistro" className={`${style.RegistroBtnSiguiente} u-floatRight u-redondeado u-efecto`} type="submit" value="Terminar registro" />
                       </div>
                   </Form>

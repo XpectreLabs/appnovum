@@ -33,7 +33,7 @@ export const Default = ({cambioTable}) => {
     }
 
     const handleOk = () => {
-      const scriptURL = 'https://admin.bioesensi-crm.com/altaCajaBanco';
+      const scriptURL = localStorage.getItem('site')+"/altaCajaBanco";
       const txtNombre = obtenerValor('#txtNombre');
       const stTipo = obtenerValor('#stTipo');
       const txtCantidadActual = obtenerValor('#txtCantidadActual');
