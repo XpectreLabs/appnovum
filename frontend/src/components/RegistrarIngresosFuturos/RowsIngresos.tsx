@@ -100,10 +100,10 @@ export const RowsIngreso = ({
             <TableCell align="left">{data.concept}</TableCell>
             <TableCell align="left">${formatNumber(data.amount)}</TableCell>
             <TableCell align="left">{data.date_to_pay}</TableCell>
-            <TableCell align="left">
+            <TableCell align="left" className="IcoEstados Ingreso">
               {data.state == "Cobrado" ? (
                 <Chip
-                  icon={<PriceCheckIcon />}
+                  icon={<span className="icon-icoCobrar"></span>}
                   size="small"
                   label="Cobrado"
                   className={Styles.chipTable}
@@ -111,7 +111,7 @@ export const RowsIngreso = ({
                 />
               ) : (
                 <Chip
-                  icon={<MoneyOffIcon />}
+                  icon={<span className="icon-icoCobrarDismiss"></span>}
                   label="No cobrado"
                   size="small"
                   className={Styles.chipTableNo}

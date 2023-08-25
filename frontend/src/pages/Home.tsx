@@ -211,6 +211,7 @@ export const Home = (props: any) => {
               edge="start"
               onClick={handleDrawerToggle}
               sx={{ mr: 2, display: { sm: "block" } }}
+              className={style.icoMenu}
             >
               <MenuIcon />
             </IconButton>

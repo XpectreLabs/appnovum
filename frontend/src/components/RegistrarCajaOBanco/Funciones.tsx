@@ -50,5 +50,28 @@ function mostrarData(info:any):void {
 }
 
 
-export default {mostrarData};
+function obtenerData(info:any):object {
+  interface IData {
+    Nombre: string;
+    Tipo: string;
+    Cantidad: string;
+  }
+
+  let listData: IData[];
+  listData = [];
+
+  for(let j=0; j < (Object.keys(info['listCajasBancos']).length); j++) {
+    let item: {Nombre: string, Tipo: string, Cantidad: string} = {
+      "Nombre": info['listCajasBancos'][j]['nombre_cuenta'],
+      "Tipo": info['listCajasBancos'][j]['tipos_pagos']['tipo_pago'],
+      "Cantidad": fn.convertirModena(info['listCajasBancos'][j]['cantidad_actual']),
+    }
+    listData.push(item);
+  }
+
+  return listData;
+}
+
+
+export default {mostrarData,obtenerData};
 

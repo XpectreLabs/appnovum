@@ -55,7 +55,7 @@ export const DataIngreso = ({
                 </TableCell>
                 <TableCell align="left">Concepto</TableCell>
                 <TableCell align="left">Monto</TableCell>
-                <TableCell align="left">Fecha de pago tentativa</TableCell>
+                <TableCell align="left">Fecha de cobro tentativa</TableCell>
                 <TableCell align="left">Estado</TableCell>
                 <TableCell align="left">Fecha en la que se cobró</TableCell>
                 <TableCell align="left"><span className="u-visibilityHiddn">Opciones</span></TableCell>
