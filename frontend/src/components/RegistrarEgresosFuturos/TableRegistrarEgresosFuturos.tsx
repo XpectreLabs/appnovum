@@ -12,19 +12,56 @@ import IconButton from "@mui/material/IconButton";
 import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { Field, Formik, Form } from "formik";
 import { Modal, message, Input, DatePicker } from "antd";
 import dayjs, { Dayjs } from 'dayjs';
 import type { DatePickerProps } from "antd";
 import { useState } from "react";
 import * as Yup from "yup";
+import * as XLSX from 'xlsx/xlsx.mjs';
+
+interface IData {
+  Nombre: string;
+  Concepto: string;
+  Metodo: string;
+  Categoria: string;
+  Monto: string;
+  Estado: string;
+  FechaDeCreacion: string;
+  FechaTentativaDePago: string;
+  FechaEnQueSePago: string;
+}
+
+let listData: IData[];
+
 let data = [];
 const user_id = localStorage.getItem('user_id');
 
-async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='') {
+//async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='')
+async function cargarDatos(
+  buscar=false,
+  setListaDatos?:Function,
+  ejecutarSetInitialValues=false,
+  setInitialValues?:Function,
+  setOpen?:Function,
+  setConfirmLoading?:Function)
+{
   let scriptURL = localStorage.getItem('site')+"/listEgresosFuturos";
-  let dataUrl = {user_id};
+  let dataUrl = {};
   let busqueda = "";
+  let metodo_id = fn.obtenerValor("#stTipoB");
+  let estado_id = fn.obtenerValor("#stEstadoB");
+
+  dataUrl = {user_id};
+
+  if(metodo_id!==undefined&&estado_id!==undefined&&buscar===false) {
+    metodo_id = fn.obtenerValor("#stTipoB");
+    estado_id = fn.obtenerValor("#stEstadoB");
+
+    scriptURL = localStorage.getItem('site')+"/listEgresosFuturosFiltro";
+    dataUrl = {user_id,metodo_id,estado_id};
+  }
 
   if(buscar) {
     scriptURL = localStorage.getItem('site')+"/listEgresosFuturosB";
@@ -42,9 +79,15 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
   .then((resp) => resp.json())
   .then(function(info) {
     data = fng.obtenerList(info);
+    listData = [];
+    listData = Object.assign(fng.obtenerData(info));
 
     if(buscar)
       setListaDatos(data);
+
+    if(metodo_id!==undefined&&estado_id!==undefined&&buscar===false) {
+      setListaDatos(data);
+    }
 
     if(ejecutarSetInitialValues) {
       setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaPago:''}));
@@ -66,44 +109,125 @@ if(user_id!==""&&user_id!==null) {
 }
 
 export const TableRegistrarEgresosFuturos = () => {
-const [open, setOpen] = useState(false);
-const [confirmLoading, setConfirmLoading] = useState(false);
-const [messageApi, contextHolder] = message.useMessage();
-const [cargandoVisible, setCargandoVisible] = useState(true);
-const [listaDatos, setListaDatos] = useState([]);
-const [initialValues, setInitialValues] = useState(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'', stCategoria:'', txtMonto:'', txtFechaTentativaPago:''}));
-const [cantidadV, setCantidadV] = useState("0");
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirm2Loading, setConfirm2Loading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+  const [cargandoVisible, setCargandoVisible] = useState(true);
+  const [listaDatos, setListaDatos] = useState([]);
+  const [initialValues, setInitialValues] = useState(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'', stCategoria:'', txtMonto:'', txtFechaTentativaPago:''}));
+  const [cantidadV, setCantidadV] = useState(0);
+  const [modal2Open, setModal2Open] = useState(false);
+  const [idEgresoStatus, setIdEgresoStatus] = useState("0");
+  const [pagado, setPagado] = useState(false);
+  const [stMetodo,setStMetodo] = useState(0);
+  const [stEstado,setStEstado] = useState(0);
 
-const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-  setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaPago:dayjs(dateString)}));
-};
+  const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+    setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaPago:dayjs(dateString)}));
+  };
 
-let idSI = setInterval(() => {
-  if(!data)
-    console.log("Vacio");
-  else {
-    setCantidadV(data.length);
-    setListaDatos(data);
-    setCargandoVisible(false);
-    clearInterval(idSI);
+  let idSI = setInterval(() => {
+    if(!data)
+      console.log("Vacio");
+    else {
+      setCantidadV(data.length);
+      setListaDatos(data);
+      setCargandoVisible(false);
+      clearInterval(idSI);
+    }
+  }, 1000);
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const validarSubmit = () => {
+    fn.ejecutarClick("#txtAceptar");
   }
-}, 1000);
 
-const showModal = () => {
-  setOpen(true);
-};
+  const handleCancel = () => {
+    setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
 
-const validarSubmit = () => {
-  fn.ejecutarClick("#txtAceptar");
-}
+    setTimeout(()=>{
+      setOpen(false);
+    },500);
+  };
 
-const handleCancel = () => {
-  setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
+  const showModalC = (id,tipo) => {
+    tipo===1?setPagado(false):setPagado(true);
+    setModal2Open(true);
 
-  setTimeout(()=>{
-    setOpen(false);
-  },500);
-};
+    setTimeout(()=>{
+      setIdEgresoStatus(id);
+    },500);
+  };
+
+  const pagar = () => {
+    const scriptURL = localStorage.getItem('site')+"/cambiarPagado"; // deberia es
+    const egresos_futuros_id = idEgresoStatus;
+    const dataU = {egresos_futuros_id};
+    setConfirm2Loading(true)
+    fetch(scriptURL, {
+       method: 'POST',
+       body: JSON.stringify(dataU),
+       headers:{
+         'Content-Type': 'application/json'
+       }
+     })
+    .then((resp) => resp.json())
+    .then(function(info) {
+      cargarDatos(true,setListaDatos);
+      setTimeout(()=> {
+        setModal2Open(false);
+        setConfirm2Loading(false)
+      },600)
+    })
+    .catch(error => {
+      console.log(error.message);
+      console.error('Error!', error.message);
+    });
+  };
+
+
+  const revertir = () => {
+    const scriptURL = localStorage.getItem('site')+"/revertirPago"; // deberia es
+    const egresos_futuros_id = idEgresoStatus;
+    const dataU = {egresos_futuros_id};
+    setConfirm2Loading(true)
+    fetch(scriptURL, {
+       method: 'POST',
+       body: JSON.stringify(dataU),
+       headers:{
+         'Content-Type': 'application/json'
+       }
+     })
+    .then((resp) => resp.json())
+    .then(function(info) {
+      cargarDatos(true,setListaDatos);
+      setTimeout(()=> {
+        setModal2Open(false);
+        setConfirm2Loading(false)
+      },600)
+    })
+    .catch(error => {
+      console.log(error.message);
+      console.error('Error!', error.message);
+    });
+  };
+
+  const buscarPorSelect = () => {
+    cargarDatos(false,setListaDatos);
+    setStMetodo(parseInt(fn.obtenerValor("#stTipoB")));
+    setStEstado(parseInt(fn.obtenerValor("#stEstadoB")));
+  }
+
+  const handleOnExcel = () => {
+    var wb = XLSX.utils.book_new(),
+    ws = XLSX.utils.json_to_sheet(listData);
+    XLSX.utils.book_append_sheet(wb,ws,"EgresosFuturos");
+    XLSX.writeFile(wb,"EgresosFuturos.xlsx");
+  }
 
   return (
     <Box>
@@ -115,11 +239,12 @@ const handleCancel = () => {
 
         <Box className={Styles.itemSearch}>
           <Paper
-            component="form"
+            // component="form"
             sx={{
               display: "flex",
               alignItems: "center",
             }}
+            className="BorderContenedor"
           >
             <InputBase
               id="txtSearch"
@@ -127,11 +252,62 @@ const handleCancel = () => {
               sx={{ ml: 1, flex: 1 }}
               placeholder="Buscar"
               inputProps={{ "aria-label": "search google maps" }}
+              onKeyUp={()=>{ fn.ejecutarClick("#btnBuscar") }}
             />
-            <IconButton id="btnBuscar" type="button" sx={{ p: "10px" }} aria-label="search" onClick={()=>{cargarDatos(true,setListaDatos)}}>
+            <IconButton id="btnBuscar" type="button" sx={{ p: "10px" }} aria-label="search" onClick={()=>{cargarDatos(true,setListaDatos); setStMetodo(0); setStEstado(0);}}>
               <SearchIcon />
             </IconButton>
           </Paper>
+        </Box>
+
+        <Box className={Styles.itemSearch}>
+          <Paper
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <label htmlFor="stTipoB" className={Styles.LblFilter}>Método</label>
+            <select
+              name="stTipoB"
+              id="stTipoB"
+              className={`${Styles.ModalSelect} ${Styles.ModalSelectBrVerde}`}
+              onChange={buscarPorSelect}
+              value={stMetodo}
+            >
+              <option value="0">Todos</option>
+              <option value="1">Efectivo</option>
+              <option value="2">Transferencia</option>
+            </select>
+
+            <label htmlFor="stEstadoB" className={Styles.LblFilter}>Estado</label>
+            <select
+              name="stEstadoB"
+              id="stEstadoB"
+              className={`${Styles.ModalSelect} ${Styles.ModalSelectBrVerde}`}
+              onChange={buscarPorSelect}
+              value={stEstado}
+            >
+              <option value="0">Todos</option>
+              <option value="1">Pagados</option>
+              <option value="2">No pagados</option>
+            </select>
+          </Paper>
+        </Box>
+
+        <Box className={Styles.itemButton}>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<FileDownloadIcon />}
+            classes={{
+              root: Styles.btnCreateAccount,
+            }}
+            onClick={handleOnExcel}
+          >
+            Exportar a excel
+          </Button>
+          {/* <CSVLink className={Styles.btnCreateAccount} data={ listData } filename="Reporte caja y banco" onClick={()=>{console.log(listData)}}><FileDownloadIcon />Exportar a excel</CSVLink> */}
         </Box>
 
         <Box className={Styles.itemButton}>
@@ -149,11 +325,7 @@ const handleCancel = () => {
         </Box>
       </Box>
 
-      <DataEgreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} />
-
-      {/* <div>
-          <img className={cargandoVisible? "Cargando Mt mostrarI-b Sf" : "Cargando Mt Sf"}  src="img/loading.gif" alt="" />
-      </div> */}
+      <DataEgreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} showModalC={showModalC} />
 
       <Box className={cargandoVisible?'u-textCenter':'u-textCenter u-ocultar'}>
         <CircularProgress />
@@ -177,14 +349,14 @@ const handleCancel = () => {
       </Box>
 
       <Modal
-          title=""
-          open={open}
-          onOk={validarSubmit}
-          confirmLoading={confirmLoading}
-          onCancel={handleCancel}
-          okText="Guardar"
-          cancelText="Cancelar"
-        >
+        title=""
+        open={open}
+        onOk={validarSubmit}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+        okText="Guardar"
+        cancelText="Cancelar"
+      >
         <Formik
           enableReinitialize={true}
           initialValues={initialValues}
@@ -250,11 +422,10 @@ const handleCancel = () => {
               <Form
                 className={`${Styles.ModalForm}`}
                 name="form-contacto"
-                  id="form-contacto"
+                id="form-contacto"
                 method="post"
                 onSubmit={handleSubmit}
               >
-
                 {contextHolder}
 
                 <Input
@@ -307,12 +478,11 @@ const handleCancel = () => {
                 <Field
                   className={`${Styles.ModalCantidad} ${Styles.ModalCantidadMr} ${Styles.ModalFormText}`}
                   placeholder="Monto"
-                  type="text"
+                  type="number"
                   id="txtMonto"
                   name="txtMonto" />
 
                 <DatePicker
-                    // format={dateFormatList}
                   className={`${Styles.ModalCantidad}`}
                   id='txtFechaTentativaPago'
                   name='txtFechaTentativaPago'
@@ -340,6 +510,24 @@ const handleCancel = () => {
           }}
         </Formik>
       </Modal>
+
+      <Modal
+        width={340}
+        title=""
+        centered
+        open={modal2Open}
+        onOk={pagado?revertir:pagar}
+        onCancel={() => setModal2Open(false)}
+        okText={pagado?"Cambiar":"Pagar"}
+        cancelText="Cancelar"
+        className={pagado?`${Styles.ModalCobrar} Cobrado u-textCenter`:`${Styles.ModalCobrar} u-textCenter`}
+        confirmLoading={confirm2Loading}
+      >
+        <input type="hidden" name="idEgresoFuturo" id="idEgresoFuturo" value={idEgresoStatus} />
+        <span className={pagado?"icon-icoCobrarDismiss":"icon-icoCobrar"}></span>
+        <p><strong>{pagado?"¿Este egreso ya fue pagado, desea cambiarlo?":"Deseas pagar esta deuda, se creará un registro de pago"}</strong></p>
+      </Modal>
+
     </Box>
   );
 };

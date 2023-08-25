@@ -465,9 +465,9 @@
  	transition: all 300ms ease-out;
 }
 
- .ant-menu-item-selected {
+ .ant-menu-item-selected  {
   color: #FFF !important;
-  background: url(selectedMenu.png) no-repeat right;
+  background: url(selectedMenu.png) no-repeat right !important;
   background-size: cover;
 }
 
@@ -503,9 +503,48 @@
 
 .MuiPaper-root input {
   padding-left: 10px;
-  box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+  /* box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12); */
 }
 
 .AvarHeader svg {
   display: none !important;
+}
+
+.BorderContenedor {
+  height: 34px;
+  border: 1px solid #d9d9d9;
+  border: 1px solid #c2c2c2;
+  border-radius: 8px;
+}
+
+.css-1rwp2ji-MuiButtonBase-root-MuiChip-root {
+  width: 97px;
+  height: 22px !important;
+  font-size: 0.5625rem !important;
+  text-align: left !important;
+  text-transform: uppercase;
+  justify-content: start !important;
+}
+
+.IcoEstados .icon-icoCobrarDismiss:before, .IcoEstados .icon-icoCobrar:before {
+  font-size: 18px !important;
+  margin-right: -2px;
+}
+
+.IcoEstados.Ingreso .icon-icoCobrarDismiss:before, .IcoEstados.Ingreso .icon-icoCobrar:before {
+  color:  #fff !important;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+input[type=number] { -moz-appearance:textfield; }
+
+
+.icoMenu {
+  height: 40px !important;
+  margin-top: 8px !important;
 }

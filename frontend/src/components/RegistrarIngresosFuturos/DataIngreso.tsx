@@ -1,10 +1,7 @@
 import * as React from "react";
 import Styles from "../../pages/RegisterPay/RegisterPay.module.css";
-
 import { RowsIngreso } from "./RowsIngresos.tsx";
-
 import Box from "@mui/material/Box";
-
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -58,7 +55,7 @@ export const DataIngreso = ({
                 </TableCell>
                 <TableCell align="left">Concepto</TableCell>
                 <TableCell align="left">Monto</TableCell>
-                <TableCell align="left">Fecha de pago tentativa</TableCell>
+                <TableCell align="left">Fecha de cobro tentativa</TableCell>
                 <TableCell align="left">Estado</TableCell>
                 <TableCell align="left">Fecha en la que se cobró</TableCell>
                 <TableCell align="left"><span className="u-visibilityHiddn">Opciones</span></TableCell>

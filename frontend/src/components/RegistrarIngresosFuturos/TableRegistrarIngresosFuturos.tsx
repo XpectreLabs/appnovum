@@ -9,22 +9,50 @@ import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
-import { Formik, Form } from "formik";
+import { Field, Formik, Form } from "formik"; 
 import { Modal, message, Input, DatePicker } from "antd";
 import dayjs, { Dayjs } from 'dayjs';
 import type { DatePickerProps } from "antd";
 import { useState } from "react";
 import * as Yup from "yup";
+import * as XLSX from 'xlsx/xlsx.mjs';
+
+interface IData {
+  Nombre: string;
+  Concepto: string;
+  Metodo: string;
+  Categoria: string;
+  Monto: string;
+  Estado: string;
+  FechaDeCreacion: string;
+  FechaTentativaDeCobro: string;
+  FechaEnQueSeCobro: string;
+}
+
+let listData: IData[];
+
 let data = [];
 const user_id = localStorage.getItem('user_id');
 
-async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='') {
+async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='')
+{
   let scriptURL = localStorage.getItem('site')+"/listIngresosFuturos";
   let dataUrl = {user_id};
   let busqueda = "";
+  let metodo_id = fn.obtenerValor("#stTipoB");
+  let estado_id = fn.obtenerValor("#stEstadoB");
+
+  if(metodo_id!==undefined&&estado_id!==undefined&&buscar===false) {
+    metodo_id = fn.obtenerValor("#stTipoB");
+    estado_id = fn.obtenerValor("#stEstadoB");
+
+    scriptURL = localStorage.getItem('site')+"/listIngresosFuturosFiltro";
+    dataUrl = {user_id,metodo_id,estado_id};
+  }
 
   if(buscar) {
     scriptURL = localStorage.getItem('site')+"/listIngresosFuturosB";
@@ -32,8 +60,6 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
     dataUrl = {user_id, busqueda};
   }
 
-  console.log("Data:");
-  console.log(dataUrl);
   await fetch(scriptURL, {
     method: 'POST',
     body: JSON.stringify(dataUrl),
@@ -44,12 +70,15 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
   .then((resp) => resp.json())
   .then(function(info) {
     data = fng.obtenerList(info);
-    console.log(data);
-
-    //alert(data);
+    listData = [];
+    listData = Object.assign(fng.obtenerData(info));
 
     if(buscar)
       setListaDatos(data);
+
+    if(metodo_id!==undefined&&estado_id!==undefined&&buscar===false) {
+      setListaDatos(data);
+    }
 
     if(ejecutarSetInitialValues) {
       setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
@@ -66,7 +95,6 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
   });
 }
 
-
 if(user_id!==""&&user_id!==null) {
   cargarDatos();
 }
@@ -79,20 +107,21 @@ export const TableRegistrarIngresosFuturos = () => {
   const [cargandoVisible, setCargandoVisible] = useState(true);
   const [listaDatos, setListaDatos] = useState([]);
   const [initialValues, setInitialValues] = useState(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
-  const [cantidadV, setCantidadV] = useState("0");
+  const [cantidadV, setCantidadV] = useState(0);
   const [modal2Open, setModal2Open] = useState(false);
   const [idIngresoStatus, setIdIngresoStatus] = useState("0");
   const [cobrado, setCobrado] = useState(false);
+  const [stMetodo,setStMetodo] = useState(0);
+  const [stEstado,setStEstado] = useState(0);
 
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-      setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaCobro:dayjs(dateString)}));
+    setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaCobro:dayjs(dateString)}));
   };
 
   let idSI = setInterval(() => {
     if(!data)
       console.log("Vacio");
     else {
-      console.log("Ja"+data.length);
       setCantidadV(data.length);
       setListaDatos(data);
       setCargandoVisible(false);
@@ -109,7 +138,7 @@ export const TableRegistrarIngresosFuturos = () => {
   }
 
   const handleCancel = () => {
-    setInitialValues(({hdId:' ',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
+    setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
 
     setTimeout(()=>{
       setOpen(false);
@@ -178,6 +207,19 @@ export const TableRegistrarIngresosFuturos = () => {
     });
   };
 
+  const buscarPorSelect = () => {
+    cargarDatos(false,setListaDatos);
+    setStMetodo(parseInt(fn.obtenerValor("#stTipoB")));
+    setStEstado(parseInt(fn.obtenerValor("#stEstadoB")));
+  }
+
+  const handleOnExcel = () => {
+    var wb = XLSX.utils.book_new(),
+    ws = XLSX.utils.json_to_sheet(listData);
+    XLSX.utils.book_append_sheet(wb,ws,"IngresosFuturos");
+    XLSX.writeFile(wb,"IngresosFuturos.xlsx");
+  }
+
   return (
     <Box>
       <Box className={Styles.nav}>
@@ -188,11 +230,12 @@ export const TableRegistrarIngresosFuturos = () => {
 
         <Box className={Styles.itemSearch}>
           <Paper
-            component="form"
+            // component="form"
             sx={{
               display: "flex",
               alignItems: "center",
             }}
+            className="BorderContenedor"
           >
             <InputBase
               id="txtSearch"
@@ -200,8 +243,9 @@ export const TableRegistrarIngresosFuturos = () => {
               sx={{ ml: 1, flex: 1 }}
               placeholder="Buscar"
               inputProps={{ "aria-label": "search google maps" }}
+              onKeyUp={()=>{ fn.ejecutarClick("#btnBuscar") }}
             />
-            <IconButton id="btnBuscar" type="button" sx={{ p: "10px" }} aria-label="search" onClick={()=>{cargarDatos(true,setListaDatos)}}>
+            <IconButton id="btnBuscar" type="button" sx={{ p: "10px" }} aria-label="search" onClick={()=>{cargarDatos(true,setListaDatos); setStMetodo(0); setStEstado(0);}}>
               <SearchIcon />
             </IconButton>
           </Paper>
@@ -209,37 +253,52 @@ export const TableRegistrarIngresosFuturos = () => {
 
         <Box className={Styles.itemSearch}>
           <Paper
-            component="form"
             sx={{
               display: "flex",
               alignItems: "center",
             }}
           >
-          <label htmlFor="stTipoB" className={Styles.LblFilter}>Método</label>
-          <select
-             name="stTipoB"
-            id="stTipoB"
-            className={`${Styles.ModalSelect} ${Styles.ModalSelectBrVerde}`}
-          >
-            <option value="0">Todos</option>
-            <option value="1">Efectivo</option>
-            <option value="2">Bancos</option>
-          </select>
+            <label htmlFor="stTipoB" className={Styles.LblFilter}>Método</label>
+            <select
+              name="stTipoB"
+              id="stTipoB"
+              className={`${Styles.ModalSelect} ${Styles.ModalSelectBrVerde}`}
+              onChange={buscarPorSelect}
+              value={stMetodo}
+            >
+              <option value="0">Todos</option>
+              <option value="1">Efectivo</option>
+              <option value="2">Transferencia</option>
+            </select>
 
-          <label htmlFor="stEstadoB" className={Styles.LblFilter}>Estado</label>
-          <select
-             name="stEstadoB"
-            id="stEstadoB"
-            className={`${Styles.ModalSelect} ${Styles.ModalSelectBrVerde}`}
-          >
-            <option value="0">Todos</option>
-            <option value="1">Solo bancos</option>
-            <option value="2">Solo pagados</option>
-            <option value="2">Solo no pagados</option>
-            <option value="2">Solo efectivo</option>
-          </select>
-
+            <label htmlFor="stEstadoB" className={Styles.LblFilter}>Estado</label>
+            <select
+              name="stEstadoB"
+              id="stEstadoB"
+              className={`${Styles.ModalSelect} ${Styles.ModalSelectBrVerde}`}
+              onChange={buscarPorSelect}
+              value={stEstado}
+            >
+              <option value="0">Todos</option>
+              <option value="1">Cobrados</option>
+              <option value="2">No cobrados</option>
+            </select>
           </Paper>
+        </Box>
+
+        <Box className={Styles.itemButton}>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<FileDownloadIcon />}
+            classes={{
+              root: Styles.btnCreateAccount,
+            }}
+            onClick={handleOnExcel}
+          >
+            Exportar a excel
+          </Button>
+          {/* <CSVLink className={Styles.btnCreateAccount} data={ listData } filename="Reporte caja y banco" onClick={()=>{console.log(listData)}}><FileDownloadIcon />Exportar a excel</CSVLink> */}
         </Box>
 
         <Box className={Styles.itemButton}>
@@ -262,9 +321,6 @@ export const TableRegistrarIngresosFuturos = () => {
       <Box className={cargandoVisible?'u-textCenter':'u-textCenter u-ocultar'}>
         <CircularProgress />
       </Box>
-      {/* <div>
-          <img className={cargandoVisible? "Cargando Mt mostrarI-b Sf" : "Cargando Mt Sf"}  src="img/loading.gif" alt="" />
-      </div> */}
 
       <Box>
         {listaDatos.map((data) => (
@@ -350,7 +406,8 @@ export const TableRegistrarIngresosFuturos = () => {
               console.log(error.message);
               console.error('Error!', error.message);
             });
-          }}>
+          }}
+        >
           {({ handleBlur,handleChange, handleSubmit, errors, values }) => {
             return (
               <Form
@@ -418,7 +475,7 @@ export const TableRegistrarIngresosFuturos = () => {
                 <Input
                   className={`${Styles.ModalCantidad} ${Styles.ModalCantidadMr}`}
                   placeholder="Monto"
-                  type="text"
+                  type="number"
                   id="txtMonto"
                   name="txtMonto"
                   value={values.txtMonto}
@@ -427,7 +484,6 @@ export const TableRegistrarIngresosFuturos = () => {
                 />
 
                 <DatePicker
-                  // format={dateFormatList}
                   className={Styles.ModalCantidad}
                   id='txtFechaTentativaCobro'
                   name='txtFechaTentativaCobro'

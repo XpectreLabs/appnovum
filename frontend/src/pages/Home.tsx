@@ -199,7 +199,8 @@ export const Home = (props: any) => {
   </div>
 </Sider>
 */
-
+  const iniciales_usuario = localStorage.getItem('iniciales');
+  //alert(localStorage.getItem('iniciales'));
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <AppBar className={style.mobile} component="nav">
@@ -210,6 +211,7 @@ export const Home = (props: any) => {
               edge="start"
               onClick={handleDrawerToggle}
               sx={{ mr: 2, display: { sm: "block" } }}
+              className={style.icoMenu}
             >
               <MenuIcon />
             </IconButton>
@@ -222,7 +224,7 @@ export const Home = (props: any) => {
               <span className="path6"></span>
             </span>
           </Box>
-          <CerrarSesion />
+          <CerrarSesion iniciales={iniciales_usuario} /> 
         </Toolbar>
       </AppBar>
       <Box component="nav">
@@ -250,7 +252,7 @@ export const Home = (props: any) => {
         <Header style={{ padding: 0, background: colorBgContainer }}>
           <Space size={16} wrap>
             <Avatar size={40} className={`${style.HomeUser} u-floatRight`}>
-              AP
+              {iniciales_usuario}
             </Avatar>
           </Space>
         </Header>

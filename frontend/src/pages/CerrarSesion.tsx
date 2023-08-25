@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from "react";
 import { DownOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Dropdown, Avatar, Space } from 'antd';
@@ -16,14 +16,17 @@ const items: MenuProps['items'] = [
     key: '0',
   },
 ];
+interface Props {
+  iniciales: string;
+}
 
-export const CerrarSesion = () => {
+export const CerrarSesion: FC<Props> = ({ iniciales }) => {
   return (
     <Box>
       <Dropdown className='AvarHeader' menu={{ items, onClick }} trigger={['click']}>
         <a onClick={(e) => e.preventDefault()}>
           <Avatar size={40} className={`${style.HomeUser} u-floatRight`}>
-            AP
+            {iniciales}
           </Avatar>
           <Space>
             <DownOutlined />

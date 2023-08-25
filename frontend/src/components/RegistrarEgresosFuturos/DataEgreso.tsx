@@ -1,10 +1,7 @@
 import * as React from "react";
 import Styles from "../../pages/RegisterDischargeCash/DischargeCash.module.css";
-
 import { RowsEgresos } from "./RowsEgresos.tsx";
-
 import Box from "@mui/material/Box";
-
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -17,11 +14,13 @@ import TableRow from "@mui/material/TableRow";
 export const DataEgreso = ({
   arrays,
   showModal,
-  setInitialValues
+  setInitialValues,
+  showModalC
 }: {
   arrays: any;
   showModal: Function,
-  setInitialValues: Function
+  setInitialValues: Function,
+  showModalC: Function
 }) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -69,6 +68,7 @@ export const DataEgreso = ({
                 rowsPerPage={rowsPerPage}
                 showModal={showModal}
                 setInitialValues={setInitialValues}
+                showModalC={showModalC}
               />
             </TableBody>
           </Table>

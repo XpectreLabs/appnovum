@@ -5,6 +5,7 @@ import fn from "../../components/utility.tsx";
 import fng from "./Funciones.tsx";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
@@ -13,7 +14,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Modal, Input, message } from "antd";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-let listData = "";
+// import { CSVLink} from 'react-csv';
+import * as XLSX from 'xlsx/xlsx.mjs';
+
+interface IData {
+  Nombre: string;
+  Tipo: string;
+  Cantidad: string;
+}
+
+let listData: IData[];
 const user_id = localStorage.getItem('user_id');
 
 export const TableRegistrarCajaOBanco = () => {
@@ -43,8 +53,9 @@ export const TableRegistrarCajaOBanco = () => {
 
   async function cargarDatos (ejecutarSetCargando=true,buscar=false) {
     let scriptURL = localStorage.getItem('site')+"/listCajasBancos";
-    let dataUrl = {user_id};
+    let dataUrl;
     let busqueda = "";
+    dataUrl = {user_id};
 
     if(buscar) {
       scriptURL = localStorage.getItem('site')+"/listCajasBancosB";
@@ -62,6 +73,8 @@ export const TableRegistrarCajaOBanco = () => {
     .then((resp) => resp.json())
     .then(function(info) {
       fng.mostrarData(info);
+      listData = [];
+      listData = Object.assign(fng.obtenerData(info));
       if(ejecutarSetCargando)
         setCargandoVisible(false)
     })
@@ -93,6 +106,19 @@ export const TableRegistrarCajaOBanco = () => {
         },300);
       },800);
   }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter')
+      fn.ejecutarClick("#btnBuscar");
+  };
+
+  const handleOnExcel = () => {
+    var wb = XLSX.utils.book_new(),
+    ws = XLSX.utils.json_to_sheet(listData);
+    XLSX.utils.book_append_sheet(wb,ws,"CajaoBanco");
+    XLSX.writeFile(wb,"CajayBanco.xlsx");
+  }
+
   return (
     <Box>
       <Box className={Styles.nav}>
@@ -103,7 +129,7 @@ export const TableRegistrarCajaOBanco = () => {
 
         <Box className={Styles.itemSearch}>
           <Paper
-            component="form"
+            // component="form"
             sx={{
               display: "flex",
               alignItems: "center",
@@ -115,13 +141,29 @@ export const TableRegistrarCajaOBanco = () => {
               sx={{ ml: 1, flex: 1 }}
               placeholder="Buscar"
               inputProps={{ "aria-label": "search google maps" }}
+              onKeyDown={ handleKeyDown }
             />
-            <IconButton type="button" sx={{ p: "10px" }} aria-label="search" onClick={ () => { cargarDatos (false,true); }}>
+            <IconButton id="btnBuscar" type="button" sx={{ p: "10px" }} aria-label="search" onClick={ () => { cargarDatos (false,true); }}>
               <SearchIcon />
             </IconButton>
 
             <input style={{display:"none"}} id="btnAbrirModal" type="button" value="Abril Modal" onClick={abrirModal} />
           </Paper>
+        </Box>
+
+        <Box className={Styles.itemButton}>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<FileDownloadIcon />}
+            classes={{
+              root: Styles.btnCreateAccount,
+            }}
+            onClick={handleOnExcel}
+          >
+            Exportar a excel
+          </Button>
+          {/* <CSVLink className={Styles.btnCreateAccount} data={ listData } filename="Reporte caja y banco" onClick={()=>{console.log(listData)}}><FileDownloadIcon />Exportar a excel</CSVLink> */}
         </Box>
 
         <Box className={Styles.itemButton}>
@@ -138,10 +180,6 @@ export const TableRegistrarCajaOBanco = () => {
           </Button>
         </Box>
       </Box>
-
-      {/* <div>
-          <img className={cargandoVisible? "Cargando Mt mostrarI-b Sf" : "Cargando Mt Sf"}  src="img/loading.gif" alt="" />
-      </div> */}
 
       <Box className={cargandoVisible?'u-textCenter':'u-textCenter u-ocultar'}>
         <CircularProgress />
