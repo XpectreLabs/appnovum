@@ -17,7 +17,7 @@ import { Field, Formik, Form } from "formik";
 import { Modal, message, Input, DatePicker } from "antd";
 import dayjs, { Dayjs } from 'dayjs';
 import type { DatePickerProps } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as Yup from "yup";
 import * as XLSX from 'xlsx/xlsx.mjs';
 
@@ -96,6 +96,7 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
 }
 
 if(user_id!==""&&user_id!==null) {
+  //alert("Ejecuto");
   cargarDatos();
 }
 
@@ -119,6 +120,7 @@ export const TableRegistrarIngresosFuturos = () => {
   };
 
   let idSI = setInterval(() => {
+    //cargarDatos();
     if(!data)
       console.log("Vacio");
     else {
@@ -126,6 +128,11 @@ export const TableRegistrarIngresosFuturos = () => {
       setListaDatos(data);
       setCargandoVisible(false);
       clearInterval(idSI);
+
+      setTimeout(()=>{
+        if(fn.obtenerValor("#txtSearch")===""&&fn.obtenerValor("#stTipoB")==="0"&&fn.obtenerValor("#stEstadoB")==="0")
+          fn.ejecutarClick("#btnBuscar");
+      },200);
     }
   }, 1000);
 
@@ -290,13 +297,12 @@ export const TableRegistrarIngresosFuturos = () => {
           <Button
             variant="contained"
             color="success"
-            startIcon={<FileDownloadIcon />}
+            startIcon={<span className="icon-excel"></span>}
             classes={{
               root: Styles.btnCreateAccount,
             }}
             onClick={handleOnExcel}
           >
-            Exportar a excel
           </Button>
           {/* <CSVLink className={Styles.btnCreateAccount} data={ listData } filename="Reporte caja y banco" onClick={()=>{console.log(listData)}}><FileDownloadIcon />Exportar a excel</CSVLink> */}
         </Box>
@@ -526,7 +532,8 @@ export const TableRegistrarIngresosFuturos = () => {
       >
         <input type="hidden" name="idIngresoFuturo" id="idIngresoFuturo" value={idIngresoStatus} />
         <span className={cobrado?"icon-icoCobrarDismiss":"icon-icoCobrar"}></span>
-        <p><strong>{cobrado?"¿Este ingreso ya fue cobrado, desea cambiarlo?":"Deseas cobrar esta deuda, se creará un registro de cobro"}</strong></p>
+        {/* <p><strong>{cobrado?"¿Este ingreso ya fue cobrado, desea cambiarlo?":"Deseas cobrar esta deuda, se creará un registro de cobro"}</strong></p>*/}
+         <p><strong>{cobrado?"¿Este ingreso ya fue cobrado, desea cambiarlo?":""}</strong></p>
       </Modal>
     </Box>
   );

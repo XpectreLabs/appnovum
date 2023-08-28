@@ -134,6 +134,7 @@ export const TableRegistrarCajaOBanco = () => {
               display: "flex",
               alignItems: "center",
             }}
+            className="BorderContenedor"
           >
             <InputBase
               id="txtSearch"

@@ -24,6 +24,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.icon-excel:before {
+  content: "\e9d1";
+}
 .icon-icoCobrarDismiss:before {
   content: "\e9d0";
   color: #f5222d;

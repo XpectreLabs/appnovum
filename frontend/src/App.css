@@ -409,13 +409,13 @@
 }
 
 .Iconos-Tabla svg {
-  display: none;
+  /* display: none; */
   font-size: 14px;
 }
 
-.MuiTable-root tr:hover svg {
+/* .MuiTable-root tr:hover svg {
   display: inline-block;
-}
+} */
 
 .Iconos-Tabla .icoBorrar {
   color: #f52121
@@ -547,4 +547,13 @@ input[type=number] { -moz-appearance:textfield; }
 .icoMenu {
   height: 40px !important;
   margin-top: 8px !important;
+}
+
+.ant-popconfirm-inner-content .ant-btn-primary {
+  top: 0px !important;
+  border-color: #d9d9d9;
+}
+
+.ant-popover-content {
+  left: -27px;
 }
