@@ -161,3 +161,25 @@
   height: 40px !important;
   margin-top: 8px !important;
 }
+
+.TablaResumen {
+  padding-top: 60px;
+}
+
+.TitleColResumen {
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+
+.TablaResumen table {
+  background: #D9FFE2;
+}
+
+.TablaResumen table tr td{
+  border-bottom: 1px solid #fff !important;
+}
+
+.TablaResumen table tr:hover, .TablaResumen table tr:focus {
+  background-color: #00C62F !important;
+}

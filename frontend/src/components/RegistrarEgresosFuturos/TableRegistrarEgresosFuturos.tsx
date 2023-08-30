@@ -299,13 +299,12 @@ export const TableRegistrarEgresosFuturos = () => {
           <Button
             variant="contained"
             color="success"
-            startIcon={<FileDownloadIcon />}
+            startIcon={<span className="icon-excel"></span>}
             classes={{
               root: Styles.btnCreateAccount,
             }}
             onClick={handleOnExcel}
           >
-            Exportar a excel
           </Button>
           {/* <CSVLink className={Styles.btnCreateAccount} data={ listData } filename="Reporte caja y banco" onClick={()=>{console.log(listData)}}><FileDownloadIcon />Exportar a excel</CSVLink> */}
         </Box>
@@ -525,7 +524,8 @@ export const TableRegistrarEgresosFuturos = () => {
       >
         <input type="hidden" name="idEgresoFuturo" id="idEgresoFuturo" value={idEgresoStatus} />
         <span className={pagado?"icon-icoCobrarDismiss":"icon-icoCobrar"}></span>
-        <p><strong>{pagado?"¿Este egreso ya fue pagado, desea cambiarlo?":"Deseas pagar esta deuda, se creará un registro de pago"}</strong></p>
+        {/* <p><strong>{pagado?"¿Este egreso ya fue pagado, desea cambiarlo?":"Deseas pagar esta deuda, se creará un registro de pago"}</strong></p> */}
+        <p><strong>{pagado?"¿Este egreso ya fue pagado, desea cambiarlo?":""}</strong></p>
       </Modal>
 
     </Box>
