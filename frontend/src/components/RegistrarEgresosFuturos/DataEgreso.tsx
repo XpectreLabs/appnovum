@@ -15,12 +15,14 @@ export const DataEgreso = ({
   arrays,
   showModal,
   setInitialValues,
-  showModalC
+  showModalC,
+  showModalE
 }: {
   arrays: any;
   showModal: Function,
   setInitialValues: Function,
-  showModalC: Function
+  showModalC: Function,
+  showModalE: Function
 }) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -58,10 +60,10 @@ export const DataEgreso = ({
                 <TableCell align="left">Fecha de pago tentativa</TableCell>
                 <TableCell align="left">Estado</TableCell>
                 <TableCell align="left">Fecha en la que se pago</TableCell>
-                <TableCell align="left"><span className="u-visibilityHiddn">Opciones</span></TableCell>
+                <TableCell align="left"><span className="u-visibilityHidden">Opciones</span></TableCell>
               </TableRow>
             </TableHead>
-            <TableBody> 
+            <TableBody>
               <RowsEgresos
                 pullData={arrays}
                 page={page}
@@ -69,6 +71,7 @@ export const DataEgreso = ({
                 showModal={showModal}
                 setInitialValues={setInitialValues}
                 showModalC={showModalC}
+                showModalE={showModalE}
               />
             </TableBody>
           </Table>

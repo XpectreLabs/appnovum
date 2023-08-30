@@ -180,6 +180,20 @@
   border-bottom: 1px solid #fff !important;
 }
 
-.TablaResumen table tr:hover, .TablaResumen table tr:focus {
+.TablaResumen table tr, .TablaResumen table tr td {
+  -webkit-transition: all 300ms ease-out;
+  -moz-transition: all 300ms ease-out;
+  -ms-transition: all 300ms ease-out;
+  -o-transition: all 300ms ease-out;
+  transition: all 300ms ease-out;
+}
+
+.TablaResumen table tr:hover, .TablaResumen table tr:hover td {
+  color: #fff !important;
   background-color: #00C62F !important;
+  -webkit-transition: all 300ms ease-out;
+  -moz-transition: all 300ms ease-out;
+  -ms-transition: all 300ms ease-out;
+  -o-transition: all 300ms ease-out;
+  transition: all 300ms ease-out;
 }

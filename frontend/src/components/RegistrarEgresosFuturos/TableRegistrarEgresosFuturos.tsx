@@ -12,7 +12,6 @@ import IconButton from "@mui/material/IconButton";
 import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { Field, Formik, Form } from "formik";
 import { Modal, message, Input, DatePicker } from "antd";
 import dayjs, { Dayjs } from 'dayjs';
@@ -34,9 +33,9 @@ interface IData {
 }
 
 let listData: IData[];
-
 let data = [];
 const user_id = localStorage.getItem('user_id');
+let fecha_creacion_o_m;
 
 //async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='')
 async function cargarDatos(
@@ -112,19 +111,30 @@ export const TableRegistrarEgresosFuturos = () => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [confirm2Loading, setConfirm2Loading] = useState(false);
+  const [confirm3Loading, setConfirm3Loading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [cargandoVisible, setCargandoVisible] = useState(true);
   const [listaDatos, setListaDatos] = useState([]);
   const [initialValues, setInitialValues] = useState(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'', stCategoria:'', txtMonto:'', txtFechaTentativaPago:''}));
   const [cantidadV, setCantidadV] = useState(0);
   const [modal2Open, setModal2Open] = useState(false);
+  const [modal3Open, setModal3Open] = useState(false);
   const [idEgresoStatus, setIdEgresoStatus] = useState("0");
   const [pagado, setPagado] = useState(false);
   const [stMetodo,setStMetodo] = useState(0);
   const [stEstado,setStEstado] = useState(0);
+  const [ocultarFechaRealizo,setOcultarFechaRealizo] = useState(true);
+  const [valueFechaRealizoPago,setValueFechaRealizoPago] = useState('');
 
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
     setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaPago:dayjs(dateString)}));
+  };
+
+  const onChange2: DatePickerProps['onChange'] = (date, dateString) => {
+    if((Date.parse(dateString) >= Date.parse(fecha_creacion_o_m)))
+      setValueFechaRealizoPago(dayjs(dateString));
+    else
+      alert("La fecha no puede ser mayor a la fecha de creación");
   };
 
   let idSI = setInterval(() => {
@@ -154,9 +164,12 @@ export const TableRegistrarEgresosFuturos = () => {
     },500);
   };
 
-  const showModalC = (id,tipo) => {
+  const showModalC = (id,tipo,fecha_c_o) => {
     tipo===1?setPagado(false):setPagado(true);
     setModal2Open(true);
+    setValueFechaRealizoPago('');
+    setOcultarFechaRealizo(true);
+    fecha_creacion_o_m = fecha_c_o.slice(0, 10);
 
     setTimeout(()=>{
       setIdEgresoStatus(id);
@@ -166,7 +179,10 @@ export const TableRegistrarEgresosFuturos = () => {
   const pagar = () => {
     const scriptURL = localStorage.getItem('site')+"/cambiarPagado"; // deberia es
     const egresos_futuros_id = idEgresoStatus;
-    const dataU = {egresos_futuros_id};
+    const tipoFecha = fn.obtenerValorRadio("rdRealizoCobro");
+    const fechaRealizo = dayjs(fn.obtenerValor("#txtFechaRealizoCobro"));
+    const dataU = {egresos_futuros_id,tipoFecha,fechaRealizo};
+
     setConfirm2Loading(true)
     fetch(scriptURL, {
        method: 'POST',
@@ -227,6 +243,43 @@ export const TableRegistrarEgresosFuturos = () => {
     ws = XLSX.utils.json_to_sheet(listData);
     XLSX.utils.book_append_sheet(wb,ws,"EgresosFuturos");
     XLSX.writeFile(wb,"EgresosFuturos.xlsx");
+  }
+
+  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+    return current && current > dayjs().endOf('day');
+  };
+
+  const showModalE = (id) => {
+    setModal3Open(true);
+    setTimeout(()=>{
+      setIdEgresoStatus(id);
+    },500);
+  };
+
+  const eliminar = () => {
+    const scriptURL = localStorage.getItem('site')+"/eliminarEgresoFuturo"; // deberia es
+    const egresos_futuros_id = idEgresoStatus;
+    const dataU = {egresos_futuros_id};
+
+    setConfirm3Loading(true);
+
+    fetch(scriptURL, {
+       method: 'POST',
+       body: JSON.stringify(dataU),
+       headers:{
+         'Content-Type': 'application/json'
+       }
+     })
+    .then((resp) => resp.json())
+    .then(function(info) {
+      fn.ejecutarClick("#btnBuscar");
+      setModal3Open(false);
+      setConfirm3Loading(false);
+     })
+     .catch(error => {
+       console.log(error.message);
+       console.error('Error!', error.message);
+     });
   }
 
   return (
@@ -324,7 +377,7 @@ export const TableRegistrarEgresosFuturos = () => {
         </Box>
       </Box>
 
-      <DataEgreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} showModalC={showModalC} />
+      <DataEgreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} showModalC={showModalC} showModalE={showModalE} />
 
       <Box className={cargandoVisible?'u-textCenter':'u-textCenter u-ocultar'}>
         <CircularProgress />
@@ -526,6 +579,68 @@ export const TableRegistrarEgresosFuturos = () => {
         <span className={pagado?"icon-icoCobrarDismiss":"icon-icoCobrar"}></span>
         {/* <p><strong>{pagado?"¿Este egreso ya fue pagado, desea cambiarlo?":"Deseas pagar esta deuda, se creará un registro de pago"}</strong></p> */}
         <p><strong>{pagado?"¿Este egreso ya fue pagado, desea cambiarlo?":""}</strong></p>
+
+
+        {!pagado?(
+            <div className="u-textLeft">
+              <p className={Styles.RadioFechaAnterior}><strong>Fecha en que se realizo el pago:</strong></p>
+              <div>
+                <input
+                  type="radio"
+                  name="rdRealizoCobro"
+                  id="rdRealizoCobro1"
+                  value="1"
+                  checked={ocultarFechaRealizo?true:false}
+                  onClick={()=>{setValueFechaRealizoPago(''); setOcultarFechaRealizo(true);}}
+                />
+                <label className={Styles.ModalLabelRealizoPago} htmlFor="rdRealizoCobro1"><strong>Hoy</strong></label>
+              </div>
+              <div className={Styles.RadioFechaAnterior}>
+                <input
+                  type="radio"
+                  name="rdRealizoCobro"
+                  id="rdRealizoCobro2"
+                  value="2"
+                  checked={ocultarFechaRealizo?false:true}
+                  onClick={()=>{setOcultarFechaRealizo(false);}}
+                />
+                <label className={Styles.ModalLabelRealizoPago} htmlFor="rdRealizoCobro2"><strong>Fecha anterior</strong></label>
+              </div>
+
+              <DatePicker
+                className={`${Styles.ModalCantidad} ${Styles.ModalRealizoPago} ${ocultarFechaRealizo?'u-ocultar':null}`}
+                id='txtFechaRealizoCobro'
+                name='txtFechaRealizoCobro'
+                placeholder='Fecha en que se realizo'
+                value={valueFechaRealizoPago}
+                onChange={onChange2}
+                disabledDate={disabledDate}
+              />
+            </div>
+          ):null}
+      </Modal>
+
+      <Modal
+        width={340}
+        title=""
+        centered
+        open={modal3Open}
+        onOk={eliminar}
+        onCancel={() => setModal3Open(false)}
+        okText={"Eliminar"}
+        cancelText="Cancelar"
+        className={`${Styles.ModalCobrar} u-textCenter`}
+        confirmLoading={confirm3Loading}
+      >
+        <form
+          className={Styles.ModalForm}
+          name="formEliminar"
+          id="formEliminar"
+          method="post"
+        >
+          <input type="hidden" name="idEgresoFuturoE" id="idEgresoFuturoE" value={idEgresoStatus} />
+          <p><strong>¿Desea eliminar este registro de pago?</strong></p>
+        </form>
       </Modal>
 
     </Box>

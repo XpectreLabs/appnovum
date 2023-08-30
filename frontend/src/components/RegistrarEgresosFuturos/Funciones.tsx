@@ -16,6 +16,7 @@ function obtenerList(info) {
     let item = {
       "id": info['listEgresosFuturos'][j]['egresos_futuros_id'],
       "date_created": fechaCreacion,
+      "date_created_o": info['listEgresosFuturos'][j]['fecha_creacion'],
       "id_payment_method": info['listEgresosFuturos'][j]['tipo_pago_id'],
       "payment_method": info['listEgresosFuturos'][j]['tipos_pagos']['tipo_pago'],
       "id_category": info['listEgresosFuturos'][j]['categoria_id'],

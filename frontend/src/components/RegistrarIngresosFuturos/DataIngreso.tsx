@@ -15,12 +15,14 @@ export const DataIngreso = ({
   arrays,
   showModal,
   setInitialValues,
-  showModalC
+  showModalC,
+  showModalE
 }: {
   arrays: any;
   showModal: Function,
   setInitialValues: Function,
-  showModalC: Function
+  showModalC: Function,
+  showModalE: Function
 }) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -58,7 +60,7 @@ export const DataIngreso = ({
                 <TableCell align="left">Fecha de cobro tentativa</TableCell>
                 <TableCell align="left">Estado</TableCell>
                 <TableCell align="left">Fecha en la que se cobró</TableCell>
-                <TableCell align="left"><span className="u-visibilityHiddn">Opciones</span></TableCell>
+                <TableCell align="left"><span className="u-visibilityHidden">Opciones</span></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -69,6 +71,7 @@ export const DataIngreso = ({
                 showModal={showModal}
                 setInitialValues={setInitialValues}
                 showModalC={showModalC}
+                showModalE={showModalE}
               />
             </TableBody>
           </Table>

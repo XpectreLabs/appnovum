@@ -56,6 +56,21 @@
   padding-top: 6px !important;
 }
 
+.ModalRealizoPago {
+  width: 100%;
+}
+
+.ModalLabelRealizoPago {
+  display: inline-block;
+  margin-top: -1px;
+  vertical-align: top; 
+  padding-left: 4px;
+}
+
+.RadioFechaAnterior {
+  margin-bottom: 8px;
+}
+
 .nav{
   display: flex;
   justify-content: space-between;

@@ -4,8 +4,6 @@ import fn from "../../components/utility.tsx";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Chip from "@mui/material/Chip";
-import MoneyOffIcon from "@mui/icons-material/MoneyOff";
-import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
 import EditIcon from '@mui/icons-material/Edit';
@@ -29,7 +27,8 @@ export const RowsEgresos = ({
   rowsPerPage,
   showModal,
   setInitialValues,
-  showModalC
+  showModalC,
+  showModalE
 }: {
   pullData: any;
   page: any;
@@ -37,6 +36,7 @@ export const RowsEgresos = ({
   showModal: Function;
   setInitialValues: Function;
   showModalC: Function;
+  showModalE: Function;
 }) => {
 
   const editar = (id) => {
@@ -47,29 +47,6 @@ export const RowsEgresos = ({
     setTimeout(()=> {
       setInitialValues(({hdId:id,txtNombre:pullData[pos]['name'], txtConcepto:pullData[pos]['concept'], stTipo:pullData[pos]['id_payment_method'], stCategoria:pullData[pos]['id_category'], txtMonto:pullData[pos]['amount'], txtFechaTentativaPago:dayjs(pullData[pos]['date_to_pay_o'])}));
     },100);
-  }
-
-  const eliminar = (id) => {
-    const scriptURL = localStorage.getItem('site')+"/eliminarEgresoFuturo"; // deberia es
-    const egresos_futuros_id = id;
-    const dataU = {egresos_futuros_id};
-
-    fetch(scriptURL, {
-       method: 'POST',
-       body: JSON.stringify(dataU),
-       headers:{
-         'Content-Type': 'application/json'
-       }
-     })
-    .then((resp) => resp.json())
-    .then(function(info) {
-      fn.agregarClase("tr[idTr='"+id+"']", "u-ocultar");
-      fn.ejecutarClick("#btnBuscar");
-     })
-     .catch(error => {
-       alert(error.message);
-       console.error('Error!', error.message);
-     });
   }
   return (
     <>
@@ -107,7 +84,7 @@ export const RowsEgresos = ({
                   size="small"
                   label="Pagado"
                   className={Styles.chipTable}
-                  onClick={()=>{showModalC(data.id,2)}}
+                  onClick={()=>{showModalC(data.id,2,data.date_created_o)}}
                 />
               ) : (
                 <Chip
@@ -115,23 +92,14 @@ export const RowsEgresos = ({
                   label="No pagado"
                   size="small"
                   className={Styles.chipTableNo}
-                  onClick={()=>{showModalC(data.id,1)}}
+                  onClick={()=>{showModalC(data.id,1,data.date_created_o)}}
                 />
               )}
             </TableCell>
             <TableCell align="left"><p className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{data.date_cashed}</p></TableCell>
             <TableCell className="Iconos-Tabla" align="right">
               <EditIcon className="u-efecto slideRight" onClick={()=>{editar(data.id)}} />
-              <Popconfirm
-                title="¿Desea eliminar este registro?"
-                description=""
-                onConfirm={()=>{eliminar(data.id)}}
-                onCancel={cancel}
-                okText="Si"
-                cancelText="No" 
-              >
-                <DeleteIcon className="icoBorrar u-efecto slideRight" onClick={()=>{}}/>
-              </Popconfirm>
+              <DeleteIcon className="icoBorrar u-efecto slideRight" onClick={()=>{showModalE(data.id)}}/>
             </TableCell>
           </TableRow>
         )):(
@@ -141,16 +109,6 @@ export const RowsEgresos = ({
             <TableCell scope="row" colSpan={10} align="center"><strong>No hay egresos registrados</strong></TableCell>
           </TableRow>
         )}
-
-        {/* {
-          if(pullData.length===0) { 
-            => (
-            <TableRow>
-            <TableCell scope="row" colSpan={10} align="center"><strong>No hay egresos registrados</strong></TableCell>
-          </TableRow>
-          {
-           }
-        } */}
     </>
   );
 };

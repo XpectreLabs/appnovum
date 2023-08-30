@@ -1,15 +1,11 @@
 import * as React from "react";
 import Styles from "../../pages/RegisterPay/RegisterPay.module.css";
 import Box from "@mui/material/Box";
-
-import Paper from "@mui/material/Paper";
 import IconButton from "@mui/material/IconButton";
 import Chip from "@mui/material/Chip";
 import MoneyOffIcon from "@mui/icons-material/MoneyOff";
 import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
-import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
 
 export const IngresoResponsive = ({
   date_created,

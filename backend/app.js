@@ -36,6 +36,7 @@ router.get('/', async (req,res,next) => {
 router.post('/loguear', async (req,res, next) => {
   try{
     let user = await findUser(req.body.email,req.body.password);
+    console.log("U: "+user)
     res.json({"usuario_id":user});
   }catch(e) {
     res.json({"usuario_id":0});
@@ -197,6 +198,98 @@ router.post('/listCajasBancosB', async (req,res,next) => {
   }
 });
 
+
+router.get('/listGrupoCajasBancos', async (req,res,next) => {
+  if(req.body.user_id!==null) {
+    const id = 1;//req.query.ordenPago;
+
+    const listCajasBancos = await prisma.cajas_bancos.groupBy({
+      by: ['tipo_pago_id'],
+      where: {
+        user_id : parseInt(id)
+      },
+      _count: {
+        tipo_pago_id: true,
+      },
+    });
+    console.log(listCajasBancos);
+    for(let j=0; j< listCajasBancos.length; j++){
+      console.log(listCajasBancos[j]['tipo_pago_id']);
+      console.log(listCajasBancos[j]['_count']['tipo_pago_id']);
+    }
+
+    const totalIngresos = await prisma.ingresos_futuros.count({
+      where: {
+        user_id : parseInt(id),
+        activo : true
+      }
+    });
+    console.log(totalIngresos)
+
+    const listIngresoMetodos = await prisma.ingresos_futuros.groupBy({
+      by: ['tipo_pago_id'],
+      where: {
+        user_id : parseInt(id),
+        activo : true
+      },
+      _count: {
+        tipo_pago_id: true,
+      },
+    });
+    console.log(listIngresoMetodos);
+
+    const listIngresoCategorias = await prisma.ingresos_futuros.groupBy({
+      by: ['categoria_id'],
+      where: {
+        user_id : parseInt(id),
+        activo : true
+      },
+      _count: {
+        categoria_id: true,
+      },
+    });
+    console.log(listIngresoCategorias);
+
+
+
+
+    const totalEgresos = await prisma.egresos_futuros.count({
+      where: {
+        user_id : parseInt(id),
+        activo : true
+      }
+    });
+    console.log(totalEgresos)
+
+    const listEgresoMetodos = await prisma.egresos_futuros.groupBy({
+      by: ['tipo_pago_id'],
+      where: {
+        user_id : parseInt(id),
+        activo : true
+      },
+      _count: {
+        tipo_pago_id: true,
+      },
+    });
+    console.log(listEgresoMetodos);
+
+    const listEgresoCategorias = await prisma.egresos_futuros.groupBy({
+      by: ['categoria_id'],
+      where: {
+        user_id : parseInt(id),
+        activo : true
+      },
+      _count: {
+        categoria_id: true,
+      },
+    });
+    console.log(listEgresoCategorias);
+
+
+    res.json({listCajasBancos});
+  }
+});
+
 router.post('/altaIngresoFuturo', async (req,res, next) => {
   let fechaCreacion = new Date().toISOString();
   const nuevoIngresoFuturo = await prisma.ingresos_futuros.create({
@@ -326,7 +419,16 @@ router.post('/eliminarIngresoFuturo', async (req,res,next) => {
 
 router.post('/cambiarCobrado', async (req,res, next) => {
   const id = parseInt(req.body.ingresos_futuros_id);
-  let fechaDeCobro = new Date().toISOString();
+  const tipoFecha = parseInt(req.body.tipoFecha);
+  const fechaRealizo = req.body.fechaRealizo;
+  let fechaDeCobro;
+
+  console.log(tipoFecha+" "+fechaRealizo);
+
+  if(tipoFecha===1)
+    fechaDeCobro = new Date().toISOString();
+  else
+    fechaDeCobro = fechaRealizo;
 
   await prisma.ingresos_futuros.update({
     where: {
@@ -580,7 +682,14 @@ router.post('/eliminarEgresoFuturo', async (req,res,next) => {
 
 router.post('/cambiarPagado', async (req,res, next) => {
   const id = parseInt(req.body.egresos_futuros_id);
-  let fechaDePago = new Date().toISOString();
+  const tipoFecha = parseInt(req.body.tipoFecha);
+  const fechaRealizo = req.body.fechaRealizo;
+  let fechaDePago;
+
+  if(tipoFecha===1)
+    fechaDePago = new Date().toISOString();
+  else
+    fechaDePago = fechaRealizo;
 
   await prisma.egresos_futuros.update({
     where: {
@@ -592,6 +701,7 @@ router.post('/cambiarPagado', async (req,res, next) => {
   });
   res.json({"status":"exito"});
 });
+
 
 
 router.post('/revertirPago', async (req,res, next) => {

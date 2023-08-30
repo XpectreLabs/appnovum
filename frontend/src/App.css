@@ -557,3 +557,8 @@ input[type=number] { -moz-appearance:textfield; }
 .ant-popover-content {
   left: -27px;
 }
+
+.ant-picker-cell-selected .ant-picker-cell-inner {
+  color: #fff !important;
+  background: #00C62F !important;
+}
