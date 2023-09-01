@@ -23,6 +23,28 @@ router.use(express.urlencoded({ extended:false }));
 router.use(express.json());
 router.use(cors());
 
+const formatNumber = (number) =>
+  new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+}).format(number);
+
+function buscarNombreTipo(list,id) {
+  for(let j=0; j< list.length; j++){
+    if(parseInt(list[j]['tipo_pago_id'])===parseInt(id))
+      return list[j]['tipo_pago'];
+  }
+  return "";
+}
+
+function buscarNombreCategoria(list,id) {
+  for(let j=0; j< list.length; j++){
+    if(parseInt(list[j]['categoria_id'])===parseInt(id))
+      return list[j]['categoria'];
+  }
+  return "";
+}
+
 router.get('/', async (req,res,next) => {
   const listaTipos = await prisma.typesusers.findMany({
     select: {
@@ -198,10 +220,17 @@ router.post('/listCajasBancosB', async (req,res,next) => {
   }
 });
 
-
-router.get('/listGrupoCajasBancos', async (req,res,next) => {
+router.post('/resumenCajasBancos', async (req,res,next) => {
   if(req.body.user_id!==null) {
-    const id = 1;//req.query.ordenPago;
+    const id = req.body.user_id;
+    let dataCajasBancos = [];
+
+    const listTiposPagos = await prisma.tipos_pagos.findMany({
+      select: {
+        tipo_pago_id: true,
+        tipo_pago: true,
+      },
+    });
 
     const listCajasBancos = await prisma.cajas_bancos.groupBy({
       by: ['tipo_pago_id'],
@@ -211,20 +240,67 @@ router.get('/listGrupoCajasBancos', async (req,res,next) => {
       _count: {
         tipo_pago_id: true,
       },
+      _sum: {
+        cantidad_actual: true,
+      },
     });
-    console.log(listCajasBancos);
-    for(let j=0; j< listCajasBancos.length; j++){
-      console.log(listCajasBancos[j]['tipo_pago_id']);
-      console.log(listCajasBancos[j]['_count']['tipo_pago_id']);
-    }
 
-    const totalIngresos = await prisma.ingresos_futuros.count({
+    for(let j=0; j< listCajasBancos.length; j++){
+      let item = {
+        "tipo": buscarNombreTipo(listTiposPagos,listCajasBancos[j]['tipo_pago_id']),
+        "cantidad": listCajasBancos[j]['_count']['tipo_pago_id'],
+        "total": "$"+formatNumber(listCajasBancos[j]['_sum']['cantidad_actual']),
+      }
+      dataCajasBancos.push(item);
+    }
+    res.json({dataCajasBancos});
+  }
+});
+
+router.post('/resumenIngresosFuturos', async (req,res,next) => {
+  if(req.body.user_id!==null) {
+    const id = req.body.user_id;
+    let dataIngresosFuturos = [];
+
+    const rGeneral = await prisma.ingresos_futuros.groupBy({
+      by: ['user_id'],
       where: {
         user_id : parseInt(id),
         activo : true
-      }
+      },
+      _count: {
+        user_id: true,
+      },
+      _sum: {
+        monto: true,
+      },
     });
-    console.log(totalIngresos)
+
+    let item = {
+      "titulo": "Número de registros",
+      "cantidad": rGeneral[0]['_count']['user_id'],
+    }
+    dataIngresosFuturos.push(item);
+
+    item = {
+      "titulo": "Total en ingreso",
+      "cantidad": "$"+formatNumber(rGeneral[0]['_sum']['monto']),
+    }
+    dataIngresosFuturos.push(item);
+
+    item = {
+      "titulo": "Métodos",
+      "cantidad": "",
+      "colSpan": 2,
+    }
+    dataIngresosFuturos.push(item);
+
+    const listTiposPagos = await prisma.tipos_pagos.findMany({
+      select: {
+        tipo_pago_id: true,
+        tipo_pago: true,
+      },
+    });
 
     const listIngresoMetodos = await prisma.ingresos_futuros.groupBy({
       by: ['tipo_pago_id'],
@@ -236,7 +312,28 @@ router.get('/listGrupoCajasBancos', async (req,res,next) => {
         tipo_pago_id: true,
       },
     });
-    console.log(listIngresoMetodos);
+
+    for(let j=0; j< listIngresoMetodos.length; j++){
+      let item = {
+        "titulo": buscarNombreTipo(listTiposPagos,listIngresoMetodos[j]['tipo_pago_id']),
+        "cantidad": listIngresoMetodos[j]['_count']['tipo_pago_id'],
+      }
+      dataIngresosFuturos.push(item);
+    }
+
+    item = {
+      "titulo": "Categorias",
+      "cantidad": "",
+      "colSpan": 2,
+    }
+    dataIngresosFuturos.push(item);
+
+    const listCategorias = await prisma.categorias.findMany({
+      select: {
+        categoria_id: true,
+        categoria: true,
+      },
+    });
 
     const listIngresoCategorias = await prisma.ingresos_futuros.groupBy({
       by: ['categoria_id'],
@@ -248,18 +345,65 @@ router.get('/listGrupoCajasBancos', async (req,res,next) => {
         categoria_id: true,
       },
     });
-    console.log(listIngresoCategorias);
+
+    for(let j=0; j< listIngresoCategorias.length; j++){
+      let item = {
+        "titulo": buscarNombreCategoria(listCategorias,listIngresoCategorias[j]['categoria_id']),
+        "cantidad": listIngresoCategorias[j]['_count']['categoria_id'],
+      }
+      dataIngresosFuturos.push(item);
+    }
+
+    res.json({dataIngresosFuturos});
+  }
+});
 
 
 
+router.post('/resumenEgresosFuturos', async (req,res,next) => {
+  if(req.body.user_id!==null) {
+    const id = req.body.user_id;
+    let dataEgresosFuturos = [];
 
-    const totalEgresos = await prisma.egresos_futuros.count({
+    const rGeneral = await prisma.egresos_futuros.groupBy({
+      by: ['user_id'],
       where: {
         user_id : parseInt(id),
         activo : true
-      }
+      },
+      _count: {
+        user_id: true,
+      },
+      _sum: {
+        monto: true,
+      },
     });
-    console.log(totalEgresos)
+
+    let item = {
+      "titulo": "Número de registros",
+      "cantidad": rGeneral[0]['_count']['user_id'],
+    }
+    dataEgresosFuturos.push(item);
+
+    item = {
+      "titulo": "Total en egreso",
+      "cantidad": "$"+formatNumber(rGeneral[0]['_sum']['monto']),
+    }
+    dataEgresosFuturos.push(item);
+
+    item = {
+      "titulo": "Métodos",
+      "cantidad": "",
+      "colSpan": 2,
+    }
+    dataEgresosFuturos.push(item);
+
+    const listTiposPagos = await prisma.tipos_pagos.findMany({
+      select: {
+        tipo_pago_id: true,
+        tipo_pago: true,
+      },
+    });
 
     const listEgresoMetodos = await prisma.egresos_futuros.groupBy({
       by: ['tipo_pago_id'],
@@ -271,7 +415,28 @@ router.get('/listGrupoCajasBancos', async (req,res,next) => {
         tipo_pago_id: true,
       },
     });
-    console.log(listEgresoMetodos);
+
+    for(let j=0; j< listEgresoMetodos.length; j++){
+      let item = {
+        "titulo": buscarNombreTipo(listTiposPagos,listEgresoMetodos[j]['tipo_pago_id']),
+        "cantidad": listEgresoMetodos[j]['_count']['tipo_pago_id'],
+      }
+      dataEgresosFuturos.push(item);
+    }
+
+    item = {
+      "titulo": "Categorias",
+      "cantidad": "",
+      "colSpan": 2,
+    }
+    dataEgresosFuturos.push(item);
+
+    const listCategorias = await prisma.categorias.findMany({
+      select: {
+        categoria_id: true,
+        categoria: true,
+      },
+    });
 
     const listEgresoCategorias = await prisma.egresos_futuros.groupBy({
       by: ['categoria_id'],
@@ -283,12 +448,18 @@ router.get('/listGrupoCajasBancos', async (req,res,next) => {
         categoria_id: true,
       },
     });
-    console.log(listEgresoCategorias);
 
-
-    res.json({listCajasBancos});
+    for(let j=0; j< listEgresoCategorias.length; j++){
+      let item = {
+        "titulo": buscarNombreCategoria(listCategorias,listEgresoCategorias[j]['categoria_id']),
+        "cantidad": listEgresoCategorias[j]['_count']['categoria_id'],
+      }
+      dataEgresosFuturos.push(item);
+    }
+    res.json({dataEgresosFuturos});
   }
 });
+
 
 router.post('/altaIngresoFuturo', async (req,res, next) => {
   let fechaCreacion = new Date().toISOString();

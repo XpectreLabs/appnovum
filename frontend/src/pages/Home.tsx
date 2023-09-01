@@ -70,7 +70,7 @@ export const Home = (props: any) => {
     location.href = '/';
 
   function verificar() {
-    let scriptURL = localStorage.getItem('site')+"/todos";
+    let scriptURL = localStorage.getItem('site')+"/listGrupoCajasBancos2";
     let dataUrl = {user_id};
 
     fetch(scriptURL, {
