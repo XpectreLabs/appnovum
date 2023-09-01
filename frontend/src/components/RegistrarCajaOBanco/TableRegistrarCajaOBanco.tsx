@@ -182,6 +182,16 @@ export const TableRegistrarCajaOBanco = () => {
         </Box>
       </Box>
 
+
+      {/* <Box className={Styles.nav}>
+        <Box></Box>
+        <Box className={Styles.itemSearch}>
+          <p><strong>Efectivo:</strong> $4,350.00</p>
+          <p><strong>Banco:</strong> $8,200.00</p>
+          <p><strong>Total en las cuentas:</strong> $8,200.00</p>
+        </Box>
+      </Box> */}
+
       <Box className={cargandoVisible?'u-textCenter':'u-textCenter u-ocultar'}>
         <CircularProgress />
       </Box>

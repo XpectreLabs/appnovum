@@ -311,12 +311,23 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
       _count: {
         tipo_pago_id: true,
       },
+      _sum: {
+        monto: true,
+      },
     });
 
     for(let j=0; j< listIngresoMetodos.length; j++){
       let item = {
-        "titulo": buscarNombreTipo(listTiposPagos,listIngresoMetodos[j]['tipo_pago_id']),
+        "titulo": "Total de registros en "+buscarNombreTipo(listTiposPagos,listIngresoMetodos[j]['tipo_pago_id']),
         "cantidad": listIngresoMetodos[j]['_count']['tipo_pago_id'],
+      }
+      dataIngresosFuturos.push(item);
+    }
+
+    for(let j=0; j< listIngresoMetodos.length; j++){
+      let item = {
+        "titulo": "Total en "+buscarNombreTipo(listTiposPagos,listIngresoMetodos[j]['tipo_pago_id']),
+        "cantidad": "$"+formatNumber(listIngresoMetodos[j]['_sum']['monto']),
       }
       dataIngresosFuturos.push(item);
     }
@@ -344,12 +355,23 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
       _count: {
         categoria_id: true,
       },
+      _sum: {
+        monto: true,
+      },
     });
 
     for(let j=0; j< listIngresoCategorias.length; j++){
       let item = {
-        "titulo": buscarNombreCategoria(listCategorias,listIngresoCategorias[j]['categoria_id']),
+        "titulo": "Total de registros en "+buscarNombreCategoria(listCategorias,listIngresoCategorias[j]['categoria_id']),
         "cantidad": listIngresoCategorias[j]['_count']['categoria_id'],
+      }
+      dataIngresosFuturos.push(item);
+    }
+
+    for(let j=0; j< listIngresoCategorias.length; j++){
+      let item = {
+        "titulo": "Total en "+buscarNombreCategoria(listCategorias,listIngresoCategorias[j]['categoria_id']),
+        "cantidad": "$"+formatNumber(listIngresoCategorias[j]['_sum']['monto']),
       }
       dataIngresosFuturos.push(item);
     }
@@ -414,12 +436,23 @@ router.post('/resumenEgresosFuturos', async (req,res,next) => {
       _count: {
         tipo_pago_id: true,
       },
+      _sum: {
+        monto: true,
+      },
     });
 
     for(let j=0; j< listEgresoMetodos.length; j++){
       let item = {
-        "titulo": buscarNombreTipo(listTiposPagos,listEgresoMetodos[j]['tipo_pago_id']),
+        "titulo": "Total de registros en "+buscarNombreTipo(listTiposPagos,listEgresoMetodos[j]['tipo_pago_id']),
         "cantidad": listEgresoMetodos[j]['_count']['tipo_pago_id'],
+      }
+      dataEgresosFuturos.push(item);
+    }
+
+    for(let j=0; j< listEgresoMetodos.length; j++){
+      let item = {
+        "titulo": "Total en "+buscarNombreTipo(listTiposPagos,listEgresoMetodos[j]['tipo_pago_id']),
+        "cantidad": "$"+formatNumber(listEgresoMetodos[j]['_sum']['monto']),
       }
       dataEgresosFuturos.push(item);
     }
@@ -447,15 +480,28 @@ router.post('/resumenEgresosFuturos', async (req,res,next) => {
       _count: {
         categoria_id: true,
       },
+      _sum: {
+        monto: true,
+      },
     });
 
     for(let j=0; j< listEgresoCategorias.length; j++){
       let item = {
-        "titulo": buscarNombreCategoria(listCategorias,listEgresoCategorias[j]['categoria_id']),
+        "titulo": "Total de registros en "+buscarNombreCategoria(listCategorias,listEgresoCategorias[j]['categoria_id']),
         "cantidad": listEgresoCategorias[j]['_count']['categoria_id'],
       }
       dataEgresosFuturos.push(item);
     }
+
+
+    for(let j=0; j< listEgresoCategorias.length; j++){
+      let item = {
+        "titulo": "Total en "+buscarNombreCategoria(listCategorias,listEgresoCategorias[j]['categoria_id']),
+        "cantidad": "$"+formatNumber(listEgresoCategorias[j]['_sum']['monto']),
+      }
+      dataEgresosFuturos.push(item);
+    }
+
     res.json({dataEgresosFuturos});
   }
 });
