@@ -92,8 +92,8 @@ export const RowsIngreso = ({
                 />
               )}
             </TableCell>
-            <TableCell align="left" className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{data.date_cashed}</TableCell>
-            <TableCell className="Iconos-Tabla" align="right"> 
+            <TableCell align="left" className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{data.date_cashed +" "+ data.textRetraso}</TableCell>
+            <TableCell className="Iconos-Tabla" align="right">
               <EditIcon className="u-efecto slideRight" onClick={()=>{editar(data.id)}} />
               <DeleteIcon className="icoBorrar u-efecto slideRight" onClick={()=>{showModalE(data.id)}}/>
             </TableCell>
