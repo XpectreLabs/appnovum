@@ -61,6 +61,7 @@ const items: MenuItem[] = [
 export const Home = (props: any) => {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [resumenActive, setResumenActive] = React.useState(false);
   const [cajaActive, setCajaActive] = React.useState(true);
   const [ingresoActive, setIngresoActive] = React.useState(true);
   const [egresoActive, setEgresoActive] = React.useState(true);
@@ -70,7 +71,7 @@ export const Home = (props: any) => {
     location.href = '/';
 
   function verificar() {
-    let scriptURL = localStorage.getItem('site')+"/listGrupoCajasBancos2";
+    let scriptURL = localStorage.getItem('site')+"/todos";
     let dataUrl = {user_id};
 
     fetch(scriptURL, {
@@ -82,6 +83,7 @@ export const Home = (props: any) => {
     })
     .then((resp) => resp.json())
     .then(function(info) {
+      info['caja']!==0||info['ingreso']!==0||info['egreso']!==0?setResumenActive(true):setResumenActive(false);
       info['caja']===0?setCajaActive(false):setCajaActive(true);
       info['ingreso']===0?setIngresoActive(false):setIngresoActive(true);
       info['egreso']===0?setEgresoActive(false):setEgresoActive(true);
@@ -130,7 +132,7 @@ export const Home = (props: any) => {
 
   const Cambio = (props) => {
     if (props.pos === "1")
-      return <Resumen cambioRegistroBan={cambioRegistroBan} />;
+      return <Resumen resumenActive={resumenActive} setResumenActive={setResumenActive} />;
     else if (props.pos === "2") return <RegistrarCajaOBanco cajaActive={cajaActive} setCajaActive={setCajaActive} />;
     else if (props.pos === "3") return <RegistrarIngresosFuturos ingresoActive={ingresoActive} setIngresoActive={setIngresoActive} />;
     else if (props.pos === "4") return <RegistrarEgresosFuturos egresoActive={egresoActive} setEgresoActive={setEgresoActive} />;

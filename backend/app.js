@@ -261,7 +261,7 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
   if(req.body.user_id!==null) {
     const id = req.body.user_id;
     let dataIngresosFuturos = [];
-
+ 
     const rGeneral = await prisma.ingresos_futuros.groupBy({
       by: ['user_id'],
       where: {
@@ -276,24 +276,19 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
       },
     });
 
-    let item = {
-      "titulo": "Número de registros",
-      "cantidad": rGeneral[0]['_count']['user_id'],
-    }
-    dataIngresosFuturos.push(item);
+    if(rGeneral.length>0) {
+      let item = {
+        "titulo": "Número de registros",
+        "cantidad": rGeneral[0]['_count']['user_id'],
+      }
+      dataIngresosFuturos.push(item);
 
-    item = {
-      "titulo": "Total en ingreso",
-      "cantidad": "$"+formatNumber(rGeneral[0]['_sum']['monto']),
+      item = {
+        "titulo": "Total en ingreso",
+        "cantidad": "$"+formatNumber(rGeneral[0]['_sum']['monto']),
+      }
+      dataIngresosFuturos.push(item); 
     }
-    dataIngresosFuturos.push(item);
-
-    item = {
-      "titulo": "Métodos",
-      "cantidad": "",
-      "colSpan": 2,
-    }
-    dataIngresosFuturos.push(item);
 
     const listTiposPagos = await prisma.tipos_pagos.findMany({
       select: {
@@ -316,28 +311,30 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
       },
     });
 
-    for(let j=0; j< listIngresoMetodos.length; j++){
-      let item = {
-        "titulo": "Total de registros en "+buscarNombreTipo(listTiposPagos,listIngresoMetodos[j]['tipo_pago_id']),
-        "cantidad": listIngresoMetodos[j]['_count']['tipo_pago_id'],
+    if(listIngresoMetodos.length>0) {
+      item = {
+        "titulo": "Métodos",
+        "cantidad": "",
+        "colSpan": 2,
       }
       dataIngresosFuturos.push(item);
-    }
 
-    for(let j=0; j< listIngresoMetodos.length; j++){
-      let item = {
-        "titulo": "Total en "+buscarNombreTipo(listTiposPagos,listIngresoMetodos[j]['tipo_pago_id']),
-        "cantidad": "$"+formatNumber(listIngresoMetodos[j]['_sum']['monto']),
+      for(let j=0; j< listIngresoMetodos.length; j++){
+        let item = {
+          "titulo": "Total de registros en "+buscarNombreTipo(listTiposPagos,listIngresoMetodos[j]['tipo_pago_id']),
+          "cantidad": listIngresoMetodos[j]['_count']['tipo_pago_id'],
+        }
+        dataIngresosFuturos.push(item);
       }
-      dataIngresosFuturos.push(item);
-    }
 
-    item = {
-      "titulo": "Categorias",
-      "cantidad": "",
-      "colSpan": 2,
+      for(let j=0; j< listIngresoMetodos.length; j++){
+        let item = {
+          "titulo": "Total en "+buscarNombreTipo(listTiposPagos,listIngresoMetodos[j]['tipo_pago_id']),
+          "cantidad": "$"+formatNumber(listIngresoMetodos[j]['_sum']['monto']),
+        }
+        dataIngresosFuturos.push(item);
+      }
     }
-    dataIngresosFuturos.push(item);
 
     const listCategorias = await prisma.categorias.findMany({
       select: {
@@ -360,20 +357,29 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
       },
     });
 
-    for(let j=0; j< listIngresoCategorias.length; j++){
-      let item = {
-        "titulo": "Total de registros en "+buscarNombreCategoria(listCategorias,listIngresoCategorias[j]['categoria_id']),
-        "cantidad": listIngresoCategorias[j]['_count']['categoria_id'],
+    if(listIngresoCategorias.length>0) {
+      item = {
+        "titulo": "Categorias",
+        "cantidad": "",
+        "colSpan": 2,
       }
       dataIngresosFuturos.push(item);
-    }
 
-    for(let j=0; j< listIngresoCategorias.length; j++){
-      let item = {
-        "titulo": "Total en "+buscarNombreCategoria(listCategorias,listIngresoCategorias[j]['categoria_id']),
-        "cantidad": "$"+formatNumber(listIngresoCategorias[j]['_sum']['monto']),
+      for(let j=0; j< listIngresoCategorias.length; j++){
+        let item = {
+          "titulo": "Total de registros en "+buscarNombreCategoria(listCategorias,listIngresoCategorias[j]['categoria_id']),
+          "cantidad": listIngresoCategorias[j]['_count']['categoria_id'],
+        }
+        dataIngresosFuturos.push(item);
       }
-      dataIngresosFuturos.push(item);
+
+      for(let j=0; j< listIngresoCategorias.length; j++){
+        let item = {
+          "titulo": "Total en "+buscarNombreCategoria(listCategorias,listIngresoCategorias[j]['categoria_id']),
+          "cantidad": "$"+formatNumber(listIngresoCategorias[j]['_sum']['monto']),
+        }
+        dataIngresosFuturos.push(item);
+      }
     }
 
     res.json({dataIngresosFuturos});
@@ -401,24 +407,19 @@ router.post('/resumenEgresosFuturos', async (req,res,next) => {
       },
     });
 
-    let item = {
-      "titulo": "Número de registros",
-      "cantidad": rGeneral[0]['_count']['user_id'],
-    }
-    dataEgresosFuturos.push(item);
+    if(rGeneral.length>0) {
+      let item = {
+        "titulo": "Número de registros",
+        "cantidad": rGeneral[0]['_count']['user_id'],
+      }
+      dataEgresosFuturos.push(item);
 
-    item = {
-      "titulo": "Total en egreso",
-      "cantidad": "$"+formatNumber(rGeneral[0]['_sum']['monto']),
+      item = {
+        "titulo": "Total en egreso",
+        "cantidad": "$"+formatNumber(rGeneral[0]['_sum']['monto']),
+      }
+      dataEgresosFuturos.push(item);
     }
-    dataEgresosFuturos.push(item);
-
-    item = {
-      "titulo": "Métodos",
-      "cantidad": "",
-      "colSpan": 2,
-    }
-    dataEgresosFuturos.push(item);
 
     const listTiposPagos = await prisma.tipos_pagos.findMany({
       select: {
@@ -441,28 +442,30 @@ router.post('/resumenEgresosFuturos', async (req,res,next) => {
       },
     });
 
-    for(let j=0; j< listEgresoMetodos.length; j++){
-      let item = {
-        "titulo": "Total de registros en "+buscarNombreTipo(listTiposPagos,listEgresoMetodos[j]['tipo_pago_id']),
-        "cantidad": listEgresoMetodos[j]['_count']['tipo_pago_id'],
+    if(listEgresoMetodos.length>0) {
+      item = {
+        "titulo": "Métodos",
+        "cantidad": "",
+        "colSpan": 2,
       }
       dataEgresosFuturos.push(item);
-    }
 
-    for(let j=0; j< listEgresoMetodos.length; j++){
-      let item = {
-        "titulo": "Total en "+buscarNombreTipo(listTiposPagos,listEgresoMetodos[j]['tipo_pago_id']),
-        "cantidad": "$"+formatNumber(listEgresoMetodos[j]['_sum']['monto']),
+      for(let j=0; j< listEgresoMetodos.length; j++){
+        let item = {
+          "titulo": "Total de registros en "+buscarNombreTipo(listTiposPagos,listEgresoMetodos[j]['tipo_pago_id']),
+          "cantidad": listEgresoMetodos[j]['_count']['tipo_pago_id'],
+        }
+        dataEgresosFuturos.push(item);
       }
-      dataEgresosFuturos.push(item);
-    }
 
-    item = {
-      "titulo": "Categorias",
-      "cantidad": "",
-      "colSpan": 2,
+      for(let j=0; j< listEgresoMetodos.length; j++){
+        let item = {
+          "titulo": "Total en "+buscarNombreTipo(listTiposPagos,listEgresoMetodos[j]['tipo_pago_id']),
+          "cantidad": "$"+formatNumber(listEgresoMetodos[j]['_sum']['monto']),
+        }
+        dataEgresosFuturos.push(item);
+      }
     }
-    dataEgresosFuturos.push(item);
 
     const listCategorias = await prisma.categorias.findMany({
       select: {
@@ -485,21 +488,30 @@ router.post('/resumenEgresosFuturos', async (req,res,next) => {
       },
     });
 
-    for(let j=0; j< listEgresoCategorias.length; j++){
-      let item = {
-        "titulo": "Total de registros en "+buscarNombreCategoria(listCategorias,listEgresoCategorias[j]['categoria_id']),
-        "cantidad": listEgresoCategorias[j]['_count']['categoria_id'],
+    if(listEgresoCategorias.length>0) {
+      item = {
+        "titulo": "Categorias",
+        "cantidad": "",
+        "colSpan": 2,
       }
       dataEgresosFuturos.push(item);
-    }
 
-
-    for(let j=0; j< listEgresoCategorias.length; j++){
-      let item = {
-        "titulo": "Total en "+buscarNombreCategoria(listCategorias,listEgresoCategorias[j]['categoria_id']),
-        "cantidad": "$"+formatNumber(listEgresoCategorias[j]['_sum']['monto']),
+      for(let j=0; j< listEgresoCategorias.length; j++){
+        let item = {
+          "titulo": "Total de registros en "+buscarNombreCategoria(listCategorias,listEgresoCategorias[j]['categoria_id']),
+          "cantidad": listEgresoCategorias[j]['_count']['categoria_id'],
+        }
+        dataEgresosFuturos.push(item);
       }
-      dataEgresosFuturos.push(item);
+
+
+      for(let j=0; j< listEgresoCategorias.length; j++){
+        let item = {
+          "titulo": "Total en "+buscarNombreCategoria(listCategorias,listEgresoCategorias[j]['categoria_id']),
+          "cantidad": "$"+formatNumber(listEgresoCategorias[j]['_sum']['monto']),
+        }
+        dataEgresosFuturos.push(item);
+      }
     }
 
     res.json({dataEgresosFuturos});

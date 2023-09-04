@@ -113,7 +113,7 @@ function cargarDatos(setListCajaBanco,setListIngresos,setListEgresos) {
 
 }
 
-export const Reporte = ({cambioRegistroBan}) => {
+export const Reporte = () => {
   const [listCajaBanco, setListCajaBanco] = useState([]);
   const [listIngresos, setListIngresos] = useState([]);
   const [listEgresos, setListEgresos] = useState([]);
