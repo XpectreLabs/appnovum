@@ -100,7 +100,7 @@ export const RowsIngreso = ({
                 />
               )}
             </TableCell>
-            <TableCell align="left" className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{!data.statusBorrado?data.date_cashed +" "+ data.textRetraso:"Cancelado"}</TableCell>
+            <TableCell align="left" className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{!data.statusBorrado?data.date_cashed +" "+ data.textRetraso:"Cancelado"}</TableCell> 
             <TableCell className="Iconos-Tabla" align="right">
               {!data.statusBorrado?<CloseOutlined onClick={()=>{showModalCl(data.id)}} className="u-efecto slideRight u-marginR-5" />:null}
               {!data.statusBorrado?<EditIcon className="u-efecto slideRight" onClick={()=>{editar(data.id)}} />:null}

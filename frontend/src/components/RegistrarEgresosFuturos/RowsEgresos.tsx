@@ -9,6 +9,7 @@ import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {message, Popconfirm } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import dayjs, { Dayjs } from 'dayjs';
 
 const cancel = () => {
@@ -28,7 +29,8 @@ export const RowsEgresos = ({
   showModal,
   setInitialValues,
   showModalC,
-  showModalE
+  showModalE,
+  showModalCl
 }: {
   pullData: any;
   page: any;
@@ -37,6 +39,7 @@ export const RowsEgresos = ({
   setInitialValues: Function;
   showModalC: Function;
   showModalE: Function;
+  showModalCl: Function;
 }) => {
 
   const editar = (id) => {
@@ -77,7 +80,7 @@ export const RowsEgresos = ({
             <TableCell align="left">${formatNumber(data.amount)}</TableCell>
             <TableCell align="left">{data.date_to_pay}</TableCell>
             <TableCell align="left" className="IcoEstados">
-              {data.state == "Pagado" ? (
+              {!data.statusBorrado? data.state == "Pagado" ? (
                 <Chip
                   icon={<span className="icon-icoCobrar"></span>}
                   size="small"
@@ -93,11 +96,18 @@ export const RowsEgresos = ({
                   className={Styles.chipTableNo}
                   onClick={()=>{showModalC(data.id,1,data.date_created_o)}}
                 />
+              ):(
+                <Chip
+                  label="Cancelado"
+                  size="small"
+                  className={Styles.chipTableNo}
+                />
               )}
             </TableCell>
-            <TableCell align="left"><p className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{data.date_cashed +" "+ data.textRetraso}</p></TableCell>
+            <TableCell align="left"><p className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{!data.statusBorrado?data.date_cashed +" "+ data.textRetraso:"Cancelado"}</p></TableCell>
             <TableCell className="Iconos-Tabla" align="right">
-              <EditIcon className="u-efecto slideRight" onClick={()=>{editar(data.id)}} />
+              {!data.statusBorrado?<CloseOutlined onClick={()=>{showModalCl(data.id)}} className="u-efecto slideRight u-marginR-5" />:null}
+              {!data.statusBorrado?<EditIcon className="u-efecto slideRight" onClick={()=>{editar(data.id)}} />:null}
               <DeleteIcon className="icoBorrar u-efecto slideRight" onClick={()=>{showModalE(data.id)}}/>
             </TableCell>
           </TableRow>

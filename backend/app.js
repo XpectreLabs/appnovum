@@ -928,7 +928,19 @@ router.post('/eliminarEgresoFuturo', async (req,res,next) => {
   res.json({"status":"exito"});
 });
 
+router.post('/CancelarEgresoFuturo', async (req,res,next) => {
+  const id = parseInt(req.body.egresos_futuros_id);
 
+  await prisma.egresos_futuros.update({
+    where: {
+      egresos_futuros_id : parseInt(id),
+    },
+    data: {
+      borrado: true
+    }
+  });
+  res.json({"status":"exito"});
+});
 
 
 router.post('/cambiarPagado', async (req,res, next) => {

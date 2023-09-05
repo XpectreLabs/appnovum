@@ -112,6 +112,7 @@ export const TableRegistrarEgresosFuturos = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [confirm2Loading, setConfirm2Loading] = useState(false);
   const [confirm3Loading, setConfirm3Loading] = useState(false);
+  const [confirm4Loading, setConfirm4Loading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [cargandoVisible, setCargandoVisible] = useState(true);
   const [listaDatos, setListaDatos] = useState([]);
@@ -119,6 +120,7 @@ export const TableRegistrarEgresosFuturos = () => {
   const [cantidadV, setCantidadV] = useState(0);
   const [modal2Open, setModal2Open] = useState(false);
   const [modal3Open, setModal3Open] = useState(false);
+  const [modal4Open, setModal4Open] = useState(false);
   const [idEgresoStatus, setIdEgresoStatus] = useState("0");
   const [pagado, setPagado] = useState(false);
   const [stMetodo,setStMetodo] = useState(0);
@@ -256,6 +258,13 @@ export const TableRegistrarEgresosFuturos = () => {
     },500);
   };
 
+  const showModalCl = (id) => {
+    setModal4Open(true);
+    setTimeout(()=>{
+      setIdEgresoStatus(id);
+    },500);
+  };
+
   const eliminar = () => {
     const scriptURL = localStorage.getItem('site')+"/eliminarEgresoFuturo"; // deberia es
     const egresos_futuros_id = idEgresoStatus;
@@ -281,6 +290,32 @@ export const TableRegistrarEgresosFuturos = () => {
        console.error('Error!', error.message);
      });
   }
+
+    const cancelarEgreso = () => {
+      const scriptURL = localStorage.getItem('site')+"/CancelarEgresoFuturo"; // deberia es
+      const egresos_futuros_id = idEgresoStatus;
+      const dataU = {egresos_futuros_id};
+
+      setConfirm4Loading(true);
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: JSON.stringify(dataU),
+        headers:{
+          'Content-Type': 'application/json'
+        }
+      })
+      .then((resp) => resp.json())
+      .then(function(info) {
+        fn.ejecutarClick("#btnBuscar");
+        setModal4Open(false);
+        setConfirm4Loading(false);
+      })
+      .catch(error => {
+        console.log(error.message);
+        console.error('Error!', error.message);
+      });
+    }
 
   return (
     <Box>
@@ -377,7 +412,7 @@ export const TableRegistrarEgresosFuturos = () => {
         </Box>
       </Box>
 
-      <DataEgreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} showModalC={showModalC} showModalE={showModalE} />
+      <DataEgreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} showModalC={showModalC} showModalE={showModalE} showModalCl={showModalCl} />
 
       <Box className={cargandoVisible?'u-textCenter':'u-textCenter u-ocultar'}>
         <CircularProgress />
@@ -640,6 +675,29 @@ export const TableRegistrarEgresosFuturos = () => {
         >
           <input type="hidden" name="idEgresoFuturoE" id="idEgresoFuturoE" value={idEgresoStatus} />
           <p><strong>¿Desea eliminar este registro de pago?</strong></p>
+        </form>
+      </Modal>
+
+      <Modal
+        width={340}
+        title=""
+        centered
+        open={modal4Open}
+        onOk={cancelarEgreso}
+        onCancel={() => setModal4Open(false)}
+        okText={"Cancelar egreso"}
+        cancelText="Salir"
+        className={`${Styles.ModalCobrar} Cobrado u-textCenter`}
+        confirmLoading={confirm4Loading}
+      >
+        <form
+          className={Styles.ModalForm}
+          name="formCancelar"
+          id="formCancelar"
+          method="post"
+        >
+          <input type="hidden" name="idEgresoFuturoE" id="idEgresoFuturoE" value={idEgresoStatus} />
+          <p><strong>¿Desea cancelar este pago?</strong></p>
         </form>
       </Modal>
 

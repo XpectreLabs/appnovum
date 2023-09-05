@@ -16,13 +16,15 @@ export const DataEgreso = ({
   showModal,
   setInitialValues,
   showModalC,
-  showModalE
+  showModalE,
+  showModalCl
 }: {
   arrays: any;
   showModal: Function,
   setInitialValues: Function,
   showModalC: Function,
-  showModalE: Function
+  showModalE: Function,
+  showModalCl: Function
 }) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -72,6 +74,7 @@ export const DataEgreso = ({
                 setInitialValues={setInitialValues}
                 showModalC={showModalC}
                 showModalE={showModalE}
+                showModalCl={showModalCl}
               />
             </TableBody>
           </Table>

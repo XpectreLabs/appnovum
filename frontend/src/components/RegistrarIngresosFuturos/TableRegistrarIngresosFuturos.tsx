@@ -96,10 +96,6 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
   });
 }
 
-if(user_id!==""&&user_id!==null) {
-  //alert("Ejecuto");
-  cargarDatos();
-}
 
 export const TableRegistrarIngresosFuturos = () => {
   const [open, setOpen] = useState(false);
@@ -122,6 +118,10 @@ export const TableRegistrarIngresosFuturos = () => {
   const [ocultarFechaRealizo,setOcultarFechaRealizo] = useState(true);
   const [valueFechaRealizoCobro,setValueFechaRealizoCobro] = useState('');
 
+  if(user_id!==""&&user_id!==null) {
+    cargarDatos();
+  }
+
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
     setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaCobro:dayjs(dateString)}));
   };
@@ -140,13 +140,15 @@ export const TableRegistrarIngresosFuturos = () => {
     else {
       setCantidadV(data.length);
       setListaDatos(data);
+
+
       setCargandoVisible(false);
       clearInterval(idSI);
 
-      setTimeout(()=>{
-        if(fn.obtenerValor("#txtSearch")===""&&fn.obtenerValor("#stTipoB")==="0"&&fn.obtenerValor("#stEstadoB")==="0")
-          fn.ejecutarClick("#btnBuscar");
-      },200);
+        /*setTimeout(()=>{
+          if(fn.obtenerValor("#txtSearch")===""&&fn.obtenerValor("#stTipoB")==="0"&&fn.obtenerValor("#stEstadoB")==="0")
+            fn.ejecutarClick("#btnBuscar");
+        },200);*/     
     }
   }, 1000);
 
@@ -206,7 +208,7 @@ export const TableRegistrarIngresosFuturos = () => {
       console.error('Error!', error.message);
     });
   };
-
+ 
 
   const revertir = () => {
     const scriptURL = localStorage.getItem('site')+"/revertirCobro"; // deberia es
@@ -225,7 +227,7 @@ export const TableRegistrarIngresosFuturos = () => {
       cargarDatos(true,setListaDatos);
       setTimeout(()=> {
         setModal2Open(false);
-        setConfirm2Loading(false)
+        setConfirm2Loading(false);
       },600)
     })
     .catch(error => {

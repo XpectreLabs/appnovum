@@ -36,8 +36,9 @@ function obtenerList(info) {
       "state": state,
       "date_cashed": fechaEnQueSePago,
       "statusCobro": validarPago,
-      //"statusRetraso": validarRetraso,
+      //"statusRetraso": validarRetraso, 
       "textRetraso": textRetraso,
+      "statusBorrado": info['listEgresosFuturos'][j]['borrado'],
     }
     listData.push(item);
   }
