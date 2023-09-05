@@ -56,7 +56,6 @@ export const RowsEgresos = ({
           <TableRow
             key={data.name}
             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            idTr={data.id}
           >
             <TableCell scope="row">{data.date_created}</TableCell>
             <TableCell align="left">

@@ -39,6 +39,7 @@ function obtenerList(info) {
       "statusCobro": validarCobro,
       //"statusRetraso": validarRetraso,
       "textRetraso": textRetraso,
+      "statusBorrado": info['listIngresosFuturos'][j]['borrado'],
     }
     listData.push(item);
   }

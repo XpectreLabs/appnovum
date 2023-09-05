@@ -8,6 +8,7 @@ import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { CloseOutlined } from '@ant-design/icons';
 import dayjs, { Dayjs } from 'dayjs';
 
 const cancel = () => {};
@@ -24,7 +25,8 @@ export const RowsIngreso = ({
   showModal,
   setInitialValues,
   showModalC,
-  showModalE
+  showModalE,
+  showModalCl
 }: {
   pullData: any;
   page: any;
@@ -33,6 +35,7 @@ export const RowsIngreso = ({
   setInitialValues: Function;
   showModalC: Function;
   showModalE: Function;
+  showModalCl: Function;
 }) => {
 
   const editar = (id) => {
@@ -52,7 +55,6 @@ export const RowsIngreso = ({
           <TableRow
             key={data.name}
             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            idTr={data.id}
           >
             <TableCell scope="row">{data.date_created}</TableCell>
             <TableCell align="left">
@@ -74,7 +76,7 @@ export const RowsIngreso = ({
             <TableCell align="left">${formatNumber(data.amount)}</TableCell>
             <TableCell align="left">{data.date_to_pay}</TableCell>
             <TableCell align="left" className="IcoEstados Ingreso">
-              {data.state == "Cobrado" ? (
+              {!data.statusBorrado? data.state == "Cobrado" ? (
                 <Chip
                   icon={<span className="icon-icoCobrar"></span>}
                   size="small"
@@ -90,11 +92,18 @@ export const RowsIngreso = ({
                   className={Styles.chipTableNo}
                   onClick={()=>{showModalC(data.id,1,data.date_created_o)}}
                 />
+              ):(
+                <Chip
+                  label="Cancelado"
+                  size="small"
+                  className={Styles.chipTableNo}
+                />
               )}
             </TableCell>
-            <TableCell align="left" className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{data.date_cashed +" "+ data.textRetraso}</TableCell>
+            <TableCell align="left" className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{!data.statusBorrado?data.date_cashed +" "+ data.textRetraso:"Cancelado"}</TableCell>
             <TableCell className="Iconos-Tabla" align="right">
-              <EditIcon className="u-efecto slideRight" onClick={()=>{editar(data.id)}} />
+              {!data.statusBorrado?<CloseOutlined onClick={()=>{showModalCl(data.id)}} className="u-efecto slideRight u-marginR-5" />:null}
+              {!data.statusBorrado?<EditIcon className="u-efecto slideRight" onClick={()=>{editar(data.id)}} />:null}
               <DeleteIcon className="icoBorrar u-efecto slideRight" onClick={()=>{showModalE(data.id)}}/>
             </TableCell>
           </TableRow>

@@ -106,13 +106,15 @@ export const TableRegistrarIngresosFuturos = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [confirm2Loading, setConfirm2Loading] = useState(false);
   const [confirm3Loading, setConfirm3Loading] = useState(false);
-  const [messageApi, contextHolder] = message.useMessage();  
+  const [confirm4Loading, setConfirm4Loading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
   const [cargandoVisible, setCargandoVisible] = useState(true);
   const [listaDatos, setListaDatos] = useState([]);
   const [initialValues, setInitialValues] = useState(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
   const [cantidadV, setCantidadV] = useState(0);
   const [modal2Open, setModal2Open] = useState(false);
   const [modal3Open, setModal3Open] = useState(false);
+  const [modal4Open, setModal4Open] = useState(false);
   const [idIngresoStatus, setIdIngresoStatus] = useState("0");
   const [cobrado, setCobrado] = useState(false);
   const [stMetodo,setStMetodo] = useState(0);
@@ -256,6 +258,13 @@ export const TableRegistrarIngresosFuturos = () => {
     },500);
   };
 
+  const showModalCl = (id) => {
+    setModal4Open(true);
+    setTimeout(()=>{
+      setIdIngresoStatus(id);
+    },500);
+  };
+
   const eliminar = () => {
     const scriptURL = localStorage.getItem('site')+"/eliminarIngresoFuturo"; // deberia es
     const ingresos_futuros_id = idIngresoStatus;
@@ -275,6 +284,33 @@ export const TableRegistrarIngresosFuturos = () => {
       fn.ejecutarClick("#btnBuscar");
       setModal3Open(false);
       setConfirm3Loading(false);
+     })
+     .catch(error => {
+       console.log(error.message);
+       console.error('Error!', error.message);
+     });
+  }
+
+
+  const cancelarIngreso = () => {
+    const scriptURL = localStorage.getItem('site')+"/CancelarIngresoFuturo"; // deberia es
+    const ingresos_futuros_id = idIngresoStatus;
+    const dataU = {ingresos_futuros_id};
+
+    setConfirm4Loading(true);
+
+    fetch(scriptURL, {
+       method: 'POST',
+       body: JSON.stringify(dataU),
+       headers:{
+         'Content-Type': 'application/json'
+       }
+     })
+    .then((resp) => resp.json())
+    .then(function(info) {
+      fn.ejecutarClick("#btnBuscar");
+      setModal4Open(false);
+      setConfirm4Loading(false);
      })
      .catch(error => {
        console.log(error.message);
@@ -378,7 +414,7 @@ export const TableRegistrarIngresosFuturos = () => {
         </Box>
       </Box>
 
-      <DataIngreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} showModalC={showModalC} showModalE={showModalE} />
+      <DataIngreso arrays={listaDatos} showModal={showModal} setInitialValues={setInitialValues} showModalC={showModalC} showModalE={showModalE} showModalCl={showModalCl} />
 
       <Box className={cargandoVisible?'u-textCenter':'u-textCenter u-ocultar'}>
         <CircularProgress />
@@ -655,6 +691,30 @@ export const TableRegistrarIngresosFuturos = () => {
         >
           <input type="hidden" name="idIngresoFuturoE" id="idIngresoFuturoE" value={idIngresoStatus} />
           <p><strong>¿Desea eliminar este registro de cobro?</strong></p>
+        </form>
+      </Modal>
+
+
+      <Modal
+        width={340}
+        title=""
+        centered
+        open={modal4Open}
+        onOk={cancelarIngreso}
+        onCancel={() => setModal4Open(false)}
+        okText={"Cancelar ingreso"}
+        cancelText="Salir"
+        className={`${Styles.ModalCobrar} Cobrado u-textCenter`}
+        confirmLoading={confirm4Loading}
+      >
+        <form
+          className={Styles.ModalForm}
+          name="formCancelar"
+          id="formCancelar"
+          method="post"
+        >
+          <input type="hidden" name="idIngresoFuturoE" id="idIngresoFuturoE" value={idIngresoStatus} />
+          <p><strong>¿Desea cancelar este cobro?</strong></p>
         </form>
       </Modal>
 

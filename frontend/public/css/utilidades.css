@@ -265,18 +265,15 @@ strong {
 	box-sizing: border-box;
 }
 
-
 .u-positionAbsolute
 {
 	position: absolute;
 }
 
-
 .u-visibilityHidden
 {
 	visibility: hidden;
 }
-
 
 .ant-modal-close {
   display: none !important;
@@ -296,7 +293,6 @@ strong {
 	background: #00df35;
 }
 
-
 .ant-modal-wrap .ant-btn-default {
 	color: #00C62F;
 	font-weight: 600;
@@ -311,4 +307,8 @@ strong {
 }
 .ant-picker .ant-picker-suffix {
 	color: #000 !important;
+}
+
+.u-marginR-5 {
+	margin-right: 5px;
 }

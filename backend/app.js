@@ -531,6 +531,7 @@ router.post('/altaIngresoFuturo', async (req,res, next) => {
       fecha_tentativa_cobro: req.body.txtFechaTentativaCobro,
       user_id: parseInt(req.body.user_id),
       fecha_creacion: fechaCreacion,
+      borrado: true,
       activo: true
     }
   });
@@ -575,6 +576,7 @@ router.post('/listIngresosFuturos', async (req,res,next) => {
         fecha_tentativa_cobro: true,
         fecha_creacion: true,
         fecha_cobro: true,
+        borrado: true,
         tipos_pagos: {
           select: {
             tipo_pago:true
@@ -614,6 +616,7 @@ router.post('/listIngresosFuturosB', async (req,res,next) => {
         fecha_tentativa_cobro: true,
         fecha_creacion: true,
         fecha_cobro: true,
+        borrado: true,
         tipos_pagos: {
           select: {
             tipo_pago:true
@@ -640,6 +643,20 @@ router.post('/eliminarIngresoFuturo', async (req,res,next) => {
     },
     data: {
       activo: false
+    }
+  });
+  res.json({"status":"exito"});
+});
+
+router.post('/CancelarIngresoFuturo', async (req,res,next) => {
+  const id = parseInt(req.body.ingresos_futuros_id);
+
+  await prisma.ingresos_futuros.update({
+    where: {
+      ingresos_futuros_id : parseInt(id),
+    },
+    data: {
+      borrado: true
     }
   });
   res.json({"status":"exito"});
@@ -711,6 +728,7 @@ router.post('/listIngresosFuturosFiltro', async (req,res,next) => {
           fecha_tentativa_cobro: true,
           fecha_creacion: true,
           fecha_cobro: true,
+          borrado: true,
           tipos_pagos: {
             select: {
               tipo_pago:true
@@ -742,6 +760,7 @@ router.post('/listIngresosFuturosFiltro', async (req,res,next) => {
           fecha_tentativa_cobro: true,
           fecha_creacion: true,
           fecha_cobro: true,
+          borrado: true,
           tipos_pagos: {
             select: {
               tipo_pago:true
@@ -793,6 +812,7 @@ router.post('/altaEgresoFuturo', async (req,res, next) => {
       fecha_tentativa_pago: req.body.txtFechaTentativaPago,
       user_id: parseInt(req.body.user_id),
       fecha_creacion: fechaCreacion,
+      borrado: true,
       activo: true
     }
   });
@@ -837,6 +857,7 @@ router.post('/listEgresosFuturos', async (req,res,next) => {
         fecha_tentativa_pago: true,
         fecha_creacion: true,
         fecha_pago: true,
+        borrado: true,
         tipos_pagos: {
           select: {
             tipo_pago:true
@@ -876,6 +897,7 @@ router.post('/listEgresosFuturosB', async (req,res,next) => {
         fecha_tentativa_pago: true,
         fecha_creacion: true,
         fecha_pago: true,
+        borrado: true,
         tipos_pagos: {
           select: {
             tipo_pago:true
@@ -976,6 +998,7 @@ router.post('/listEgresosFuturosFiltro', async (req,res,next) => {
           fecha_tentativa_pago: true,
           fecha_creacion: true,
           fecha_pago: true,
+          borrado: true,
           tipos_pagos: {
             select: {
               tipo_pago:true
@@ -1007,6 +1030,7 @@ router.post('/listEgresosFuturosFiltro', async (req,res,next) => {
           fecha_tentativa_pago: true,
           fecha_creacion: true,
           fecha_pago: true,
+          borrado: true,
           tipos_pagos: {
             select: {
               tipo_pago:true
