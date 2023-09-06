@@ -121,48 +121,6 @@ export const Reporte = () => {
   if(listCajaBanco.length===0||listIngresos.length===0||listEgresos.length===0)
     cargarDatos(setListCajaBanco,setListIngresos,setListEgresos);
 
-  setTimeout(()=>{
-    const dataIngresos: DataType2[] = [
-      {
-        titulo: "Número de registros",
-        cantidad: "11",
-      },
-      {
-        titulo: "Total en ingreso",
-        cantidad: "9",
-      },
-      {
-        titulo: "Métodos",
-        cantidad: "",
-        colSpan: 2,
-      },
-      {
-        titulo: "Efectivo",
-        cantidad: "11",
-      },
-      {
-        titulo: "Banco",
-        cantidad: "9",
-      },
-      {
-        titulo: "Categorias",
-        cantidad: "",
-        colSpan: 2,
-      },
-      {
-        titulo: "Cliente",
-        cantidad: "11",
-      },
-      {
-        titulo: "Otros",
-        cantidad: "9",
-      },
-    ];
-
-    //setListIngresos(dataIngresos);
-
-  },2000)
-
     return (
       <>
         <div className={style.TablaResumen}>

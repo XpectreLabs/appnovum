@@ -379,6 +379,8 @@ export const TableRegistrarEgresosFuturos = () => {
               <option value="0">Todos</option>
               <option value="1">Pagados</option>
               <option value="2">No pagados</option>
+              <option value="3">Atrasados</option>
+              <option value="4">Cancelados</option>
             </select>
           </Paper>
         </Box>

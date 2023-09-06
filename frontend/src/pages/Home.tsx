@@ -132,7 +132,7 @@ export const Home = (props: any) => {
 
   const Cambio = (props) => {
     if (props.pos === "1")
-      return <Resumen resumenActive={resumenActive} setResumenActive={setResumenActive} />;
+      return <Resumen resumenActive={resumenActive} cambioRegistroBan={cambioRegistroBan} />;
     else if (props.pos === "2") return <RegistrarCajaOBanco cajaActive={cajaActive} setCajaActive={setCajaActive} />;
     else if (props.pos === "3") return <RegistrarIngresosFuturos ingresoActive={ingresoActive} setIngresoActive={setIngresoActive} />;
     else if (props.pos === "4") return <RegistrarEgresosFuturos egresoActive={egresoActive} setEgresoActive={setEgresoActive} />;

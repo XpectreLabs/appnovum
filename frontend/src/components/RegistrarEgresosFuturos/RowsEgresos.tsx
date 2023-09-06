@@ -16,12 +16,6 @@ const cancel = () => {
   message.error('Click on No');
 };
 
-const formatNumber = (number) =>
-  new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(number);
-
 export const RowsEgresos = ({
   pullData,
   page,
@@ -77,7 +71,7 @@ export const RowsEgresos = ({
             <TableCell align="left">{data.category}</TableCell>
             <TableCell align="left">{data.name}</TableCell>
             <TableCell align="left">{data.concept}</TableCell>
-            <TableCell align="left">${formatNumber(data.amount)}</TableCell>
+            <TableCell align="left">${fn.formatNumber(data.amount)}</TableCell>
             <TableCell align="left">{data.date_to_pay}</TableCell>
             <TableCell align="left" className="IcoEstados">
               {!data.statusBorrado? data.state == "Pagado" ? (

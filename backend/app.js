@@ -709,7 +709,6 @@ router.post('/listIngresosFuturosFiltro', async (req,res,next) => {
     const estado_id = parseInt(req.body.estado_id);
 
     let listIngresosFuturos;
-    console.log(metodo_id + " " +estado_id);
 
     if(metodo_id !== 0) {
       listIngresosFuturos = await prisma.ingresos_futuros.findMany({
@@ -741,8 +740,6 @@ router.post('/listIngresosFuturosFiltro', async (req,res,next) => {
           },
         },
       });
-
-      console.log(listIngresosFuturos);
     }
     else {
       listIngresosFuturos = await prisma.ingresos_futuros.findMany({
@@ -782,20 +779,28 @@ router.post('/listIngresosFuturosFiltro', async (req,res,next) => {
         if(estado_id === 1) {
           if(listIngresosFuturos[j]['fecha_cobro']!==null) {
             listIngresosFuturosAux.push(listIngresosFuturos[j]);
-            console.log("F_C -> 1 -> : "+listIngresosFuturos[j]['fecha_cobro']);
           }
         }
         else if(estado_id === 2) {
-          if(listIngresosFuturos[j]['fecha_cobro']===null) {
+          if(listIngresosFuturos[j]['fecha_cobro']===null  && !listIngresosFuturos[j]['borrado']) {
             listIngresosFuturosAux.push(listIngresosFuturos[j]);
-            console.log("F_C -> 2 -> : "+listIngresosFuturos[j]['fecha_cobro']);
+          }
+        }
+        else if(estado_id === 3) {
+          if(Date.parse(new Date().toISOString()) > Date.parse(listIngresosFuturos[j]['fecha_tentativa_cobro']) && listIngresosFuturos[j]['fecha_cobro']===null && !listIngresosFuturos[j]['borrado']) {
+            listIngresosFuturosAux.push(listIngresosFuturos[j]);
+          }
+        }
+        else if(estado_id === 4) {
+          if(listIngresosFuturos[j]['borrado']) {
+            listIngresosFuturosAux.push(listIngresosFuturos[j]);
           }
         }
       }
       listIngresosFuturos = listIngresosFuturosAux;
     }
 
-    console.log("Registros: "+Object.keys(listIngresosFuturos).length);
+    //console.log("Registros: "+Object.keys(listIngresosFuturos).length);
     res.json({listIngresosFuturos});
   }
 });
@@ -1068,9 +1073,19 @@ router.post('/listEgresosFuturosFiltro', async (req,res,next) => {
           }
         }
         else if(estado_id === 2) {
-          if(listEgresosFuturos[j]['fecha_pago']===null) {
+          if(listEgresosFuturos[j]['fecha_pago']===null && !listEgresosFuturos[j]['borrado']) {
             listEgresosFuturosAux.push(listEgresosFuturos[j]);
             console.log("F_C -> 2 -> : "+listEgresosFuturos[j]['fecha_pago']);
+          }
+        }
+        else if(estado_id === 3) {
+          if(Date.parse(new Date().toISOString()) > Date.parse(listEgresosFuturos[j]['fecha_tentativa_pago']) && listEgresosFuturos[j]['fecha_pago']===null && !listEgresosFuturos[j]['borrado']) {
+            listEgresosFuturosAux.push(listEgresosFuturos[j]);
+          }
+        }
+        else if(estado_id === 4) {
+          if(listEgresosFuturos[j]['borrado']) {
+            listEgresosFuturosAux.push(listEgresosFuturos[j]);
           }
         }
       }

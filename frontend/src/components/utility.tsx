@@ -78,5 +78,11 @@ const buscarPosicionArreglo = (arrray:Array,id:number):number => {
   return pos;
 }
 
+const formatNumber = (number) =>
+  new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(number);
 
-export default {obtenerValor, obtenerValorText, obtenerValorRadio, convertirModena, obtenerValorHtml, asignarValorInput, asignarValorSelect,asignarValorInnerHTML,ejecutarClick, convertirFecha, agregarClase,buscarPosicionArreglo,obtenerFecha};
+
+export default {formatNumber,obtenerValor, obtenerValorText, obtenerValorRadio, convertirModena, obtenerValorHtml, asignarValorInput, asignarValorSelect,asignarValorInnerHTML,ejecutarClick, convertirFecha, agregarClase,buscarPosicionArreglo,obtenerFecha};

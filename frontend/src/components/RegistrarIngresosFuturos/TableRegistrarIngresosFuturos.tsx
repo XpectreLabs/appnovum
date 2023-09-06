@@ -383,6 +383,8 @@ export const TableRegistrarIngresosFuturos = () => {
               <option value="0">Todos</option>
               <option value="1">Cobrados</option>
               <option value="2">No cobrados</option>
+              <option value="3">Atrasados</option>
+              <option value="4">Cancelados</option>
             </select>
           </Paper>
         </Box>
