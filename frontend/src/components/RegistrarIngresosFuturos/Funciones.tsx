@@ -1,13 +1,21 @@
 import fn from "../../components/utility.tsx";
 
 function obtenerList(info) {
-  let listData = [];
+  let listData = []; 
   for(let j=0; j < (Object.keys(info['listIngresosFuturos']).length); j++) {
     const fechaCreacion = fn.convertirFecha(info['listIngresosFuturos'][j]['fecha_creacion']);
     const fechaCobro = fn.convertirFecha(info['listIngresosFuturos'][j]['fecha_tentativa_cobro']);
     const fechaEnQueSeCobro = fn.convertirFecha(info['listIngresosFuturos'][j]['fecha_cobro']);
     const state = fechaEnQueSeCobro==="Pendiente"?'No cobrado':'Cobrado';
     let validarCobro;
+    let validarRetraso=false;
+    let textRetraso="";
+
+    if(fechaEnQueSeCobro==="Pendiente"){
+      validarRetraso = Date.parse(new Date().toISOString()) > Date.parse(info['listIngresosFuturos'][j]['fecha_tentativa_cobro']);
+      textRetraso = validarRetraso?" (Atrasado)":"";
+    }
+
 
     if(fechaEnQueSeCobro!=="Pendiente") {
       validarCobro = Date.parse(info['listIngresosFuturos'][j]['fecha_cobro']) <= Date.parse(info['listIngresosFuturos'][j]['fecha_tentativa_cobro']);
@@ -16,6 +24,7 @@ function obtenerList(info) {
     let item = {
       "id": info['listIngresosFuturos'][j]['ingresos_futuros_id'],
       "date_created": fechaCreacion,
+      "date_created_o": info['listIngresosFuturos'][j]['fecha_creacion'],
       "id_payment_method": info['listIngresosFuturos'][j]['tipo_pago_id'],
       "payment_method": info['listIngresosFuturos'][j]['tipos_pagos']['tipo_pago'],
       "id_category": info['listIngresosFuturos'][j]['categoria_id'],
@@ -27,7 +36,10 @@ function obtenerList(info) {
       "date_to_pay_o": fn.obtenerFecha(info['listIngresosFuturos'][j]['fecha_tentativa_cobro']),
       "state": state,
       "date_cashed": fechaEnQueSeCobro,
-      "statusCobro": validarCobro
+      "statusCobro": validarCobro,
+      //"statusRetraso": validarRetraso,
+      "textRetraso": textRetraso,
+      "statusBorrado": info['listIngresosFuturos'][j]['borrado'],
     }
     listData.push(item);
   }

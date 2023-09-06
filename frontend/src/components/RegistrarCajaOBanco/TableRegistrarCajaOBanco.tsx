@@ -23,6 +23,12 @@ interface IData {
   Cantidad: string;
 }
 
+interface IDataSaldo {
+  nombre: string;
+  tipo: string;
+  cantidad: string;
+}
+
 let listData: IData[];
 const user_id = localStorage.getItem('user_id');
 
@@ -32,7 +38,9 @@ export const TableRegistrarCajaOBanco = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const [cargandoVisible, setCargandoVisible] = useState(true);
   const [initialValues, setInitialValues] = useState(({ hdId:'',txtNombre: '',stTipo:'', txtCantidadActual: ''}));    
-  const [cargandoModal, setcargandoModal] = useState(false)
+  const [cargandoModal, setcargandoModal] = useState(false);
+  const [listSaldo, setListSaldo] = useState([]);
+  const [saldoTotal, setSaldoTotal] = useState(-1);
 
   const showModal = () => {
     setOpen(true);
@@ -82,6 +90,37 @@ export const TableRegistrarCajaOBanco = () => {
       console.log(error.message);
       console.error('Error!', error.message);
     });
+
+
+
+    scriptURL = localStorage.getItem('site')+"/resumenCajasBancos";
+    dataUrl = {user_id};
+
+    fetch(scriptURL, {
+      method: 'POST',
+      body: JSON.stringify(dataUrl),
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((resp) => resp.json())
+    .then(function(info) {
+      console.log("Data:");
+      console.log(info);
+      console.log(info['dataCajasBancos']);
+      setListSaldo(info['dataCajasBancos']);
+
+      let saldTot=0;
+      for(let j=0; j<info['dataCajasBancos'].length; j++) {
+        saldTot += parseInt(info['dataCajasBancos'][j]['total'].slice(0,-3).replace('$','').replace(',',''))
+      }
+      setSaldoTotal(saldTot);
+    })
+    .catch(error => {
+      console.log(error.message);
+      console.error('Error!', error.message);
+    });
+
   }
 
   if(user_id!==""&&user_id!==null) {
@@ -180,6 +219,18 @@ export const TableRegistrarCajaOBanco = () => {
             Crear nueva cuenta
           </Button>
         </Box>
+      </Box>
+
+
+      <Box className={Styles.nav}>
+        {listSaldo.map((saldo: IDataSaldo) => (
+          <Box><p><strong className={Styles.TitleSaldo}>Saldo en {saldo.tipo}:</strong> <span className={Styles.Saldo}>{saldo.total}</span></p></Box>
+        ))}
+        {saldoTotal!=-1? (
+          <Box className='u-textRight'>
+          <p><strong className={Styles.TitleSaldo}>Saldo total en las cuentas:</strong> <span className={Styles.Saldo}>${fn.formatNumber(saldoTotal)}</span></p>
+        </Box>
+        ):null}
       </Box>
 
       <Box className={cargandoVisible?'u-textCenter':'u-textCenter u-ocultar'}>

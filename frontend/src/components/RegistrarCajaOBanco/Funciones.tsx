@@ -1,5 +1,5 @@
 import fn from "../../components/utility.tsx";
-
+ 
 function agregarItem(id:number,nombre:string,id_tipo:number,tipo:string,cantidad:number):string {
   const item = `
   <div class="RegisterBank_container__V9zdU MuiBox-root css-0">

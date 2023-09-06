@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Default } from '../../components/RegistrarCajaOBanco/Default.tsx';
 import { TableRegistrarCajaOBanco } from '../../components/RegistrarCajaOBanco/TableRegistrarCajaOBanco.tsx';
 
-export const RegistrarCajaOBanco = ({cajaActive,setCajaActive}) => {
+export const RegistrarCajaOBanco = ({cajaActive,setCajaActive}) => { 
     const [status, setStatus] = useState(cajaActive);
 
     const cambioTable = () => {

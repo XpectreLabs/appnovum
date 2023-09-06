@@ -1,102 +1,126 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import style from '../../pages/Home.module.css';
 import { Space, Table, Tag, Button, Col, Row } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-
-
+import { useState } from "react";
+const user_id = localStorage.getItem('user_id');
 interface DataType {
-  key: string;
-  efectivo: number;
-  banco: number;
+  tipo: string;
+  cantidad: number;
   total: string;
 }
 
 const columns: ColumnsType<DataType> = [
   {
-    title: 'Efectivo',
-    dataIndex: 'efectivo',
+    title: 'Tipo',
+    dataIndex: 'tipo',
+    render: (text) => <strong>{text}</strong>,
   },
   {
-    title: 'Banco',
-    dataIndex: 'banco',
+    title: 'Cantidad',
+    dataIndex: 'cantidad',
   },
   {
-    title: 'Total',
+    title: 'Total de dinero',
     dataIndex: 'total',
+    render: (text) => <strong>{text}</strong>,
   },
 ];
-
-const data: DataType[] = [
-  {
-    key: '1',
-    efectivo: 10,
-    banco: 11,
-    total: "21",
-  },
-];
-
-
-
 interface DataType2 {
-  key: string;
-  efectivo: string;
-  banco: number;
+  titulo: string;
+  cantidad: string;
+  colSpan?: number;
 }
 
 const columns2: ColumnsType<DataType2> = [
   {
     title: '',
-    dataIndex: 'efectivo',
+    dataIndex: 'titulo',
     render: (text) => <strong>{text}</strong>,
-    
   },
   {
     title: '',
-    dataIndex: 'banco',
-  },
-];
-
-const data2: DataType2[] = [
-  {
-    key: '1',
-    efectivo: "Número de registros",
-    banco: 11,
-  },
-  {
-    key: '1',
-    efectivo: "Métodos",
-    className: "u-textCenter",
-    colSpan: 2,
-  },
-  {
-    key: '2',
-    efectivo: "Efectivo",
-    banco: 11,
-  },
-  {
-    key: '3',
-    efectivo: "Banco",
-    banco: 9,
-  },
-  {
-    key: '4',
-    efectivo: "Categorias",
-    colSpan: 2,
-  },
-  {
-    key: '5',
-    efectivo: "Cliente",
-    banco: 11,
-  },
-  {
-    key: '6',
-    efectivo: "Otros",
-    banco: 9,
+    dataIndex: 'cantidad',
   },
 ];
 
 
-export const Reporte = ({cambioRegistroBan}) => {
+function cargarDatos(setListCajaBanco,setListIngresos,setListEgresos) {
+  let scriptURL = localStorage.getItem('site')+"/resumenCajasBancos";
+  let dataUrl = {user_id};
+
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify(dataUrl),
+    headers:{
+      'Content-Type': 'application/json'
+    }
+  })
+  .then((resp) => resp.json())
+  .then(function(info) {
+    console.log("Data:");
+    console.log(info);
+    console.log(info['dataCajasBancos']);
+    setListCajaBanco(info['dataCajasBancos'])
+  })
+  .catch(error => {
+    console.log(error.message);
+    console.error('Error!', error.message);
+  });
+
+
+
+  scriptURL = localStorage.getItem('site')+"/resumenIngresosFuturos";
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify(dataUrl),
+    headers:{
+      'Content-Type': 'application/json'
+    }
+  })
+  .then((resp) => resp.json())
+  .then(function(info) {
+    console.log("Data 2:");
+    console.log(info);
+    console.log(info['dataIngresosFuturos']);
+    setListIngresos(info['dataIngresosFuturos'])
+  })
+  .catch(error => {
+    console.log(error.message);
+    console.error('Error!', error.message);
+  });
+
+
+  scriptURL = localStorage.getItem('site')+"/resumenEgresosFuturos";
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify(dataUrl),
+    headers:{
+      'Content-Type': 'application/json'
+    }
+  })
+  .then((resp) => resp.json())
+  .then(function(info) {
+    console.log("Data 2:");
+    console.log(info);
+    console.log(info['dataEgresosFuturos']);
+    setListEgresos(info['dataEgresosFuturos'])
+  })
+  .catch(error => {
+    console.log(error.message);
+    console.error('Error!', error.message);
+  });
+
+}
+
+export const Reporte = () => {
+  const [listCajaBanco, setListCajaBanco] = useState([]);
+  const [listIngresos, setListIngresos] = useState([]);
+  const [listEgresos, setListEgresos] = useState([]);
+
+  if(listCajaBanco.length===0||listIngresos.length===0||listEgresos.length===0)
+    cargarDatos(setListCajaBanco,setListIngresos,setListEgresos);
+
     return (
       <>
         <div className={style.TablaResumen}>
@@ -104,17 +128,17 @@ export const Reporte = ({cambioRegistroBan}) => {
             <Col span={1}></Col>
             <Col span={6}>
               <h2 className={style.TitleColResumen}><strong>Caja o banco</strong></h2>
-              <Table columns={columns} dataSource={data} pagination={false} />
+              <Table columns={columns} dataSource={listCajaBanco} pagination={false} />
             </Col>
             <Col span={1}></Col>
             <Col span={7}>
               <h2 className={style.TitleColResumen}><strong>Ingresos futuros</strong></h2>
-              <Table columns={columns2} dataSource={data2} pagination={false} />
+              <Table columns={columns2} dataSource={listIngresos} pagination={false} />
             </Col>
             <Col span={1}></Col>
             <Col span={7}>
               <h2 className={style.TitleColResumen}><strong>Egresos futuros</strong></h2>
-              <Table columns={columns2} dataSource={data2} pagination={false} />
+              <Table columns={columns2} dataSource={listEgresos} pagination={false} />
             </Col>
             <Col span={1}></Col>
           </Row>

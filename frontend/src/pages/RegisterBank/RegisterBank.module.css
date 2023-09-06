@@ -137,6 +137,20 @@
   border-radius: 10px;
 }
 
+.TitleSaldo {
+  /*color: #fff;
+  background: #00C62F;*/
+  background: #f0f0f0;
+  padding: 4px 6px;
+}
+
+
+.Saldo {
+  background: #d9ffe2;
+  padding: 4px 6px;
+}
+
+
 @media all and (min-width: 718px){
  .itemSearch{
     width: 400px;

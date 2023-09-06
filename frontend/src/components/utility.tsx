@@ -26,6 +26,11 @@ const obtenerValorHtml = (element) => {
   return valorHtml?.innerHTML;
 };
 
+const obtenerValorRadio = (input) => {
+  let valorRadio: HTMLInputElement = document.querySelector('input[name="'+input+'"]:checked');
+  return valorRadio?.value;
+};
+
 
 const asignarValorInput = (input:string,valor:string):void => {
   let element = document.querySelector(input);
@@ -73,5 +78,11 @@ const buscarPosicionArreglo = (arrray:Array,id:number):number => {
   return pos;
 }
 
+const formatNumber = (number) =>
+  new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(number);
 
-export default {obtenerValor, obtenerValorText, convertirModena, obtenerValorHtml, asignarValorInput, asignarValorSelect,asignarValorInnerHTML,ejecutarClick, convertirFecha, agregarClase,buscarPosicionArreglo,obtenerFecha};
+
+export default {formatNumber,obtenerValor, obtenerValorText, obtenerValorRadio, convertirModena, obtenerValorHtml, asignarValorInput, asignarValorSelect,asignarValorInnerHTML,ejecutarClick, convertirFecha, agregarClase,buscarPosicionArreglo,obtenerFecha};
