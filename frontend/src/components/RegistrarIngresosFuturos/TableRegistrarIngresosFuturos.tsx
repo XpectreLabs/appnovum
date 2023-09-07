@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from "react"; 
 import Styles from '../../pages/RegisterPay/RegisterPay.module.css';
 import fn from "../../components/utility.tsx";
 import fng from './Funciones.tsx';

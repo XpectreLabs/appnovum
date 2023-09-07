@@ -108,6 +108,7 @@ export const TableRegistrarCajaOBanco = () => {
       console.log("Data:");
       console.log(info);
       console.log(info['dataCajasBancos']);
+      info['dataCajasBancos'].pop()
       setListSaldo(info['dataCajasBancos']);
 
       let saldTot=0;

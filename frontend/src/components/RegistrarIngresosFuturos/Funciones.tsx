@@ -60,7 +60,7 @@ function obtenerData(info:any):object {
   }
 
   let listData: IData[];
-  listData = [];
+  listData = []; 
 
   for(let j=0; j < (Object.keys(info['listIngresosFuturos']).length); j++) {
     const fechaCreacion = fn.convertirFecha(info['listIngresosFuturos'][j]['fecha_creacion']);

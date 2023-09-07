@@ -103,10 +103,6 @@ async function cargarDatos(
   });
 }
 
-if(user_id!==""&&user_id!==null) {
-  cargarDatos();
-}
-
 export const TableRegistrarEgresosFuturos = () => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -127,6 +123,10 @@ export const TableRegistrarEgresosFuturos = () => {
   const [stEstado,setStEstado] = useState(0);
   const [ocultarFechaRealizo,setOcultarFechaRealizo] = useState(true);
   const [valueFechaRealizoPago,setValueFechaRealizoPago] = useState('');
+
+  if(user_id!==""&&user_id!==null) {
+    cargarDatos();
+  }
 
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
     setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:fn.obtenerValor("#txtConcepto"), stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto"), txtFechaTentativaPago:dayjs(dateString)}));

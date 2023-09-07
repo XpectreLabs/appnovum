@@ -245,6 +245,7 @@ router.post('/resumenCajasBancos', async (req,res,next) => {
       },
     });
 
+    let saldTot=0;
     for(let j=0; j< listCajasBancos.length; j++){
       let item = {
         "tipo": buscarNombreTipo(listTiposPagos,listCajasBancos[j]['tipo_pago_id']),
@@ -252,7 +253,16 @@ router.post('/resumenCajasBancos', async (req,res,next) => {
         "total": "$"+formatNumber(listCajasBancos[j]['_sum']['cantidad_actual']),
       }
       dataCajasBancos.push(item);
+      saldTot += parseInt(listCajasBancos[j]['_sum']['cantidad_actual'])
     }
+
+    let item = {
+      "tipo": "",
+      "cantidad": "Total",
+      "total": "$"+formatNumber(saldTot),
+    }
+    dataCajasBancos.push(item);
+
     res.json({dataCajasBancos});
   }
 });
