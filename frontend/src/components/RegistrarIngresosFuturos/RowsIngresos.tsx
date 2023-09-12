@@ -53,7 +53,7 @@ export const RowsIngreso = ({
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
         .map((data) => (
           <TableRow
-            key={data.name}
+            key={data.id}
             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
           >
             <TableCell scope="row">{data.date_created}</TableCell>

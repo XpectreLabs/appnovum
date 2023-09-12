@@ -57,6 +57,7 @@ async function cargarDatos(
   if(metodo_id!==undefined&&estado_id!==undefined&&buscar===false) {
     metodo_id = fn.obtenerValor("#stTipoB");
     estado_id = fn.obtenerValor("#stEstadoB");
+    //console.log(metodo_id+" e: "+estado_id);
 
     scriptURL = localStorage.getItem('site')+"/listEgresosFuturosFiltro";
     dataUrl = {user_id,metodo_id,estado_id};
@@ -68,6 +69,8 @@ async function cargarDatos(
     dataUrl = {user_id, busqueda};
   }
 
+  //console.log(scriptURL);
+
   await fetch(scriptURL, {
     method: 'POST',
     body: JSON.stringify(dataUrl),
@@ -77,23 +80,29 @@ async function cargarDatos(
   })
   .then((resp) => resp.json())
   .then(function(info) {
+    data = [];
     data = fng.obtenerList(info);
     listData = [];
     listData = Object.assign(fng.obtenerData(info));
 
-    if(buscar)
-      setListaDatos(data);
+    if(buscar) {
+      if(typeof(setListaDatos)!=='undefined')
+        setListaDatos(data);
+    }
 
     if(metodo_id!==undefined&&estado_id!==undefined&&buscar===false) {
-      setListaDatos(data);
+      if(typeof(setListaDatos)!=='undefined')
+        setListaDatos(data);
     }
 
     if(ejecutarSetInitialValues) {
       setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaPago:''}));
       setTimeout(() => {
-        setListaDatos(data);
-        setOpen(false);
-        setConfirmLoading(false);
+        if(typeof(setListaDatos)!=='undefined') {
+          setListaDatos(data);
+          setOpen(false);
+          setConfirmLoading(false);
+        }
       }, 1000);
     }
   })
@@ -111,7 +120,7 @@ export const TableRegistrarEgresosFuturos = () => {
   const [confirm4Loading, setConfirm4Loading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [cargandoVisible, setCargandoVisible] = useState(true);
-  const [listaDatos, setListaDatos] = useState([]);
+  const [listaDatos, setListaDatos] = useState([]); 
   const [initialValues, setInitialValues] = useState(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'', stCategoria:'', txtMonto:'', txtFechaTentativaPago:''}));
   const [cantidadV, setCantidadV] = useState(0);
   const [modal2Open, setModal2Open] = useState(false);
@@ -496,7 +505,7 @@ export const TableRegistrarEgresosFuturos = () => {
                 type: 'success',
                 content: 'Los datos del ingreso fue guardada con éxito',
               });
-              console.log("Si");
+              //console.log("Si");
 
               cargarDatos(false,setListaDatos,true,setInitialValues,setOpen,setConfirmLoading);
             })

@@ -679,7 +679,7 @@ router.post('/cambiarCobrado', async (req,res, next) => {
   const fechaRealizo = req.body.fechaRealizo;
   let fechaDeCobro;
 
-  console.log(tipoFecha+" "+fechaRealizo);
+  //console.log(tipoFecha+" "+fechaRealizo);
 
   if(tipoFecha===1)
     fechaDeCobro = new Date().toISOString();
@@ -1006,7 +1006,7 @@ router.post('/listEgresosFuturosFiltro', async (req,res,next) => {
     const estado_id = parseInt(req.body.estado_id);
 
     let listEgresosFuturos;
-    console.log(metodo_id + " " +estado_id);
+    //console.log(metodo_id + " " +estado_id);
 
     if(metodo_id !== 0) {
       listEgresosFuturos = await prisma.egresos_futuros.findMany({
@@ -1039,7 +1039,7 @@ router.post('/listEgresosFuturosFiltro', async (req,res,next) => {
         },
       });
 
-      console.log(listEgresosFuturos);
+      //console.log(listEgresosFuturos);
     }
     else {
       listEgresosFuturos = await prisma.egresos_futuros.findMany({
@@ -1079,13 +1079,13 @@ router.post('/listEgresosFuturosFiltro', async (req,res,next) => {
         if(estado_id === 1) {
           if(listEgresosFuturos[j]['fecha_pago']!==null) {
             listEgresosFuturosAux.push(listEgresosFuturos[j]);
-            console.log("F_C -> 1 -> : "+listEgresosFuturos[j]['fecha_pago']);
+            //console.log("F_C -> 1 -> : "+listEgresosFuturos[j]['fecha_pago']);
           }
         }
         else if(estado_id === 2) {
           if(listEgresosFuturos[j]['fecha_pago']===null && !listEgresosFuturos[j]['borrado']) {
             listEgresosFuturosAux.push(listEgresosFuturos[j]);
-            console.log("F_C -> 2 -> : "+listEgresosFuturos[j]['fecha_pago']);
+            //console.log("F_C -> 2 -> : "+listEgresosFuturos[j]['fecha_pago']);
           }
         }
         else if(estado_id === 3) {
@@ -1102,7 +1102,7 @@ router.post('/listEgresosFuturosFiltro', async (req,res,next) => {
       listEgresosFuturos = listEgresosFuturosAux;
     }
 
-    console.log("Registros: "+Object.keys(listEgresosFuturos).length);
+    //console.log("Registros: "+Object.keys(listEgresosFuturos).length);
     res.json({listEgresosFuturos});
   }
 });

@@ -10,7 +10,7 @@ export const Registro = () => {
     const [paso2, setPaso2] = useState('wait');
 
     const onChange = (value: number) => {
-      console.log('onChange:', value);
+      //console.log('onChange:', value);
       setCurrent(value);
     };
 

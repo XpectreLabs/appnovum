@@ -22,7 +22,7 @@ function getItem(
   type?: 'group',
 ): MenuItem {
   return {
-    key,
+    key, 
     icon,
     children,
     label,

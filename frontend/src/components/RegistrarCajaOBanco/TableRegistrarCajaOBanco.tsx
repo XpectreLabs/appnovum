@@ -105,15 +105,15 @@ export const TableRegistrarCajaOBanco = () => {
     })
     .then((resp) => resp.json())
     .then(function(info) {
-      console.log("Data:");
+      /*console.log("Data:");
       console.log(info);
-      console.log(info['dataCajasBancos']);
+      console.log(info['dataCajasBancos']);*/
       info['dataCajasBancos'].pop()
       setListSaldo(info['dataCajasBancos']);
 
       let saldTot=0;
       for(let j=0; j<info['dataCajasBancos'].length; j++) {
-        saldTot += parseInt(info['dataCajasBancos'][j]['total'].slice(0,-3).replace('$','').replace(',',''))
+        saldTot += parseInt(info['dataCajasBancos'][j]['total'].slice(0,-3).replace('$','').replaceAll(',',''));
       }
       setSaldoTotal(saldTot);
     })

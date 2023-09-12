@@ -75,7 +75,7 @@ export const DataIngreso = ({
                 showModalC={showModalC}
                 showModalE={showModalE}
                 showModalCl={showModalCl}
-              /> 
+              />
             </TableBody>
           </Table>
         </TableContainer>

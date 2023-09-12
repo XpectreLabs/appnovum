@@ -1,6 +1,6 @@
 import fn from "../../components/utility.tsx";
 
-function obtenerList(info) {
+function obtenerList(info) { 
   let listData = [];
   for(let j=0; j < (Object.keys(info['listEgresosFuturos']).length); j++) {
     const fechaCreacion = fn.convertirFecha(info['listEgresosFuturos'][j]['fecha_creacion']);

@@ -58,9 +58,9 @@ function cargarDatos(setListCajaBanco,setListIngresos,setListEgresos) {
   })
   .then((resp) => resp.json())
   .then(function(info) {
-    console.log("Data:");
+    /*console.log("Data:");
     console.log(info);
-    console.log(info['dataCajasBancos']);
+    console.log(info['dataCajasBancos']);*/
     setListCajaBanco(info['dataCajasBancos'])
   })
   .catch(error => {
@@ -80,9 +80,9 @@ function cargarDatos(setListCajaBanco,setListIngresos,setListEgresos) {
   })
   .then((resp) => resp.json())
   .then(function(info) {
-    console.log("Data 2:");
+    /*console.log("Data 2:");
     console.log(info);
-    console.log(info['dataIngresosFuturos']);
+    console.log(info['dataIngresosFuturos']);*/
     setListIngresos(info['dataIngresosFuturos'])
   })
   .catch(error => {
@@ -101,9 +101,9 @@ function cargarDatos(setListCajaBanco,setListIngresos,setListEgresos) {
   })
   .then((resp) => resp.json())
   .then(function(info) {
-    console.log("Data 2:");
+    /*console.log("Data 2:");
     console.log(info);
-    console.log(info['dataEgresosFuturos']);
+    console.log(info['dataEgresosFuturos']);*/
     setListEgresos(info['dataEgresosFuturos'])
   })
   .catch(error => {
@@ -128,17 +128,17 @@ export const Reporte = () => {
             <Col span={1}></Col>
             <Col span={6}>
               <h2 className={style.TitleColResumen}><strong>Caja o banco</strong></h2>
-              <Table columns={columns} dataSource={listCajaBanco} pagination={false} />
+              <Table key="1" columns={columns} dataSource={listCajaBanco} pagination={false} />
             </Col>
             <Col span={1}></Col>
             <Col span={7}>
               <h2 className={style.TitleColResumen}><strong>Ingresos futuros</strong></h2>
-              <Table columns={columns2} dataSource={listIngresos} pagination={false} />
+              <Table key="2" columns={columns2} dataSource={listIngresos} pagination={false} />
             </Col>
             <Col span={1}></Col>
             <Col span={7}>
               <h2 className={style.TitleColResumen}><strong>Egresos futuros</strong></h2>
-              <Table columns={columns2} dataSource={listEgresos} pagination={false} />
+              <Table key="3" columns={columns2} dataSource={listEgresos} pagination={false} />
             </Col>
             <Col span={1}></Col>
           </Row>

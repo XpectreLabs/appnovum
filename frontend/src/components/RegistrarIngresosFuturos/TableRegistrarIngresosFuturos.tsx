@@ -39,7 +39,13 @@ let data = [];
 const user_id = localStorage.getItem('user_id');
 let fecha_creacion_o_m;
 
-async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValues=false,setInitialValues='',setOpen='',setConfirmLoading='')
+async function cargarDatos(
+  buscar=false,
+  setListaDatos?:Function,
+  ejecutarSetInitialValues=false,
+  setInitialValues?:Function,
+  setOpen?:Function,
+  setConfirmLoading?:Function)
 {
   let scriptURL = localStorage.getItem('site')+"/listIngresosFuturos";
   let dataUrl = {user_id};
@@ -74,19 +80,24 @@ async function cargarDatos(buscar=false,setListaDatos='',ejecutarSetInitialValue
     listData = [];
     listData = Object.assign(fng.obtenerData(info));
 
-    if(buscar)
-      setListaDatos(data);
+    if(buscar) {
+      if(typeof(setListaDatos)!=='undefined')
+        setListaDatos(data);
+    }
 
     if(metodo_id!==undefined&&estado_id!==undefined&&buscar===false) {
-      setListaDatos(data);
+      if(typeof(setListaDatos)!=='undefined')
+        setListaDatos(data);
     }
 
     if(ejecutarSetInitialValues) {
       setInitialValues(({hdId:'',txtNombre:'', txtConcepto:'', stTipo:'0', stCategoria:'', txtMonto:'', txtFechaTentativaCobro:''}));
       setTimeout(() => {
-        setListaDatos(data);
-        setOpen(false);
-        setConfirmLoading(false);
+        if(typeof(setListaDatos)!=='undefined') {
+          setListaDatos(data);
+          setOpen(false);
+          setConfirmLoading(false);
+        }
       }, 1000);
     }
   })
@@ -140,8 +151,6 @@ export const TableRegistrarIngresosFuturos = () => {
     else {
       setCantidadV(data.length);
       setListaDatos(data);
-
-
       setCargandoVisible(false);
       clearInterval(idSI);
 
@@ -500,7 +509,6 @@ export const TableRegistrarIngresosFuturos = () => {
                 type: 'success',
                 content: 'Los datos del ingreso fue guardado con éxito',
               });
-              console.log("Si");
 
               cargarDatos(false,setListaDatos,true,setInitialValues,setOpen,setConfirmLoading);
             })

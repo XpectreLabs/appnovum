@@ -38,7 +38,6 @@ export const RowsEgresos = ({
 
   const editar = (id) => {
     showModal();
-    console.log(pullData);
     const pos = fn.buscarPosicionArreglo(pullData,id);
 
     setTimeout(()=> {
@@ -51,7 +50,7 @@ export const RowsEgresos = ({
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
         .map((data) => (
           <TableRow
-            key={data.name}
+            key={data.id}
             sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
           >
             <TableCell scope="row">{data.date_created}</TableCell>

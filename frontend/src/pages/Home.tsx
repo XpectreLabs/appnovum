@@ -205,13 +205,34 @@ export const Home = (props: any) => {
   //alert(localStorage.getItem('iniciales'));
   return (
     <Layout style={{ minHeight: "100vh" }}>
+      {/* Slider es para agregar menu a la izquierda */}
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+          <div>
+            <div className={`${style.HomeHeader}`}>
+              <Button type="primary" onClick={toggleCollapsed} style={{ marginBottom: 10 }}>
+                {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              </Button>
+
+              <span className={`${style.HomeLogo} icon-logo`}><span className="path1"></span><span className="path2"></span><span className="path3"></span><span className="path4"></span><span className="path5"></span><span className="path6"></span></span>
+            </div>
+
+            <Menu
+              defaultSelectedKeys={props.itemMenu}
+              mode="inline"
+              onClick={onClick}
+              inlineCollapsed={collapsed}
+              items={items}
+            />
+          </div>
+        </Sider>
+        
       <AppBar className={style.mobile} component="nav">
         <Toolbar>
           <Box>
             <IconButton
               aria-label="open drawer"
               edge="start"
-              onClick={handleDrawerToggle}
+              // onClick={handleDrawerToggle}
               sx={{ mr: 2, display: { sm: "block" } }}
               className={style.icoMenu}
             >
