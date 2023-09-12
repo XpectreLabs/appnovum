@@ -8,8 +8,8 @@ import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {message, Popconfirm } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import {message } from 'antd';
+import { CloseOutlined, CopyOutlined } from '@ant-design/icons';
 import dayjs, { Dayjs } from 'dayjs';
 
 const cancel = () => {
@@ -44,7 +44,16 @@ export const RowsEgresos = ({
       setInitialValues(({hdId:id,txtNombre:pullData[pos]['name'], txtConcepto:pullData[pos]['concept'], stTipo:pullData[pos]['id_payment_method'], stCategoria:pullData[pos]['id_category'], txtMonto:pullData[pos]['amount'], txtFechaTentativaPago:dayjs(pullData[pos]['date_to_pay_o'])}));
     },100);
   }
-  return (
+
+  const duplicar = (id) => {
+    showModal();
+    const pos = fn.buscarPosicionArreglo(pullData,id);
+
+    setTimeout(()=> {
+      setInitialValues(({hdId:'',txtNombre:pullData[pos]['name'], txtConcepto:pullData[pos]['concept'], stTipo:pullData[pos]['id_payment_method'], stCategoria:pullData[pos]['id_category'], txtMonto:pullData[pos]['amount'], txtFechaTentativaPago:''}));
+    },100);
+  }
+return (
     <>
       {Object.keys(pullData).length>0?pullData
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -99,6 +108,7 @@ export const RowsEgresos = ({
             </TableCell>
             <TableCell align="left"><p className={data.date_cashed!=="Pendiente"?data.statusCobro==true?Styles.txtCobrado:Styles.txtNoCobrado:null}>{!data.statusBorrado?data.date_cashed +" "+ data.textRetraso:"Cancelado"}</p></TableCell>
             <TableCell className="Iconos-Tabla" align="right">
+              {!data.statusBorrado?<CopyOutlined  onClick={()=>{duplicar(data.id)}} className="u-efecto slideRight u-marginR-5" />:null}
               {!data.statusBorrado?<CloseOutlined onClick={()=>{showModalCl(data.id)}} className="u-efecto slideRight u-marginR-5" />:null}
               {!data.statusBorrado?<EditIcon className="u-efecto slideRight" onClick={()=>{editar(data.id)}} />:null}
               <DeleteIcon className="icoBorrar u-efecto slideRight" onClick={()=>{showModalE(data.id)}}/>

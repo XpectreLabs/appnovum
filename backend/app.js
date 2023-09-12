@@ -541,7 +541,7 @@ router.post('/altaIngresoFuturo', async (req,res, next) => {
       fecha_tentativa_cobro: req.body.txtFechaTentativaCobro,
       user_id: parseInt(req.body.user_id),
       fecha_creacion: fechaCreacion,
-      borrado: true,
+      borrado: false,
       activo: true
     }
   });
@@ -827,7 +827,7 @@ router.post('/altaEgresoFuturo', async (req,res, next) => {
       fecha_tentativa_pago: req.body.txtFechaTentativaPago,
       user_id: parseInt(req.body.user_id),
       fecha_creacion: fechaCreacion,
-      borrado: true,
+      borrado: false,
       activo: true
     }
   });
