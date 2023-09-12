@@ -249,6 +249,7 @@ export const TableRegistrarCajaOBanco = () => {
         okText="Guardar"
         cancelText="Cancelar"
         afterOpenChange={cargaDatosEdicion}
+        maskClosable={false}
       >
         <Formik
           enableReinitialize={true}

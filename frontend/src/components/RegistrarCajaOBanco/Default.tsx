@@ -101,6 +101,7 @@ export const Default = ({cambioTable}) => {
             onCancel={handleCancel}
             okText="Guardar"
             cancelText="Cancelar"
+            maskClosable={false}
           >
             <Formik
               enableReinitialize={true}

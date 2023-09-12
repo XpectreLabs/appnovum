@@ -458,6 +458,7 @@ export const TableRegistrarIngresosFuturos = () => {
         onCancel={handleCancel}
         okText="Guardar"
         cancelText="Cancelar"
+        maskClosable={false}
       >
         <Formik
           enableReinitialize={true}
@@ -631,6 +632,7 @@ export const TableRegistrarIngresosFuturos = () => {
         cancelText="Cancelar"
         className={cobrado?`${Styles.ModalCobrar} Cobrado u-textCenter`:`${Styles.ModalCobrar} u-textCenter`}
         confirmLoading={confirm2Loading}
+        maskClosable={false}
       >
         <form
           className={Styles.ModalForm}
@@ -694,6 +696,7 @@ export const TableRegistrarIngresosFuturos = () => {
         cancelText="Cancelar"
         className={`${Styles.ModalCobrar} u-textCenter`}
         confirmLoading={confirm3Loading}
+        maskClosable={false}
       >
         <form
           className={Styles.ModalForm}
@@ -718,6 +721,7 @@ export const TableRegistrarIngresosFuturos = () => {
         cancelText="Salir"
         className={`${Styles.ModalCobrar} Cobrado u-textCenter`}
         confirmLoading={confirm4Loading}
+        maskClosable={false}
       >
         <form
           className={Styles.ModalForm}
