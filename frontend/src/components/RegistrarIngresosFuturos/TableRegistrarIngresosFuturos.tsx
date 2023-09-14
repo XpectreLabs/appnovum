@@ -13,7 +13,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import { Field, Formik, Form } from "formik";
-import { Modal, message, Input, DatePicker } from "antd";
+import { Modal, message, Input, DatePicker, AutoComplete } from "antd";
 import dayjs, { Dayjs } from 'dayjs';
 import type { DatePickerProps } from "antd";
 import { useState, useEffect } from "react";
@@ -107,6 +107,26 @@ async function cargarDatos(
   });
 }
 
+function cargarConceptos(setListConceptos:Function) {
+  let scriptURL = localStorage.getItem('site')+"/listConceptosIngresosFuturos";
+  let dataUrl = {user_id};
+
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify(dataUrl),
+    headers:{
+      'Content-Type': 'application/json'
+    }
+  })
+  .then((resp) => resp.json())
+  .then(function(info) {
+    setListConceptos(info['dataConceptos']);
+  })
+  .catch(error => {
+    console.log(error.message);
+    console.error('Error!', error.message);
+  });
+}
 
 export const TableRegistrarIngresosFuturos = () => {
   const [open, setOpen] = useState(false);
@@ -128,6 +148,7 @@ export const TableRegistrarIngresosFuturos = () => {
   const [stEstado,setStEstado] = useState(0);
   const [ocultarFechaRealizo,setOcultarFechaRealizo] = useState(true);
   const [valueFechaRealizoCobro,setValueFechaRealizoCobro] = useState('');
+  const [listConceptos, setListConceptos] = useState([]);
 
   if(user_id!==""&&user_id!==null) {
     cargarDatos();
@@ -144,6 +165,10 @@ export const TableRegistrarIngresosFuturos = () => {
       alert("La fecha no puede ser mayor a la fecha de creación");
   };
 
+  const handleConceptoChange = (event) => {
+    setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:event, stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto")?fn.obtenerValor("#txtMonto"):null, txtFechaTentativaCobro:fn.obtenerValor("#txtFechaTentativaCobro")?dayjs(fn.obtenerValor("#txtFechaTentativaCobro")):''}));
+  }
+
   let idSI = setInterval(() => {
     //cargarDatos();
     if(!data)
@@ -157,11 +182,12 @@ export const TableRegistrarIngresosFuturos = () => {
         /*setTimeout(()=>{
           if(fn.obtenerValor("#txtSearch")===""&&fn.obtenerValor("#stTipoB")==="0"&&fn.obtenerValor("#stEstadoB")==="0")
             fn.ejecutarClick("#btnBuscar");
-        },200);*/     
+        },200);*/
     }
   }, 1000);
 
   const showModal = () => {
+    cargarConceptos(setListConceptos);
     setOpen(true);
   };
 
@@ -217,7 +243,7 @@ export const TableRegistrarIngresosFuturos = () => {
       console.error('Error!', error.message);
     });
   };
- 
+
 
   const revertir = () => {
     const scriptURL = localStorage.getItem('site')+"/revertirCobro"; // deberia es
@@ -546,15 +572,18 @@ export const TableRegistrarIngresosFuturos = () => {
                   autoCapitalize="off"
                 />
 
-                <Input
-                  placeholder="Concepto"
-                  type="text"
+                <AutoComplete
                   id="txtConcepto"
                   name="txtConcepto"
+                  style={{ width: "100%", height: 32, marginBottom: 12 }}
+                  options={listConceptos}
+                  placeholder="Concepto"
+                  filterOption={(inputValue, option) =>
+                      option!.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                  }
                   value={values.txtConcepto}
-                  onChange={handleChange}
+                  onChange={handleConceptoChange}
                   onBlur={handleBlur}
-                  autoCapitalize="off"
                 />
 
                 <select

@@ -204,27 +204,32 @@ input[type=checkbox]:checked + label.lbCheckbox:before
 
 ::-webkit-input-placeholder
 {
- 	color: #000000;
+ 	color: #000000 !important;
 }
 
 ::-o-input-placeholder
 {
- 	color: #000000;
+ 	color: #000000 !important;
 }
 
 ::-ms-input-placeholder
 {
- 	color: #000000;
+ 	color: #000000 !important;
 }
 
 :-moz-input-placeholder
 {
- 	color: #000000;
+ 	color: #000000 !important;
 }
 
 ::-moz-input-placeholder
 {
- 	color: #000000;
+ 	color: #000000 !important;
+}
+
+.ant-select-selection-placeholder
+{
+ 	color: #000000 !important;
 }
 
 textarea::-webkit-input-placeholder

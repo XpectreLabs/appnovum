@@ -13,7 +13,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
 import { Field, Formik, Form } from "formik";
-import { Modal, message, Input, DatePicker } from "antd";
+import { Modal, message, Input, DatePicker, AutoComplete } from "antd";
 import dayjs, { Dayjs } from 'dayjs';
 import type { DatePickerProps } from "antd";
 import { useState } from "react";
@@ -69,8 +69,6 @@ async function cargarDatos(
     dataUrl = {user_id, busqueda};
   }
 
-  //console.log(scriptURL);
-
   await fetch(scriptURL, {
     method: 'POST',
     body: JSON.stringify(dataUrl),
@@ -112,6 +110,27 @@ async function cargarDatos(
   });
 }
 
+function cargarConceptos(setListConceptos:Function) {
+  let scriptURL = localStorage.getItem('site')+"/listConceptosEgresosFuturos";
+  let dataUrl = {user_id};
+
+  fetch(scriptURL, {
+    method: 'POST',
+    body: JSON.stringify(dataUrl),
+    headers:{
+      'Content-Type': 'application/json'
+    }
+  })
+  .then((resp) => resp.json())
+  .then(function(info) {
+    setListConceptos(info['dataConceptos']);
+  })
+  .catch(error => {
+    console.log(error.message);
+    console.error('Error!', error.message);
+  });
+}
+
 export const TableRegistrarEgresosFuturos = () => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -132,6 +151,7 @@ export const TableRegistrarEgresosFuturos = () => {
   const [stEstado,setStEstado] = useState(0);
   const [ocultarFechaRealizo,setOcultarFechaRealizo] = useState(true);
   const [valueFechaRealizoPago,setValueFechaRealizoPago] = useState('');
+  const [listConceptos, setListConceptos] = useState([]);
 
   if(user_id!==""&&user_id!==null) {
     cargarDatos();
@@ -148,6 +168,10 @@ export const TableRegistrarEgresosFuturos = () => {
       alert("La fecha no puede ser mayor a la fecha de creación");
   };
 
+  const handleConceptoChange = (event) => {
+    setInitialValues(({hdId:fn.obtenerValor("#hdId"),txtNombre:fn.obtenerValor("#txtNombre"), txtConcepto:event, stTipo:fn.obtenerValor("#stTipo"), stCategoria:fn.obtenerValor("#stCategoria"), txtMonto:fn.obtenerValor("#txtMonto")?fn.obtenerValor("#txtMonto"):null, txtFechaTentativaCobro:fn.obtenerValor("#txtFechaTentativaCobro")?dayjs(fn.obtenerValor("#txtFechaTentativaCobro")):''}));
+  }
+
   let idSI = setInterval(() => {
     if(!data)
       console.log("Vacio");
@@ -160,6 +184,7 @@ export const TableRegistrarEgresosFuturos = () => {
   }, 1000);
 
   const showModal = () => {
+    listConceptos.length===0?cargarConceptos(setListConceptos):null;
     setOpen(true);
   };
 
@@ -541,12 +566,19 @@ export const TableRegistrarEgresosFuturos = () => {
                   id="txtNombre"
                   name="txtNombre" />
 
-                <Field
-                  className={`${Styles.ModalFormText}`}
-                  placeholder="Concepto"
-                   type="text"
-                  id="txtConcepto"
-                  name="txtConcepto" />
+                  <AutoComplete
+                    id="txtConcepto"
+                    name="txtConcepto"
+                    style={{ width: "100%", height: 32, marginBottom: 12 }}
+                    options={listConceptos}
+                    placeholder="Concepto"
+                    filterOption={(inputValue, option) =>
+                      option!.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                    }
+                    value={values.txtConcepto}
+                    onChange={handleConceptoChange}
+                    onBlur={handleBlur}
+                  />
 
                 <Field
                   as="select"
