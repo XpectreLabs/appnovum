@@ -118,7 +118,7 @@ export const Reporte = () => {
   const [listIngresos, setListIngresos] = useState([]);
   const [listEgresos, setListEgresos] = useState([]);
 
-  if(listCajaBanco.length===0||listIngresos.length===0||listEgresos.length===0)
+  if(listCajaBanco.length===0&&listIngresos.length===0&&listEgresos.length===0)
     cargarDatos(setListCajaBanco,setListIngresos,setListEgresos);
 
     return (

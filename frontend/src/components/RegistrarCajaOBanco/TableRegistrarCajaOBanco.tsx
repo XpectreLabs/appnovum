@@ -80,11 +80,14 @@ export const TableRegistrarCajaOBanco = () => {
     })
     .then((resp) => resp.json())
     .then(function(info) {
-      fng.mostrarData(info);
-      listData = [];
-      listData = Object.assign(fng.obtenerData(info));
-      if(ejecutarSetCargando)
-        setCargandoVisible(false)
+      if(fn.obtenerValorHtml("#listDatos")==='') {
+        fng.mostrarData(info);
+        listData = [];
+        listData = Object.assign(fng.obtenerData(info));
+        if(ejecutarSetCargando) {
+          setCargandoVisible(false);
+        }
+      }
     })
     .catch(error => {
       console.log(error.message);
@@ -143,8 +146,8 @@ export const TableRegistrarCajaOBanco = () => {
         }
         setTimeout(()=>{
           setcargandoModal(false);
-        },300);
-      },800);
+        },500);
+      },1000);
   }
 
   const handleKeyDown = (event) => {

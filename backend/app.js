@@ -2,7 +2,6 @@ const express = require("express");
 const router = express();
 const http = require('http');
 const cors = require('cors');
-
 // const https = require('https');
 // const passport = require('passport');
 // const localStrategy = require('passport-local').Strategy;
@@ -17,6 +16,7 @@ const cors = require('cors');
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 require('dotenv').config();
+const mailer = require('./templates/signup-mail');
 
 router.use(express.static('public'));
 router.use(express.urlencoded({ extended:false }));
@@ -58,7 +58,6 @@ router.get('/', async (req,res,next) => {
 router.post('/loguear', async (req,res, next) => {
   try{
     let user = await findUser(req.body.email,req.body.password);
-    console.log("U: "+user)
     res.json({"usuario_id":user});
   }catch(e) {
     res.json({"usuario_id":0});
@@ -82,9 +81,33 @@ async function findUser(email,password) {
   return users.user_id;
 }
 
+
+async function enviarCorreo(user_id,actividad,seccion) {
+  try{
+      const cliente = await prisma.clientes.findMany({
+        where: {
+          user_id : parseInt(user_id),
+          activo : 1
+        },
+        select: {
+          nombre: true,
+          apellido: true,
+        },
+      });
+
+      let nombreU = "";
+      if(cliente.length>0) {
+        nombreU = cliente[0]['nombre']+""+cliente[0]['apellido'];
+        mailer.enviar_mail(nombreU,actividad,seccion);
+      }
+      //mailer.enviar_mail("Juan antonio","un registro en","caja o banco");
+    }catch(e) {
+  }
+}
+
 router.post('/obtenerIniciales', async (req,res, next) => {
   try{
-      if(req.body.user_id!==null) {
+      if(req.body.user_id!==null&&req.body.user_id!=="") {
         const id = req.body.user_id;
         const cliente = await prisma.clientes.findMany({
           where: {
@@ -149,6 +172,8 @@ router.post('/altaCajaBanco', async (req,res, next) => {
       activo: 1
     }
   });
+
+  enviarCorreo(req.body.user_id,"un registro en","caja o banco")
   res.json({"cajas_bancos_id":nuevoCajaBanco.cajas_bancos_id});
 });
 
@@ -169,7 +194,7 @@ router.post('/editarCajaBanco', async (req,res,next) => {
 });
 
 router.post('/listCajasBancos', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = req.body.user_id;//req.query.ordenPago;
 
     const listCajasBancos = await prisma.cajas_bancos.findMany({
@@ -193,7 +218,7 @@ router.post('/listCajasBancos', async (req,res,next) => {
 });
 
 router.post('/listCajasBancosB', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = req.body.user_id;
     const nombre = req.body.busqueda;
 
@@ -221,7 +246,7 @@ router.post('/listCajasBancosB', async (req,res,next) => {
 });
 
 router.post('/resumenCajasBancos', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = req.body.user_id;
     let dataCajasBancos = [];
 
@@ -246,17 +271,21 @@ router.post('/resumenCajasBancos', async (req,res,next) => {
     });
 
     let saldTot=0;
+    let jf = 0;
     for(let j=0; j< listCajasBancos.length; j++){
       let item = {
+        "key": (j+1),
         "tipo": buscarNombreTipo(listTiposPagos,listCajasBancos[j]['tipo_pago_id']),
         "cantidad": listCajasBancos[j]['_count']['tipo_pago_id'],
         "total": "$"+formatNumber(listCajasBancos[j]['_sum']['cantidad_actual']),
       }
       dataCajasBancos.push(item);
-      saldTot += parseInt(listCajasBancos[j]['_sum']['cantidad_actual'])
+      saldTot += parseInt(listCajasBancos[j]['_sum']['cantidad_actual']);
+      jf = j;
     }
 
     let item = {
+      "key": (jf+2),
       "tipo": "",
       "cantidad": "Total",
       "total": "$"+formatNumber(saldTot),
@@ -268,10 +297,10 @@ router.post('/resumenCajasBancos', async (req,res,next) => {
 });
 
 router.post('/resumenIngresosFuturos', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = req.body.user_id;
     let dataIngresosFuturos = [];
- 
+
     const rGeneral = await prisma.ingresos_futuros.groupBy({
       by: ['user_id'],
       where: {
@@ -286,14 +315,20 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
       },
     });
 
+    let jf = 10;
+
     if(rGeneral.length>0) {
       let item = {
+        "key": (jf),
         "titulo": "Número de registros",
         "cantidad": rGeneral[0]['_count']['user_id'],
       }
       dataIngresosFuturos.push(item);
 
+      jf++;
+
       item = {
+        "key": (jf),
         "titulo": "Total en ingreso",
         "cantidad": "$"+formatNumber(rGeneral[0]['_sum']['monto']),
       }
@@ -321,8 +356,10 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
       },
     });
 
+    jf++;
     if(listIngresoMetodos.length>0) {
       item = {
+        "key": (jf),
         "titulo": "Métodos",
         "cantidad": "",
         "colSpan": 2,
@@ -330,7 +367,9 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
       dataIngresosFuturos.push(item);
 
       for(let j=0; j< listIngresoMetodos.length; j++){
+        jf++;
         let item = {
+          "key": (jf),
           "titulo": "Total de registros en "+buscarNombreTipo(listTiposPagos,listIngresoMetodos[j]['tipo_pago_id']),
           "cantidad": listIngresoMetodos[j]['_count']['tipo_pago_id'],
         }
@@ -338,7 +377,9 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
       }
 
       for(let j=0; j< listIngresoMetodos.length; j++){
+        jf++;
         let item = {
+          "key": (jf),
           "titulo": "Total en "+buscarNombreTipo(listTiposPagos,listIngresoMetodos[j]['tipo_pago_id']),
           "cantidad": "$"+formatNumber(listIngresoMetodos[j]['_sum']['monto']),
         }
@@ -367,8 +408,10 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
       },
     });
 
+    jf++;
     if(listIngresoCategorias.length>0) {
       item = {
+        "key": (jf),
         "titulo": "Categorias",
         "cantidad": "",
         "colSpan": 2,
@@ -376,7 +419,9 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
       dataIngresosFuturos.push(item);
 
       for(let j=0; j< listIngresoCategorias.length; j++){
+        jf++;
         let item = {
+          "key": (jf),
           "titulo": "Total de registros en "+buscarNombreCategoria(listCategorias,listIngresoCategorias[j]['categoria_id']),
           "cantidad": listIngresoCategorias[j]['_count']['categoria_id'],
         }
@@ -384,7 +429,9 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
       }
 
       for(let j=0; j< listIngresoCategorias.length; j++){
+        jf++;
         let item = {
+          "key": (jf),
           "titulo": "Total en "+buscarNombreCategoria(listCategorias,listIngresoCategorias[j]['categoria_id']),
           "cantidad": "$"+formatNumber(listIngresoCategorias[j]['_sum']['monto']),
         }
@@ -399,7 +446,7 @@ router.post('/resumenIngresosFuturos', async (req,res,next) => {
 
 
 router.post('/resumenEgresosFuturos', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = req.body.user_id;
     let dataEgresosFuturos = [];
 
@@ -417,14 +464,19 @@ router.post('/resumenEgresosFuturos', async (req,res,next) => {
       },
     });
 
+    let jf = 30;
+
     if(rGeneral.length>0) {
       let item = {
+        "key": (jf),
         "titulo": "Número de registros",
         "cantidad": rGeneral[0]['_count']['user_id'],
       }
       dataEgresosFuturos.push(item);
 
+      jf++;
       item = {
+        "key": (jf),
         "titulo": "Total en egreso",
         "cantidad": "$"+formatNumber(rGeneral[0]['_sum']['monto']),
       }
@@ -452,8 +504,10 @@ router.post('/resumenEgresosFuturos', async (req,res,next) => {
       },
     });
 
+    jf++;
     if(listEgresoMetodos.length>0) {
       item = {
+        "key": (jf),
         "titulo": "Métodos",
         "cantidad": "",
         "colSpan": 2,
@@ -461,7 +515,9 @@ router.post('/resumenEgresosFuturos', async (req,res,next) => {
       dataEgresosFuturos.push(item);
 
       for(let j=0; j< listEgresoMetodos.length; j++){
+        jf++;
         let item = {
+          "key": (jf),
           "titulo": "Total de registros en "+buscarNombreTipo(listTiposPagos,listEgresoMetodos[j]['tipo_pago_id']),
           "cantidad": listEgresoMetodos[j]['_count']['tipo_pago_id'],
         }
@@ -469,7 +525,9 @@ router.post('/resumenEgresosFuturos', async (req,res,next) => {
       }
 
       for(let j=0; j< listEgresoMetodos.length; j++){
+        jf++;
         let item = {
+          "key": (jf),
           "titulo": "Total en "+buscarNombreTipo(listTiposPagos,listEgresoMetodos[j]['tipo_pago_id']),
           "cantidad": "$"+formatNumber(listEgresoMetodos[j]['_sum']['monto']),
         }
@@ -498,8 +556,10 @@ router.post('/resumenEgresosFuturos', async (req,res,next) => {
       },
     });
 
+    jf++;
     if(listEgresoCategorias.length>0) {
       item = {
+        "key": (jf),
         "titulo": "Categorias",
         "cantidad": "",
         "colSpan": 2,
@@ -507,7 +567,9 @@ router.post('/resumenEgresosFuturos', async (req,res,next) => {
       dataEgresosFuturos.push(item);
 
       for(let j=0; j< listEgresoCategorias.length; j++){
+        jf++;
         let item = {
+          "key": (jf),
           "titulo": "Total de registros en "+buscarNombreCategoria(listCategorias,listEgresoCategorias[j]['categoria_id']),
           "cantidad": listEgresoCategorias[j]['_count']['categoria_id'],
         }
@@ -516,7 +578,9 @@ router.post('/resumenEgresosFuturos', async (req,res,next) => {
 
 
       for(let j=0; j< listEgresoCategorias.length; j++){
+        jf++;
         let item = {
+          "key": (jf),
           "titulo": "Total en "+buscarNombreCategoria(listCategorias,listEgresoCategorias[j]['categoria_id']),
           "cantidad": "$"+formatNumber(listEgresoCategorias[j]['_sum']['monto']),
         }
@@ -568,7 +632,7 @@ router.post('/editarIngresoFuturo', async (req,res,next) => {
 });
 
 router.post('/listIngresosFuturos', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = req.body.user_id;
 
     const listIngresosFuturos = await prisma.ingresos_futuros.findMany({
@@ -604,7 +668,7 @@ router.post('/listIngresosFuturos', async (req,res,next) => {
 });
 
 router.post('/listIngresosFuturosB', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = req.body.user_id;
     const nombre = req.body.busqueda;
 
@@ -711,7 +775,7 @@ router.post('/revertirCobro', async (req,res, next) => {
 });
 
 router.post('/listIngresosFuturosFiltro', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = parseInt(req.body.user_id);
     const metodo_id = parseInt(req.body.metodo_id);
     const estado_id = parseInt(req.body.estado_id);
@@ -814,7 +878,7 @@ router.post('/listIngresosFuturosFiltro', async (req,res,next) => {
 
 
 router.post('/listConceptosIngresosFuturos', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = req.body.user_id;
     let dataConceptos = [];
 
@@ -880,7 +944,7 @@ router.post('/editarEgresoFuturo', async (req,res,next) => {
 });
 
 router.post('/listEgresosFuturos', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = req.body.user_id;
 
     const listEgresosFuturos = await prisma.egresos_futuros.findMany({
@@ -916,7 +980,7 @@ router.post('/listEgresosFuturos', async (req,res,next) => {
 });
 
 router.post('/listEgresosFuturosB', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = req.body.user_id;
     const nombre = req.body.busqueda;
 
@@ -1023,7 +1087,7 @@ router.post('/revertirPago', async (req,res, next) => {
 
 
 router.post('/listEgresosFuturosFiltro', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = parseInt(req.body.user_id);
     const metodo_id = parseInt(req.body.metodo_id);
     const estado_id = parseInt(req.body.estado_id);
@@ -1125,7 +1189,7 @@ router.post('/listEgresosFuturosFiltro', async (req,res,next) => {
 });
 
 router.post('/listConceptosEgresosFuturos', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!=="") {
     const id = req.body.user_id;
     let dataConceptos = [];
 
@@ -1152,7 +1216,7 @@ router.post('/listConceptosEgresosFuturos', async (req,res,next) => {
 });
 
 router.post('/todos', async (req,res,next) => {
-  if(req.body.user_id!==null) {
+  if(req.body.user_id!==null&&req.body.user_id!==""&&req.body.user_id!=="") {
     const id = req.body.user_id;
 
     const listCajasBancos = await prisma.cajas_bancos.findMany({
@@ -1178,6 +1242,113 @@ router.post('/todos', async (req,res,next) => {
     res.json({"caja":listCajasBancos.length,"ingreso":listIngresosFuturos.length,"egreso":listEgresosFuturos.length});
   }
 });
+
+
+
+
+
+
+router.get('/reporteEmail', async (req,res,next) => {
+  //if(req.body.user_id!==null&&req.body.user_id!=="") {
+    const id = 1;//req.body.user_id;
+    let fechaCreacion = new Date('2023-09-13T00:00:00.000Z').toISOString();
+    let dataReporte = [];
+
+    const listClientes = await prisma.clientes.findMany({
+      where: {
+        activo : 1
+      },
+      select: {
+        cliente_id: true,
+        nombre: true,
+        apellido: true,
+      },
+    });
+
+
+
+    const rGeneralCB = await prisma.cajas_bancos.groupBy({
+      by: ['user_id'],
+      where: {
+        fecha_creacion: fechaCreacion,
+      },
+      _count: {
+        user_id: true,
+      }
+    });
+
+    for(let j=0;j<rGeneralCB.length;j++) {
+      let item = {
+        "usuario": "La cuenta de "+buscarNombreCliente(listClientes,rGeneralCB[j]['user_id'])+" realizado "+rGeneralCB[j]['_count']['user_id']+" registro(s) en caja o banco"
+      }
+      dataReporte.push(item);
+    }
+
+    const rGeneralIF = await prisma.ingresos_futuros.groupBy({
+      by: ['user_id'],
+      where: {
+        fecha_creacion: fechaCreacion,//'2023-10-03',
+        activo : true
+      },
+      _count: {
+        user_id: true,
+      }
+    });
+
+    for(let j=0;j<rGeneralIF.length;j++) {
+      let item = {
+        "usuario": "La cuenta de "+buscarNombreCliente(listClientes,rGeneralIF[j]['user_id'])+" realizado "+rGeneralIF[j]['_count']['user_id']+" registro(s) en ingresos futuros"
+      }
+      dataReporte.push(item);
+    }
+
+    const rGeneralEF = await prisma.egresos_futuros.groupBy({
+      by: ['user_id'],
+      where: {
+        fecha_creacion: fechaCreacion,//'2023-10-03',
+        activo : true
+      },
+      _count: {
+        user_id: true,
+      }
+    });
+
+    for(let j=0;j<rGeneralEF.length;j++) {
+      let item = {
+        "usuario": "La cuenta de "+buscarNombreCliente(listClientes,rGeneralEF[j]['user_id'])+" realizado "+rGeneralEF[j]['_count']['user_id']+" registro(s) en egresos futuros"
+      }
+      dataReporte.push(item);
+    }
+
+    res.json({dataReporte});
+
+    //res.json({dataEgresosFuturos});
+  //}
+});
+
+function buscarNombreCliente(list,id) {
+  for(let j=0; j< list.length; j++){
+    if(parseInt(list[j]['cliente_id'])===parseInt(id))
+      return list[j]['nombre']+" "+list[j]['apellido'];
+  }
+  return "";
+}
+
+
+
+router.get('/correo', async (req,res, next) => {
+  try{
+        let altas = `<li>La cuenta de <span style="color: #00c62f">Juan Antonio Martinez Roman</span> realizado 8 registro(s) en <b><span style="color: #00c62f">caja o banco</span></b></li>
+        <li>La cuenta de <span style="color: #00c62f">Ruben Perez Garciaa</span> realizado 21 registro(s) en <b><span style="color: #00c62f">caja o banco</span></b></li>`;
+        mailer.enviar_mail("Juan antonio",altas);
+        res.json({"iniciales":resultado});
+  }catch(e) {
+      res.json({"iniciales":"00"});
+  }
+});
+
+
+
 //story bug
 
 // Servidor HTTP

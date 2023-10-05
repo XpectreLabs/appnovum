@@ -14,6 +14,9 @@ model cajas_bancos {
   cantidad_actual Int
   user_id         Int
   activo          Int         @db.SmallInt
+  fecha_creacion  DateTime    @db.Date
+  updatedate      DateTime?   @db.Date
+  deletedate      DateTime?   @db.Date
   tipos_pagos     tipos_pagos @relation(fields: [tipo_pago_id], references: [tipo_pago_id], onUpdate: Restrict, map: "fk_tipo_pago_id")
   users           users       @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "fk_user_id_cb")
 
@@ -59,6 +62,8 @@ model egresos_futuros {
   fecha_pago             DateTime?   @db.Date
   borrado                Boolean
   activo                 Boolean
+  updatedate             DateTime?   @db.Date
+  deletedate             DateTime?   @db.Date
   categorias             categorias  @relation(fields: [categoria_id], references: [categoria_id], onUpdate: Restrict, map: "fk_categoria_id_egre")
   tipos_pagos            tipos_pagos @relation(fields: [tipo_pago_id], references: [tipo_pago_id], onUpdate: Restrict, map: "fk_tipo_pago_id_egre")
   users                  users       @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "fk_user_id_egre")
@@ -81,6 +86,8 @@ model ingresos_futuros {
   fecha_cobro            DateTime?   @db.Date
   borrado                Boolean
   activo                 Boolean
+  updatedate             DateTime?   @db.Date
+  deletedate             DateTime?   @db.Date
   categorias             categorias  @relation(fields: [categoria_id], references: [categoria_id], onUpdate: Restrict, map: "fk_categoria_id_ing")
   tipos_pagos            tipos_pagos @relation(fields: [tipo_pago_id], references: [tipo_pago_id], onUpdate: Restrict, map: "fk_tipo_pago_id_ing")
   users                  users       @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "fk_user_id_ing")

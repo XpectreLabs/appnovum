@@ -34,30 +34,30 @@ input {
   padding-bottom: 5.5px;
 }
 
-.boxInput{
-  margin-top: 20px;
+.boxInput {
+  margin-top: 35px;
 }
 
-.inputCss{
+.inputCss {
   width: 400px;
 }
 
-.inputCss fieldset{
+.inputCss fieldset {
   border-color: #00C62F !important;
 }
 
-.btnCss{
+.btnCss {
   background: #00C62F !important;
-  text-transform: full-size-kana !important;
+  text-transform: none !important;
   float: right !important;
   font-weight: bold !important;
 }
 
-.boxInput button{
+.boxInput button {
   margin: 15px 8px 0px 8px;
 }
 
-.btnBack{
+.btnBack {
   color: #00C62F;
   float: left;
   margin: 24px 0px 0px 8px;

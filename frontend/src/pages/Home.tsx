@@ -217,12 +217,21 @@ export const Home = (props: any) => {
             </div>
 
             <Menu
+              key="1"
               defaultSelectedKeys={props.itemMenu}
               mode="inline"
               onClick={onClick}
-              inlineCollapsed={collapsed}
               items={items}
             />
+
+{/* <Menu
+      defaultSelectedKeys={[page]}
+      selectedKeys={[page]}
+      mode="inline"
+      onClick={onClick}
+      inlineCollapsed={collapsed}
+      items={items}
+    /> */}
           </div>
         </Sider>
         

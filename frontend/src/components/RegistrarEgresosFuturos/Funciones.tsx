@@ -67,18 +67,24 @@ function obtenerData(info:any):object {
     const fechaPago = fn.convertirFecha(info['listEgresosFuturos'][j]['fecha_tentativa_pago']);
     const fechaEnQueSePago = fn.convertirFecha(info['listEgresosFuturos'][j]['fecha_pago']);
     const state = fechaEnQueSePago==="Pendiente"?'No pagado':'Pagado';
+    let validarRetraso=false;
+    let textRetraso="";
 
+    if(fechaEnQueSePago==="Pendiente"){
+      validarRetraso = Date.parse(new Date().toISOString()) > Date.parse(info['listEgresosFuturos'][j]['fecha_tentativa_pago']);
+      textRetraso = validarRetraso?" (Atrasado)":"";
+    }
 
     let item: {Nombre: string, Concepto: string, Metodo: string,Categoria: string,Monto: string,Estado: string,FechaDeCreacion: string,FechaTentativaDePago: string,FechaEnQueSePago: string} = {
       "Nombre": info['listEgresosFuturos'][j]['nombre_persona_empresa'],
       "Concepto": info['listEgresosFuturos'][j]['concepto'],
       "Metodo": info['listEgresosFuturos'][j]['tipos_pagos']['tipo_pago'],
       "Categoria": info['listEgresosFuturos'][j]['categorias']['categoria'],
-      "Monto": fn.convertirModena(info['listEgresosFuturos'][j]['monto']),
+      "Monto": (info['listEgresosFuturos'][j]['monto']),
       "Estado": state,
       "FechaDeCreacion": fechaCreacion,
       "FechaTentativaDePago": fechaPago,
-      "FechaEnQueSePago": fechaEnQueSePago
+      "FechaEnQueSePago": fechaEnQueSePago + textRetraso
     }
     listData.push(item);
   }
